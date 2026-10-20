@@ -275,12 +275,12 @@
   var PRECIO_CLOUD_ANUAL_REGULAR = 79000;
 
   var COLORES_SALVA = {
-    'Negro Obsidiana': { hex: '#1A1D21', tinta: '#E5E7EB', desc: 'Negro mate carbón' },
-    'Gris Titanio': { hex: '#4A5058', tinta: '#F1F5F9', desc: 'Gris grafito mate' },
-    'Azul Marino Profundo': { hex: '#1B2A4A', tinta: '#E2E8F0', desc: 'Azul marino mate' },
-    'Verde Bosque': { hex: '#1F4D3A', tinta: '#E3EFE8', desc: 'Verde bosque mate' },
-    'Rojo Carmesí': { hex: '#9B1C2E', tinta: '#FEE2E2', desc: 'Rojo carmesí mate' },
-    'Rosa Coral': { hex: '#E8768A', tinta: '#FFFFFF', desc: 'Rosa coral suave' }
+    // Colores reales de fabricación de la Salva Band
+    'Negro Carbón': { hex: '#18181B', tinta: '#E4E4E7', desc: 'Negro carbón' },
+    'Rosa Fucsia': { hex: '#EC4899', tinta: '#FFFFFF', desc: 'Rosa fucsia' },
+    'Verde Menta': { hex: '#10B981', tinta: '#FFFFFF', desc: 'Verde menta' },
+    'Morado Lavanda': { hex: '#8B5CF6', tinta: '#FFFFFF', desc: 'Morado lavanda' },
+    'Amarillo Solar': { hex: '#EAB308', tinta: '#1F2937', desc: 'Amarillo solar' }
   };
 
   var DEPARTAMENTOS_CO = ['Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bogotá D.C.', 'Bolívar', 'Boyacá',
@@ -355,7 +355,7 @@
   });
 
   function colorActual() {
-    return checkoutColor && COLORES_SALVA[checkoutColor.value] ? checkoutColor.value : 'Negro Obsidiana';
+    return checkoutColor && COLORES_SALVA[checkoutColor.value] ? checkoutColor.value : 'Negro Carbón';
   }
 
   function tallaActual() {
@@ -371,10 +371,13 @@
   function incluyeBand() { return modeloActual() !== 'watch'; }
   function incluyeWatch() { return modeloActual() !== 'band'; }
 
+  // Salva Band: correa con hebilla tipo reloj, talla única ajustable de 14 a 22 cm
+  var TALLA_BAND = 'talla única ajustable (14–22 cm)';
+
   function descripcionTalla() {
     if (modeloActual() === 'watch') return 'correa de ' + anchoActual() + ' mm';
-    if (modeloActual() === 'pack') return 'pulsera ' + tallaActual() + ' cm + correa de ' + anchoActual() + ' mm';
-    return tallaActual() + ' cm';
+    if (modeloActual() === 'pack') return 'pulsera ' + TALLA_BAND + ' + correa de ' + anchoActual() + ' mm';
+    return TALLA_BAND;
   }
 
   function descripcionColor() {
@@ -420,7 +423,7 @@
   /* ---------- Previsualizador de color en tiempo real ---------- */
   function pintarPreview(previewEl, color, descripcion) {
     if (!previewEl) return;
-    var info = COLORES_SALVA[color] || COLORES_SALVA['Negro Obsidiana'];
+    var info = COLORES_SALVA[color] || COLORES_SALVA['Negro Carbón'];
     previewEl.style.setProperty('--band', info.hex);
     previewEl.style.setProperty('--band-ink', info.tinta);
     var nombreEl = previewEl.querySelector('[data-preview-name]');
@@ -436,9 +439,9 @@
     var color = colorActual();
     var info = COLORES_SALVA[color];
     pintarPreview(document.getElementById('checkoutColorPreview'), color,
-      info.desc + ' · ' + (modeloActual() === 'pack' ? 'Salva Band del pack' : 'Salva Band') + ' · ' + tallaActual() + ' cm');
+      info.desc + ' · ' + (modeloActual() === 'pack' ? 'Salva Band del pack' : 'Salva Band') + ' · talla única ajustable');
     pintarPreview(document.getElementById('modelosColorPreview'), color,
-      info.desc + ' · Silicona unibody hipoalergénica');
+      info.desc + ' · Silicona anatómica con hebilla');
   }
 
   function seleccionarColor(color, conFeedback) {
@@ -1062,6 +1065,69 @@
   // Estado inicial de las vistas previas
   seleccionarColor(colorActual(), false);
 
+  /* =========================================================
+     APP SALVA (PWA): instalación en el celular y QR desde el PC
+     ========================================================= */
+  var modalAppQr = document.getElementById('modalAppQr');
+  var estadoApp = document.getElementById('appMovilEstado');
+  var promesaQr = null;
+
+  function cargarLibreriaQr() {
+    if (window.qrcode) return Promise.resolve(window.qrcode);
+    if (promesaQr) return promesaQr;
+    promesaQr = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js';
+      s.onload = function () { resolve(window.qrcode); };
+      s.onerror = function () { promesaQr = null; reject(new Error('qr')); };
+      document.head.appendChild(s);
+    });
+    return promesaQr;
+  }
+
+  function abrirQrApp() {
+    var url = window.location.origin + '/admin.html';
+    document.getElementById('appQrUrl').textContent = url;
+    var contenedor = document.getElementById('appQrCodigo');
+    contenedor.textContent = 'Generando código…';
+    modalAppQr.hidden = false;
+    document.body.style.overflow = 'hidden';
+    cargarLibreriaQr().then(function (qrcode) {
+      var qr = qrcode(0, 'M');
+      qr.addData(url);
+      qr.make();
+      contenedor.innerHTML = qr.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+    }).catch(function () {
+      contenedor.textContent = 'No se pudo generar el código. Abre esta dirección en tu celular:';
+    });
+  }
+
+  function cerrarQrApp() {
+    if (modalAppQr) modalAppQr.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('[data-close-modal="modalAppQr"]').forEach(function (b) { b.addEventListener('click', cerrarQrApp); });
+  if (modalAppQr) modalAppQr.addEventListener('click', function (e) { if (e.target === modalAppQr) cerrarQrApp(); });
+
+  document.querySelectorAll('.app-badge').forEach(function (badge) {
+    badge.addEventListener('click', function () {
+      var pwa = window.SalvaPWA;
+      var e = pwa ? pwa.estado() : { movil: false, instalada: false };
+      if (!e.movil) { abrirQrApp(); return; }          // Desde el PC: QR para abrir en el celular
+      if (e.instalada) return;
+      if (badge.getAttribute('data-plataforma') === 'ios' && !e.ios) { pwa.mostrarGuia('ios'); return; }
+      pwa.instalar();
+    });
+  });
+
+  if (window.SalvaPWA && estadoApp) {
+    window.SalvaPWA.alCambiar(function (e) {
+      estadoApp.hidden = !e.instalada;
+      estadoApp.textContent = e.instalada ? '✅ Ya tienes la App Salva instalada en este dispositivo.' : '';
+    });
+  }
+
   /* ---------- Membresía Salva Cloud Familiar (suscripción asistida) ---------- */
   var PLANES_CLOUD = {
     mensual: 'Mensual ($9.900 COP / mes, sin contrato)',
@@ -1127,11 +1193,11 @@
     },
     {
       claves: ['talla', 'tallas', 'medida', 'medir', 'tamano', 'muneca', 'cm'],
-      resp: 'Salva Band viene en 3 tallas: Niños 16 cm, Estándar 20 cm y Adulto Grande 23.8 cm. Salva Watch se ajusta a correas de 20 mm o 22 mm (Apple Watch, Garmin, Galaxy Watch, Amazfit). Un asesor confirma la medida por WhatsApp antes de despachar.'
+      resp: 'Salva Band es talla única ajustable: correa deportiva con hebilla tipo reloj de 14 a 22 cm, para niños, jóvenes y adultos. Salva Watch se ajusta a correas de 20 mm o 22 mm (Apple Watch, Garmin, Galaxy Watch, Amazfit).'
     },
     {
-      claves: ['color', 'colores', 'negro', 'gris', 'azul', 'verde', 'bosque', 'rojo', 'rosa', 'titanio', 'placa', 'unibody', 'material', 'diseno', 'nombre', 'alergias'],
-      resp: 'Salva tiene un diseño unibody en silicona médica disponible en 6 colores mate: Negro Obsidiana, Gris Titanio (grafito), Azul Marino Profundo, Verde Bosque, Rojo Carmesí y Rosa Coral. Puedes verlos en vivo en la sección de modelos. El emblema y el código QR quedan integrados al ras de la correa, sin piezas sueltas. Tu ficha digital (nombre, contacto SOS y alergia crítica) se actualiza cuando quieras desde tu celular, sin necesidad de grabado físico.'
+      claves: ['color', 'colores', 'negro', 'carbon', 'rosa', 'fucsia', 'verde', 'menta', 'morado', 'lavanda', 'amarillo', 'solar', 'hebilla', 'broche', 'material', 'diseno'],
+      resp: 'Salva Band es una correa deportiva de silicona anatómica con hebilla tipo reloj y pastilla QR + NFC integrada. Viene en 5 colores: Negro Carbón, Rosa Fucsia, Verde Menta, Morado Lavanda y Amarillo Solar. Tu ficha digital se actualiza cuando quieras desde tu celular, sin grabados físicos.'
     },
     {
       claves: ['smartwatch', 'reloj', 'apple watch', 'garmin', 'galaxy watch', 'amazfit', 'correa', 'pasador'],

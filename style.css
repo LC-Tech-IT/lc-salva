@@ -2834,3 +2834,248 @@ section {
 
 .plan-tagline strong { color: var(--text-dark); }
 .price-period s { color: var(--text-muted); font-weight: 600; }
+
+/* =========================================================
+   HEADER: WHATSAPP SIN CORTES EN LAPTOPS (1024–1400 px)
+   ========================================================= */
+.wa-texto-corto { display: none; }
+
+@media (max-width: 1400px) {
+  .brand { padding-right: 16px; }
+  .main-nav { margin-left: 12px; }
+  .main-nav ul { gap: 0; }
+  .main-nav a { padding: 8px 9px; font-size: 0.86rem; }
+  .header-actions { gap: 10px; }
+  .admin-link { padding: 7px 12px; }
+  .btn-header-wa { padding: 9px 14px; }
+}
+
+@media (max-width: 1400px) {
+  .wa-texto-largo { display: none; }
+  .wa-texto-corto { display: inline; }
+}
+
+/* =========================================================
+   CARRUSEL: CONTROLES CENTRADOS (nunca chocan con el chat flotante)
+   ========================================================= */
+.carousel-controls {
+  left: 50%;
+  right: auto;
+  bottom: 16px;
+  transform: translateX(-50%);
+}
+
+.carousel-caption { padding-bottom: 64px; }
+
+@media (max-width: 600px) {
+  .carousel-controls { right: auto; left: 50%; transform: translateX(-50%); bottom: 12px; }
+  .carousel-caption { padding-bottom: 56px; }
+}
+
+/* =========================================================
+   NUEVA SALVA BAND: CORREA CON HEBILLA Y PASTILLA QR/NFC
+   ========================================================= */
+.bracelet-svg .strap { fill: var(--band); }
+.bracelet-svg .strap-shade { fill: var(--band-shade); }
+.bracelet-svg .strap-shine { fill: rgba(255, 255, 255, 0.16); }
+.bracelet-svg .strap-holes circle { fill: var(--band-shade); }
+.bracelet-svg .buckle { stroke: #A1A1AA; }
+.color-preview-visual { width: 170px; }
+
+.talla-unica {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--sage-100);
+  border: 1.5px solid var(--brand-900);
+  color: var(--brand-900);
+}
+
+.talla-unica strong { font-size: 0.95rem; }
+.talla-unica span { font-size: 0.8rem; color: var(--brand-800); }
+
+/* =========================================================
+   LLEVA SALVA EN TU CELULAR (PWA)
+   ========================================================= */
+.app-movil { background: var(--bg-surface-alt); border-top: 1px solid var(--border-subtle); }
+
+.app-movil-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+}
+
+.app-movil-texto h2 {
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.22;
+  margin-bottom: 14px;
+}
+
+.app-movil-beneficios {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0 26px;
+  font-size: 0.96rem;
+  color: var(--text-body);
+}
+
+.app-movil-beneficios li { display: flex; gap: 10px; align-items: flex-start; }
+
+.app-badges { display: flex; flex-wrap: wrap; gap: 12px; }
+
+.app-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 200px;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--text-dark);
+  color: #FFFFFF;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.app-badge:hover { background: var(--brand-900); }
+.app-badge:focus-visible { outline: 3px solid var(--sage-200); outline-offset: 2px; }
+.app-badge span { display: flex; flex-direction: column; line-height: 1.2; }
+.app-badge small { font-size: 0.72rem; color: #CBD5E1; font-weight: 600; }
+.app-badge strong { font-size: 1.02rem; font-weight: 800; }
+
+.app-movil-estado { margin-top: 14px; font-size: 0.9rem; font-weight: 700; color: var(--brand-800); }
+
+.app-movil-visual { display: flex; justify-content: center; }
+
+.telefono-maqueta {
+  width: 220px;
+  aspect-ratio: 9 / 18;
+  border-radius: 36px;
+  padding: 12px;
+  background: var(--text-dark);
+  box-shadow: var(--shadow-lg);
+}
+
+.telefono-pantalla {
+  height: 100%;
+  border-radius: 26px;
+  background: linear-gradient(180deg, var(--sage-100) 0%, #FFFFFF 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--brand-900);
+}
+
+.telefono-icono { width: 76px; height: 76px; border-radius: 20px; box-shadow: var(--shadow-md); margin-bottom: 6px; }
+.telefono-pantalla strong { font-size: 1.15rem; }
+.telefono-pantalla span { font-size: 0.82rem; color: var(--text-muted); }
+
+.app-qr-modal { padding: 32px 28px; text-align: center; }
+.app-qr-modal h2 { font-size: 1.4rem; font-weight: 800; color: var(--text-dark); margin-bottom: 4px; }
+
+.app-qr-codigo {
+  width: 220px;
+  height: 220px;
+  margin: 8px auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.app-qr-codigo svg { width: 100%; height: 100%; }
+
+.app-qr-pasos { text-align: left; display: grid; gap: 8px; padding-left: 20px; margin: 0 0 12px; font-size: 0.9rem; }
+.app-qr-url { font-size: 0.8rem; color: var(--text-muted); word-break: break-all; }
+
+@media (max-width: 900px) {
+  .app-movil-inner { grid-template-columns: 1fr; }
+  .app-movil-visual { display: none; }
+}
+
+@media (max-width: 600px) {
+  .app-badges { flex-direction: column; }
+  .app-badge { width: 100%; }
+}
+
+/* =========================================================
+   GUÍA DE INSTALACIÓN DE LA APP SALVA (PWA)
+   ========================================================= */
+.pwa-guia {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.pwa-guia-tarjeta {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: #FFFFFF;
+  border-radius: 18px 18px 0 0;
+  padding: 26px 22px calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+  color: #334155;
+}
+
+@media (min-width: 600px) {
+  .pwa-guia { align-items: center; padding: 20px; }
+  .pwa-guia-tarjeta { border-radius: 18px; }
+}
+
+.pwa-guia-icono { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12); }
+.pwa-guia-tarjeta h2 { font-size: 1.2rem; color: #0F172A; margin: 0 0 14px; }
+
+.pwa-guia-pasos {
+  text-align: left;
+  margin: 0 0 14px;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.pwa-guia-pasos svg { display: inline-block; vertical-align: -4px; color: #047857; }
+.pwa-guia-pasos strong { color: #0F172A; }
+.pwa-guia-nota { font-size: 0.82rem; color: #64748B; margin: 0 0 14px; }
+
+.pwa-guia-listo {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 999px;
+  background: #064E3B;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.pwa-guia-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #0F172A;
+  cursor: pointer;
+}

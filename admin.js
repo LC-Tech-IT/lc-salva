@@ -787,7 +787,7 @@
 
     var pulseraVinculada = portador.pulseras || {};
     actualizarIndicadorModelo(productoDe(pulseraVinculada.codigo_qr));
-    seleccionarTalla(portador.talla_manilla || '20');
+    seleccionarTalla('unica'); // Salva Band: talla única ajustable
 
     estado.fotoUrlPendiente = portador.foto_url || null;
     estado.fotoPortadorEditandoId = portador.id;
@@ -1761,6 +1761,34 @@
 
   function reiniciarSalvaCloud() {
     cloud = { membresia: null, tutores: [], documentos: [] };
+  }
+
+  /* =========================================================
+     Instalar la App Salva (PWA)
+     ========================================================= */
+  var CLAVE_BANNER_APP = 'salva_banner_app_cerrado';
+
+  function bannerAppDescartado() {
+    try { return localStorage.getItem(CLAVE_BANNER_APP) === '1'; } catch (e) { return false; }
+  }
+
+  if (window.SalvaPWA) {
+    window.SalvaPWA.alCambiar(function (e) {
+      // Se muestra si el navegador permite instalar (Android/Chrome/Edge) o si es iPhone (guía visual)
+      el('bannerInstalarApp').hidden = e.instalada || bannerAppDescartado() || !(e.nativa || e.ios);
+      el('instalarAppDetalle').textContent = e.ios
+        ? 'En iPhone: Compartir → “Agregar a pantalla de inicio”. Te mostramos cómo.'
+        : 'Entra a tu panel con un toque desde la pantalla de inicio de tu celular.';
+    });
+    el('btnInstalarApp').addEventListener('click', function () {
+      window.SalvaPWA.instalar().then(function (resultado) {
+        if (resultado === 'accepted') mostrarToast('¡App Salva instalada! Ábrela desde tu pantalla de inicio.', 'exito');
+      });
+    });
+    el('btnCerrarInstalarApp').addEventListener('click', function () {
+      try { localStorage.setItem(CLAVE_BANNER_APP, '1'); } catch (e) { /* sin almacenamiento */ }
+      el('bannerInstalarApp').hidden = true;
+    });
   }
 
   /* =========================================================

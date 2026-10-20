@@ -15,6 +15,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Salva">
 </head>
 <body>
 
@@ -137,6 +140,19 @@
     <button type="button" class="app-tab active" data-tab="pulseras" role="tab" aria-selected="true">Mis Pulseras</button>
     <button type="button" class="app-tab" data-tab="alertas" role="tab" aria-selected="false">Historial de Escaneos <span class="tab-contador" id="contadorAlertas" hidden>0</span></button>
     <button type="button" class="app-tab" data-tab="cloud" id="tabCloud" role="tab" aria-selected="false">☁️ Salva Cloud</button>
+  </div>
+
+  <!-- Instalar la App Salva (PWA) -->
+  <div class="instalar-app" id="bannerInstalarApp" hidden>
+    <img src="icons/icon-192.png" alt="" class="instalar-app-icono">
+    <div class="instalar-app-texto">
+      <strong>📲 Instala la App Salva</strong>
+      <span id="instalarAppDetalle">Entra a tu panel con un toque desde la pantalla de inicio de tu celular.</span>
+    </div>
+    <div class="instalar-app-acciones">
+      <button type="button" class="btn btn-primary btn-sm" id="btnInstalarApp">Instalar App Salva</button>
+      <button type="button" class="link-btn" id="btnCerrarInstalarApp">Ahora no</button>
+    </div>
   </div>
 
   <!-- Barra de vigilancia en tiempo real -->
@@ -405,12 +421,10 @@
 
         <div class="hardware-selector" style="margin-top: 14px;">
           <span class="field-label">Talla de la correa</span>
-          <div class="talla-segmented" id="tallaSelector">
-            <button type="button" class="talla-opcion" data-talla="16">16 cm<small>Infantil</small></button>
-            <button type="button" class="talla-opcion" data-talla="20">20 cm<small>Juvenil/Estándar</small></button>
-            <button type="button" class="talla-opcion" data-talla="23.8">23.8 cm<small>Adulto</small></button>
+          <div class="talla-segmented talla-segmented--1" id="tallaSelector">
+            <button type="button" class="talla-opcion active" data-talla="unica">Talla única ajustable<small>14 a 22 cm · hebilla tipo reloj</small></button>
           </div>
-          <input type="hidden" id="tallaManilla" value="20">
+          <input type="hidden" id="tallaManilla" value="unica">
         </div>
       </div>
 
@@ -567,6 +581,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="pwa.js"></script>
 <script src="admin.js"></script>
 </body>
 </html>

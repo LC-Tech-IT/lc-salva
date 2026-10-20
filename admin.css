@@ -1066,3 +1066,98 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 .bitacora-bloqueada strong { color: var(--brand-900); }
+
+/* =========================================================
+   GUÍA DE INSTALACIÓN DE LA APP SALVA (PWA)
+   ========================================================= */
+.pwa-guia {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.pwa-guia-tarjeta {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: #FFFFFF;
+  border-radius: 18px 18px 0 0;
+  padding: 26px 22px calc(24px + env(safe-area-inset-bottom));
+  text-align: center;
+  color: #334155;
+}
+
+@media (min-width: 600px) {
+  .pwa-guia { align-items: center; padding: 20px; }
+  .pwa-guia-tarjeta { border-radius: 18px; }
+}
+
+.pwa-guia-icono { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12); }
+.pwa-guia-tarjeta h2 { font-size: 1.2rem; color: #0F172A; margin: 0 0 14px; }
+
+.pwa-guia-pasos {
+  text-align: left;
+  margin: 0 0 14px;
+  padding-left: 22px;
+  display: grid;
+  gap: 10px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.pwa-guia-pasos svg { display: inline-block; vertical-align: -4px; color: #047857; }
+.pwa-guia-pasos strong { color: #0F172A; }
+.pwa-guia-nota { font-size: 0.82rem; color: #64748B; margin: 0 0 14px; }
+
+.pwa-guia-listo {
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 999px;
+  background: #064E3B;
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.pwa-guia-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #0F172A;
+  cursor: pointer;
+}
+
+/* =========================================================
+   BANNER: INSTALAR LA APP SALVA
+   ========================================================= */
+.instalar-app {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  background: var(--sage-100);
+  border: 1px solid var(--sage-200);
+  border-radius: var(--radius-md);
+}
+
+.instalar-app-icono { width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0; }
+.instalar-app-texto { flex: 1 1 220px; min-width: 0; }
+.instalar-app-texto strong { display: block; color: var(--brand-900); font-size: 0.95rem; }
+.instalar-app-texto span { display: block; color: var(--text-body); font-size: 0.82rem; }
+.instalar-app-acciones { display: flex; align-items: center; gap: 12px; }
+
+.talla-segmented--1 { grid-template-columns: 1fr; }

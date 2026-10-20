@@ -26,3 +26,9 @@
 /admin*
   Cache-Control: no-store
   X-Robots-Tag: noindex, nofollow
+
+# App Salva (PWA): el service worker siempre se revalida; el manifest con su tipo correcto
+/sw.js
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Content-Type: application/manifest+json

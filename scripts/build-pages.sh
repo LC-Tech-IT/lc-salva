@@ -13,6 +13,8 @@ mkdir -p dist
 cp ./*.html ./*.css ./*.js dist/
 cp ./*.jpg dist/
 cp ./*.jpeg dist/ 2>/dev/null || true
+cp manifest.webmanifest dist/
+cp -r icons dist/
 cp _headers _redirects dist/
 
 echo "Sitio listo en dist/:"

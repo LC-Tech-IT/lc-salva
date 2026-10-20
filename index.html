@@ -17,6 +17,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Salva">
 </head>
 <body>
 
@@ -42,9 +45,10 @@
 
     <div class="header-actions">
       <a href="admin.html" class="admin-link">Mi Panel</a>
-      <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20tallas%20%2816/20/23.8cm%29%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-header-wa">
+      <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-header-wa">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-        <span>Asesoría por WhatsApp</span>
+        <span class="wa-texto-largo">Asesoría por WhatsApp</span>
+        <span class="wa-texto-corto">WhatsApp</span>
       </a>
       <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
         <span></span><span></span><span></span>
@@ -447,7 +451,7 @@
             <span class="plan-subtexto">Doble tecnología QR + Chip NFC • 100% Sin Baterías • Sumergible IP68</span>
           </div>
           <ul class="plan-features">
-            <li><span class="check-icon">✓</span> <span>Chasis unibody en silicona médica hipoalergénica continua.</span></li>
+            <li><span class="check-icon">✓</span> <span>Correa deportiva de silicona anatómica hipoalergénica con <strong>hebilla ajustable tipo reloj</strong> (talla única de 14 a 22 cm).</span></li>
             <li><span class="check-icon">✓</span> <span><strong>Doble lectura:</strong> Grabado láser QR de alta densidad + Chip NFC pasivo NTAG encapsulado (la silicona no interfiere con la señal).</span></li>
             <li><span class="check-icon">✓</span> <span>Ficha médica de emergencia digital de por vida (editable sin costo).</span></li>
             <li><span class="check-icon">✓</span> <span><strong>Contacto en 1 toque:</strong> quien te escanea avisa a tu familia por WhatsApp con la ubicación GPS del rescate.</span></li>
@@ -552,6 +556,42 @@
     </div>
   </section>
 
+  <!-- ===================== APP SALVA (PWA) ===================== -->
+  <section class="app-movil" id="app">
+    <div class="container app-movil-inner">
+      <div class="app-movil-texto">
+        <span class="eyebrow">App Salva para iPhone y Android</span>
+        <h2>Lleva Salva en tu <span class="highlight-text">celular</span></h2>
+        <p class="section-lead">Instala Mi Panel Salva como una app: se abre con un toque desde tu pantalla de inicio y a pantalla completa, para tener a tu familia siempre a mano.</p>
+        <ul class="app-movil-beneficios">
+          <li><span class="check-icon">✓</span> Edita fichas médicas y contactos de emergencia en segundos.</li>
+          <li><span class="check-icon">✓</span> Revisa el último escaneo de tu Salva con su ubicación en el mapa.</li>
+          <li><span class="check-icon">✓</span> Sin tiendas ni descargas pesadas: se instala desde el navegador y siempre está actualizada.</li>
+        </ul>
+        <div class="app-badges">
+          <button type="button" class="app-badge" data-plataforma="ios">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+            <span><small>Para iPhone</small><strong>Agregar a inicio</strong></span>
+          </button>
+          <button type="button" class="app-badge" data-plataforma="android">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7"/><path d="m9 11 3 3 3-3"/></svg>
+            <span><small>Para Android</small><strong>Instalar app</strong></span>
+          </button>
+        </div>
+        <p class="app-movil-estado" id="appMovilEstado" hidden></p>
+      </div>
+      <div class="app-movil-visual" aria-hidden="true">
+        <div class="telefono-maqueta">
+          <div class="telefono-pantalla">
+            <img src="icons/icon-192.png" alt="" class="telefono-icono">
+            <strong>Salva</strong>
+            <span>Mi Panel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== FAQ (DISMINUCIÓN TOTAL DE FRICCIONES) ===================== -->
   <section class="faq" id="preguntas">
     <div class="container">
@@ -612,12 +652,12 @@
 
         <div class="faq-item">
           <button type="button" class="faq-question" aria-expanded="false">
-            <span>¿Cómo elijo la talla adecuada para mi familiar?</span>
+            <span>¿Qué talla necesito?</span>
             <span class="faq-icon" aria-hidden="true">+</span>
           </button>
           <div class="faq-answer">
             <div class="faq-answer-inner">
-              <p><strong>Salva Band:</strong> talla Kids (16 cm), Estándar/Jóvenes (20 cm) o Adulto Grande (23.8 cm). <strong>Salva Watch:</strong> elige el ancho de la correa de tu reloj, 20 mm o 22 mm (aparece en la hebilla o en la ficha técnica del reloj). Si tienes dudas, un asesor te guía por WhatsApp en 1 minuto.</p>
+              <p><strong>Salva Band:</strong> talla única ajustable con hebilla tipo reloj, de 14 a 22 cm: sirve para niños, jóvenes y adultos. <strong>Salva Watch:</strong> elige el ancho de la correa de tu reloj, 20 mm o 22 mm (aparece en la hebilla o en la ficha técnica del reloj). Si tienes dudas, un asesor te guía por WhatsApp en 1 minuto.</p>
             </div>
           </div>
         </div>
@@ -670,7 +710,7 @@
           <h2>¿Tienes dudas sobre qué modelo es el ideal?</h2>
           <p class="section-lead">No dejes la seguridad de tu familia al azar. Un especialista en seguridad familiar de Salva te orienta en minutos por WhatsApp.</p>
           <div class="contact-actions">
-            <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20tallas%20%2816/20/23.8cm%29%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-wa-direct">
+            <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-wa-direct">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
               <span>Hablar con un Asesor por WhatsApp</span>
             </a>
@@ -819,24 +859,30 @@
       <div class="checkout-step" id="checkoutPaso1">
         <div class="color-preview" data-color-preview id="checkoutColorPreview" aria-live="polite">
           <div class="color-preview-visual">
-          <svg class="bracelet-svg" viewBox="0 0 240 150" aria-hidden="true">
-            <ellipse class="band-back" cx="120" cy="66" rx="96" ry="40" fill="none" stroke-width="16"/>
-            <path class="band-front" d="M24 66 A96 40 0 0 0 216 66" fill="none" stroke-width="22" stroke-linecap="round"/>
-            <path class="band-shine" d="M44 86 A80 28 0 0 0 196 86" fill="none" stroke-width="3" stroke-linecap="round"/>
-            <rect class="band-module" x="84" y="86" width="72" height="44" rx="14" stroke-width="2"/>
-            <circle class="band-ink-stroke" cx="104" cy="108" r="9" fill="none" stroke-width="2.2"/>
-            <path class="band-ink-stroke" d="M100 108l3 3 5-6" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <g class="band-ink">
-              <rect x="122" y="99" width="6" height="6" rx="1"/><rect x="140" y="99" width="6" height="6" rx="1"/>
-              <rect x="131" y="108" width="6" height="6" rx="1"/><rect x="122" y="117" width="6" height="6" rx="1"/>
-              <rect x="140" y="117" width="6" height="6" rx="1"/><rect x="131" y="99" width="3" height="3"/>
+          <svg class="bracelet-svg" viewBox="0 0 260 120" aria-hidden="true">
+            <rect class="strap" x="30" y="44" width="222" height="32" rx="16"/>
+            <rect class="strap-shine" x="44" y="48" width="196" height="5" rx="2.5"/>
+            <g class="strap-holes">
+              <circle cx="182" cy="60" r="3.2"/><circle cx="198" cy="60" r="3.2"/><circle cx="214" cy="60" r="3.2"/><circle cx="230" cy="60" r="3.2"/>
             </g>
+            <rect class="strap-shade" x="40" y="41" width="12" height="38" rx="4"/>
+            <rect class="buckle" x="6" y="38" width="30" height="44" rx="9" fill="none" stroke-width="5"/>
+            <path class="buckle" d="M21 60 H52" stroke-width="4" stroke-linecap="round"/>
+            <rect class="band-module" x="92" y="30" width="76" height="60" rx="18" stroke-width="2"/>
+            <g class="band-ink">
+              <rect x="104" y="44" width="7" height="7" rx="1.2"/><rect x="119" y="44" width="7" height="7" rx="1.2"/>
+              <rect x="111.5" y="56.5" width="7" height="7" rx="1.2"/><rect x="104" y="69" width="7" height="7" rx="1.2"/>
+              <rect x="119" y="69" width="7" height="7" rx="1.2"/>
+            </g>
+            <path class="band-ink-stroke" d="M141 53 a9 9 0 0 1 0 14" fill="none" stroke-width="2.6" stroke-linecap="round"/>
+            <path class="band-ink-stroke" d="M148 47 a17 17 0 0 1 0 26" fill="none" stroke-width="2.6" stroke-linecap="round"/>
+            <path class="band-ink-stroke" d="M155 42 a24 24 0 0 1 0 36" fill="none" stroke-width="2.6" stroke-linecap="round" opacity="0.6"/>
           </svg>
           </div>
           <div class="color-preview-info">
             <span class="color-preview-eyebrow">Vista previa en vivo</span>
-            <strong class="color-preview-name" data-preview-name>Negro Obsidiana</strong>
-            <span class="color-preview-desc" data-preview-desc>Negro mate carbón · Salva Band · 20 cm</span>
+            <strong class="color-preview-name" data-preview-name>Negro Carbón</strong>
+            <span class="color-preview-desc" data-preview-desc>Negro carbón · Salva Band · talla única ajustable</span>
           </div>
         </div>
 
@@ -863,44 +909,37 @@
         <div id="checkoutBloqueColor">
         <p class="form-section-title" id="checkoutTituloColor">Color de tu Salva Band</p>
         <div class="color-segmented" id="checkoutColorSelector" role="group" aria-label="Color de la pulsera">
-          <button type="button" class="color-opcion active" data-color="Negro Obsidiana" style="--color-swatch:#1A1D21;" aria-pressed="true">
+          <button type="button" class="color-opcion active" data-color="Negro Carbón" style="--color-swatch:#18181B;" aria-pressed="true">
             <span class="color-swatch"></span>
-            Negro Obsidiana
-            <small>Negro mate carbón</small>
+            Negro Carbón
           </button>
-          <button type="button" class="color-opcion" data-color="Gris Titanio" style="--color-swatch:#4A5058;" aria-pressed="false">
+          <button type="button" class="color-opcion" data-color="Rosa Fucsia" style="--color-swatch:#EC4899;" aria-pressed="false">
             <span class="color-swatch"></span>
-            Gris Titanio
-            <small>Gris grafito mate</small>
+            Rosa Fucsia
           </button>
-          <button type="button" class="color-opcion" data-color="Azul Marino Profundo" style="--color-swatch:#1B2A4A;" aria-pressed="false">
+          <button type="button" class="color-opcion" data-color="Verde Menta" style="--color-swatch:#10B981;" aria-pressed="false">
             <span class="color-swatch"></span>
-            Azul Marino Profundo
+            Verde Menta
           </button>
-          <button type="button" class="color-opcion" data-color="Verde Bosque" style="--color-swatch:#1F4D3A;" aria-pressed="false">
+          <button type="button" class="color-opcion" data-color="Morado Lavanda" style="--color-swatch:#8B5CF6;" aria-pressed="false">
             <span class="color-swatch"></span>
-            Verde Bosque
+            Morado Lavanda
           </button>
-          <button type="button" class="color-opcion" data-color="Rojo Carmesí" style="--color-swatch:#9B1C2E;" aria-pressed="false">
+          <button type="button" class="color-opcion" data-color="Amarillo Solar" style="--color-swatch:#EAB308;" aria-pressed="false">
             <span class="color-swatch"></span>
-            Rojo Carmesí
-          </button>
-          <button type="button" class="color-opcion" data-color="Rosa Coral" style="--color-swatch:#E8768A;" aria-pressed="false">
-            <span class="color-swatch"></span>
-            Rosa Coral
+            Amarillo Solar
           </button>
         </div>
-        <input type="hidden" id="checkoutColor" value="Negro Obsidiana">
+        <input type="hidden" id="checkoutColor" value="Negro Carbón">
         </div>
 
         <div class="field" id="checkoutBloqueTalla">
-          <span class="field-label">Talla de muñeca (Salva Band)</span>
-          <div class="talla-segmented" id="checkoutTallaSelector">
-            <button type="button" class="talla-opcion" data-talla="16">16 cm<small>Niños</small></button>
-            <button type="button" class="talla-opcion active" data-talla="20">20 cm<small>Estándar / Jóvenes</small></button>
-            <button type="button" class="talla-opcion" data-talla="23.8">23.8 cm<small>Adulto Grande</small></button>
+          <span class="field-label">Talla (Salva Band)</span>
+          <div class="talla-unica">
+            <strong>Talla Única Ajustable</strong>
+            <span>14 a 22 cm · niños, jóvenes y adultos · hebilla tipo reloj</span>
           </div>
-          <input type="hidden" id="checkoutTalla" value="20">
+          <input type="hidden" id="checkoutTalla" value="unica">
         </div>
 
         <div class="field" id="checkoutBloqueAncho" hidden>
@@ -1048,6 +1087,21 @@
   </div>
 </div>
 
+<!-- ===================== MODAL: ABRIR LA APP DESDE EL CELULAR (QR) ===================== -->
+<div class="modal-overlay" id="modalAppQr" hidden>
+  <div class="modal modal-md app-qr-modal" role="dialog" aria-modal="true" aria-labelledby="tituloAppQr">
+    <button type="button" class="modal-close" data-close-modal="modalAppQr" aria-label="Cerrar">✕</button>
+    <h2 id="tituloAppQr">Abre Salva en tu celular</h2>
+    <p class="checkout-sub">Escanea este código con la cámara de tu iPhone o Android y luego instala la app.</p>
+    <div class="app-qr-codigo" id="appQrCodigo" aria-label="Código QR para abrir Salva en el celular"></div>
+    <ol class="app-qr-pasos">
+      <li><strong>iPhone:</strong> en Safari toca Compartir → “Agregar a pantalla de inicio”.</li>
+      <li><strong>Android:</strong> toca “Instalar app” en el aviso o en el menú ⋮ del navegador.</li>
+    </ol>
+    <p class="app-qr-url" id="appQrUrl"></p>
+  </div>
+</div>
+
 <!-- ===================== CHATBOT WIDGET ===================== -->
 <div class="chat-widget" id="chatWidget">
   <button class="chat-toggle" id="chatToggle" aria-label="Abrir asistente de Salva" aria-expanded="false">
@@ -1085,6 +1139,7 @@
   </div>
 </div>
 
+<script src="pwa.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
