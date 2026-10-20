@@ -39,11 +39,15 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          # Lee 1 id de pulseras. Con la migración de privacidad aplicada devuelve [] (RLS),
-          # pero la consulta igual llega a Postgres y cuenta como actividad. No registra escaneos.
+          # La lectura anónima de tablas está cerrada (Ley 1581): se usa la función pública
+          # de la ficha con un código inexistente. Ejecuta una consulta real en Postgres
+          # (cuenta como actividad), devuelve null y no registra escaneos ni toca datos.
           codigo=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
-            "$SUPABASE_URL/rest/v1/pulseras?select=id&limit=1" \
-            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+            -X POST "$SUPABASE_URL/rest/v1/rpc/obtener_ficha_publica" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"p_codigo_qr":"PING-KEEP-ALIVE"}')
           echo "Respuesta HTTP: $codigo"
           test "$codigo" = "200"
 
