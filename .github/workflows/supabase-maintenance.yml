@@ -1,0 +1,93 @@
+# LC Salva — Mantenimiento de Supabase
+# 1) Keep-alive: consulta inocua lunes y jueves (evita la pausa del plan gratuito).
+#    Al pasar a Supabase Pro ya no es necesario, pero no hace daño dejarlo.
+# 2) Respaldo semanal (domingo): base de datos (roles, esquema, datos) + archivos de Storage,
+#    cifrado con GPG y guardado como artefacto privado del repositorio durante 30 días.
+#
+# Secretos requeridos (GitHub → Settings → Secrets and variables → Actions):
+#   SUPABASE_URL               https://bfxolduuqkrhyfjrvwsx.supabase.co
+#   SUPABASE_ANON_KEY          llave pública (sb_publishable_...)
+#   SUPABASE_DB_URL            cadena "Session pooler" de Supabase (Connect → Session pooler), con la contraseña
+#   SUPABASE_SERVICE_ROLE_KEY  llave de servicio (Settings → API Keys) — solo para leer Storage
+#   BACKUP_PASSPHRASE          frase larga para cifrar los respaldos (guárdala fuera de GitHub)
+
+name: Supabase · keep-alive y respaldo
+
+on:
+  schedule:
+    - cron: "0 13 * * 1,4"   # lunes y jueves, 08:00 hora Colombia
+    - cron: "0 8 * * 0"      # domingos, 03:00 hora Colombia
+  workflow_dispatch:
+    inputs:
+      tarea:
+        description: "Tarea a ejecutar manualmente"
+        type: choice
+        options: [keep-alive, respaldo]
+        default: keep-alive
+
+permissions:
+  contents: read
+
+jobs:
+  keep-alive:
+    if: github.event.schedule == '0 13 * * 1,4' || (github.event_name == 'workflow_dispatch' && inputs.tarea == 'keep-alive')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Consulta inocua a la base de datos (solo lectura)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          # Lee 1 id de pulseras. Con la migración de privacidad aplicada devuelve [] (RLS),
+          # pero la consulta igual llega a Postgres y cuenta como actividad. No registra escaneos.
+          codigo=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 \
+            "$SUPABASE_URL/rest/v1/pulseras?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Respuesta HTTP: $codigo"
+          test "$codigo" = "200"
+
+  respaldo:
+    if: github.event.schedule == '0 8 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.tarea == 'respaldo')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Respaldo de la base de datos (método oficial de Supabase)
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          mkdir -p respaldo/base
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f respaldo/base/roles.sql --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f respaldo/base/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f respaldo/base/data.sql --use-copy --data-only \
+            -x "storage.buckets_vectors" -x "storage.vector_indexes"
+
+      - name: Respaldo de archivos de Storage (fotos y Bóveda Médica)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python3 scripts/respaldo_storage.py respaldo/storage
+
+      - name: Comprimir y cifrar (datos médicos sensibles · Ley 1581)
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          fecha=$(date -u +%Y-%m-%d)
+          tar -czf "salva-respaldo-$fecha.tar.gz" respaldo
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 -o "salva-respaldo-$fecha.tar.gz.gpg" "salva-respaldo-$fecha.tar.gz"
+          rm -rf respaldo "salva-respaldo-$fecha.tar.gz"
+          ls -lh salva-respaldo-*.gpg
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salva-respaldo-${{ github.run_id }}
+          path: salva-respaldo-*.gpg
+          retention-days: 30
+          if-no-files-found: error

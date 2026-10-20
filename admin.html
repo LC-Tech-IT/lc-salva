@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mi Panel | Salva</title>
+<link rel="icon" type="image/jpeg" href="salva-emblem.jpg">
+<meta name="description" content="Panel administrativo de Salva: gestiona tus pulseras y las historias clínicas de sus portadores.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#064E3B">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ================= TOASTS ================= -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<!-- ================= PANTALLA: CARGANDO SESIÓN ================= -->
+<div id="vistaCargandoSesion" class="boot-loading">
+  <div class="boot-spinner" aria-hidden="true"></div>
+  <p>Cargando panel seguro de Salva…</p>
+</div>
+
+<!-- ================= PANTALLA: AUTENTICACIÓN ================= -->
+<main id="vistaAuth" class="auth-shell" hidden>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="salva-emblem.jpg" alt="Salva" class="admin-logo-img">
+      <span><strong>Salva</strong></span>
+    </div>
+
+    <div class="auth-tabs" id="authTabs" role="tablist">
+      <button type="button" class="auth-tab active" data-mode="login" role="tab" aria-selected="true">Iniciar Sesión</button>
+      <button type="button" class="auth-tab" data-mode="registro" role="tab" aria-selected="false">Crear Cuenta</button>
+    </div>
+
+    <!-- ---- Login ---- -->
+    <form id="formLogin" class="auth-form" novalidate>
+      <label class="field">
+        <span class="field-label">Correo electrónico</span>
+        <input type="email" id="loginEmail" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+        <span class="field-error" data-for="loginEmail"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Contraseña</span>
+        <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+        <span class="field-error" data-for="loginPassword"></span>
+      </label>
+      <button type="button" id="linkOlvideContrasena" class="link-btn">¿Olvidaste tu contraseña?</button>
+      <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+      <div class="auth-divider"><span>o</span></div>
+      <button type="button" id="btnGoogleLogin" class="btn btn-google btn-block">
+        <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true">
+          <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34.5 5.5 29.5 3.5 24 3.5 12.7 3.5 3.5 12.7 3.5 24S12.7 44.5 24 44.5 44.5 35.3 44.5 24c0-1.2-.1-2.4-.9-3.5z"/>
+          <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.6 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34.5 5.5 29.5 3.5 24 3.5c-7.7 0-14.3 4.4-17.7 11.2z"/>
+          <path fill="#4CAF50" d="M24 44.5c5.4 0 10.3-1.8 14-5l-6.5-5.3c-2 1.4-4.6 2.3-7.5 2.3-5.3 0-9.7-3.1-11.3-7.6l-6.6 5C9.6 40 16.2 44.5 24 44.5z"/>
+          <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.5 5.3C41.4 36 44.5 30.5 44.5 24c0-1.2-.1-2.4-.9-3.5z"/>
+        </svg>
+        Continuar con Google
+      </button>
+    </form>
+
+    <!-- ---- Registro ---- -->
+    <form id="formRegistro" class="auth-form" novalidate hidden>
+      <label class="field">
+        <span class="field-label">Correo electrónico</span>
+        <input type="email" id="registroEmail" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+        <span class="field-error" data-for="registroEmail"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Contraseña</span>
+        <input type="password" id="registroPassword" required autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+        <span class="field-error" data-for="registroPassword"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Confirmar contraseña</span>
+        <input type="password" id="registroPasswordConfirm" required autocomplete="new-password" placeholder="••••••••">
+        <span class="field-error" data-for="registroPasswordConfirm"></span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Crear Cuenta</button>
+    </form>
+
+    <!-- ---- Olvidé mi contraseña ---- -->
+    <form id="formOlvide" class="auth-form" novalidate hidden>
+      <p class="field-label">Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.</p>
+      <label class="field">
+        <span class="field-label">Correo electrónico</span>
+        <input type="email" id="olvideEmail" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
+        <span class="field-error" data-for="olvideEmail"></span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Enviar Enlace de Recuperación</button>
+      <button type="button" id="btnVolverLogin" class="link-btn">Volver a iniciar sesión</button>
+    </form>
+
+    <!-- ---- Nueva contraseña (tras enlace de recuperación) ---- -->
+    <form id="formNuevaContrasena" class="auth-form" novalidate hidden>
+      <p class="field-label">Ingresa tu nueva contraseña para continuar.</p>
+      <label class="field">
+        <span class="field-label">Nueva contraseña</span>
+        <input type="password" id="nuevaContrasena1" required autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+        <span class="field-error" data-for="nuevaContrasena1"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Confirmar nueva contraseña</span>
+        <input type="password" id="nuevaContrasena2" required autocomplete="new-password" placeholder="••••••••">
+        <span class="field-error" data-for="nuevaContrasena2"></span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block">Guardar Nueva Contraseña</button>
+    </form>
+  </div>
+</main>
+
+<!-- ================= APP: ENCABEZADO ================= -->
+<header id="appHeader" class="app-header" hidden>
+  <div class="container header-inner">
+    <a href="index.html" class="brand">
+      <img src="salva-emblem.jpg" alt="Salva" class="admin-logo-img">
+      <span class="brand-text"><strong>Salva</strong> · Mi Panel</span>
+    </a>
+    <div class="header-user">
+      <span id="saludoUsuario" class="saludo-usuario"></span>
+      <button type="button" id="btnCerrarSesion" class="btn btn-outline btn-sm">Cerrar sesión</button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= APP: DASHBOARD ================= -->
+<main id="vistaApp" class="container app-main" hidden>
+
+  <div class="app-tabs" id="appTabs" role="tablist">
+    <button type="button" class="app-tab active" data-tab="pulseras" role="tab" aria-selected="true">Mis Pulseras</button>
+    <button type="button" class="app-tab" data-tab="alertas" role="tab" aria-selected="false">Historial de Escaneos <span class="tab-contador" id="contadorAlertas" hidden>0</span></button>
+    <button type="button" class="app-tab" data-tab="cloud" id="tabCloud" role="tab" aria-selected="false">☁️ Salva Cloud</button>
+  </div>
+
+  <!-- Barra de vigilancia en tiempo real -->
+  <div class="vigilancia-bar" id="vigilanciaBar">
+    <div class="vigilancia-estado">
+      <span class="vigilancia-dot" id="vigilanciaDot" data-estado="inactivo" aria-hidden="true"></span>
+      <div>
+        <strong id="vigilanciaTitulo">Vigilancia de escaneos inactiva</strong>
+        <span id="vigilanciaDetalle">Vincula tu Salva Band o Salva Watch para recibir aquí cada escaneo con su ubicación.</span>
+      </div>
+    </div>
+    <button type="button" id="btnActivarAvisos" class="btn btn-outline btn-sm">🔔 Activar sonido y notificaciones</button>
+  </div>
+
+  <!-- ---- Panel: Mis Pulseras ---- -->
+  <section id="panelPulseras" class="app-panel">
+    <div class="dashboard-heading">
+      <div>
+        <p class="eyebrow">Gestión de Seguridad</p>
+        <h1>Tus Pulseras Familiares</h1>
+      </div>
+      <button type="button" id="btnVincularPulsera" class="btn btn-primary">+ Vincular Nueva Pulsera</button>
+    </div>
+
+    <div id="dashboardSkeleton" class="cards-grid-admin" aria-hidden="true">
+      <div class="skeleton-card-admin"></div>
+      <div class="skeleton-card-admin"></div>
+    </div>
+
+    <div id="estadoVacio" class="empty-state" hidden>
+      <p>Aún no tienes pulseras vinculadas a tu cuenta.</p>
+      <p class="empty-state-sub">Usa el botón "+ Vincular Nueva Pulsera" para registrar y proteger a tu familiar.</p>
+    </div>
+
+    <div id="gridPulseras" class="cards-grid-admin" hidden></div>
+  </section>
+
+  <!-- ---- Panel: Alertas y Geolocalización ---- -->
+  <section id="panelAlertas" class="app-panel" hidden>
+    <div class="dashboard-heading">
+      <div>
+        <p class="eyebrow">Seguridad Activa</p>
+        <h1 id="tituloHistorial">Historial de escaneos y ubicación del rescate</h1>
+      </div>
+    </div>
+
+    <div id="alertasSkeleton" class="cards-grid-admin" aria-hidden="true">
+      <div class="skeleton-card-admin"></div>
+      <div class="skeleton-card-admin"></div>
+    </div>
+
+    <div id="alertasVacio" class="empty-state" hidden>
+      <p id="alertasVacioTitulo">Aún no hay escaneos registrados.</p>
+      <p class="empty-state-sub" id="alertasVacioSub">Cuando alguien escanee tu Salva, verás aquí la fecha, la hora y la ubicación del rescate.</p>
+    </div>
+
+    <div id="alertasLista" hidden></div>
+  </section>
+
+  <!-- ---- Panel: Salva Cloud Familiar (membresía) ---- -->
+  <section id="panelCloud" class="app-panel" hidden>
+    <div class="dashboard-heading">
+      <div>
+        <p class="eyebrow">Membresía Salva Cloud Familiar</p>
+        <h1>Protección avanzada para toda la familia</h1>
+      </div>
+      <span class="cloud-estado" id="cloudEstado" data-nivel="sin">Sin membresía</span>
+    </div>
+
+    <!-- Paywall: clientes sin membresía -->
+    <div class="cloud-paywall" id="cloudPaywall">
+      <div class="cloud-paywall-icono" aria-hidden="true">🔒</div>
+      <h2>Estas funciones son exclusivas de Salva Cloud Familiar</h2>
+      <p>Tu pulsera sigue funcionando de por vida sin cuotas. Activa la membresía para desbloquear:</p>
+      <ul class="cloud-paywall-lista">
+        <li><strong>Red Multi-Tutor:</strong> avisa con un toque hasta a 5 familiares cuando alguien escanea tu Salva.</li>
+        <li><strong>Historial completo de escaneos:</strong> bitácora de todos los rescates con fecha, hora y mapa.</li>
+        <li><strong>Bóveda Médica Cloud:</strong> exámenes, recetas y calendario de medicamentos en PDF o imagen.</li>
+        <li><strong>Garantía Total:</strong> 50% de descuento en reposición de tu Salva por daño o extravío.</li>
+      </ul>
+      <div class="cloud-paywall-acciones">
+        <a class="btn btn-primary" id="paywallAnual" target="_blank" rel="noopener" href="#">Activar plan anual · $79.000 COP</a>
+        <a class="btn btn-outline" id="paywallMensual" target="_blank" rel="noopener" href="#">Plan mensual · $9.900 COP</a>
+      </div>
+    </div>
+
+    <!-- Contenido con membresía activa -->
+    <div id="cloudContenido" hidden>
+      <div class="cloud-subtabs" role="tablist" aria-label="Funciones de Salva Cloud">
+        <button type="button" class="cloud-subtab active" data-seccion="tutores" role="tab" aria-selected="true">👨‍👩‍👧 Red Multi-Tutor <span id="contadorTutores">0/5</span></button>
+        <button type="button" class="cloud-subtab" data-seccion="boveda" role="tab" aria-selected="false">🗂️ Bóveda Médica</button>
+      </div>
+
+      <div class="cloud-seccion" id="cloudTutores">
+        <div class="cloud-seccion-head">
+          <p>Hasta 5 familiares a los que avisas con un toque por WhatsApp cuando alguien escanea tu Salva.</p>
+          <button type="button" class="btn btn-primary btn-sm" id="btnNuevoTutor">+ Añadir tutor</button>
+        </div>
+        <div class="cloud-lista" id="listaTutores"></div>
+      </div>
+
+      <div class="cloud-seccion" id="cloudBoveda" hidden>
+        <div class="cloud-seccion-head">
+          <p>Exámenes clínicos, recetas y calendario de medicamentos. Almacenamiento privado y cifrado.</p>
+          <button type="button" class="btn btn-primary btn-sm" id="btnNuevoDocumento">+ Subir documento</button>
+        </div>
+        <div class="cloud-lista" id="listaDocumentos"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<!-- ================= MODAL: VINCULAR PULSERA ================= -->
+<div class="modal-overlay" id="modalVincular" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalVincular">
+    <button type="button" class="modal-close" data-close-modal="modalVincular" aria-label="Cerrar">✕</button>
+    <h2 id="tituloModalVincular">Vincular Nueva Pulsera</h2>
+    <form id="formVincular" novalidate>
+      <label class="field">
+        <span class="field-label">Código QR / Identificador NFC</span>
+        <input type="text" id="codigoQrInput" required placeholder="Ej: SALVA-B-0001" autocomplete="off">
+        <span class="field-error" data-for="codigoQrInput"></span>
+      </label>
+
+      <button type="button" id="btnEscanear" class="btn btn-outline btn-block">📷 Escanear con la cámara</button>
+
+      <div id="escanerContenedor" class="scanner-box" hidden>
+        <video id="videoEscaner" playsinline muted></video>
+        <div class="scanner-frame" aria-hidden="true"></div>
+        <button type="button" id="btnDetenerEscaneo" class="btn btn-outline btn-sm btn-block">Cancelar escaneo</button>
+      </div>
+
+      <button type="submit" id="btnSubmitVincular" class="btn btn-primary btn-block">Vincular a mi Cuenta</button>
+    </form>
+  </div>
+</div>
+<canvas id="canvasEscaner" hidden></canvas>
+
+<!-- ================= MODAL: TUTOR DE LA RED ================= -->
+<div class="modal-overlay" id="modalTutor" hidden>
+  <div class="modal modal-md" role="dialog" aria-modal="true" aria-labelledby="tituloModalTutor">
+    <button type="button" class="modal-close" data-close-modal="modalTutor" aria-label="Cerrar">✕</button>
+    <h2 id="tituloModalTutor">Añadir tutor a la red</h2>
+    <form id="formTutor" class="auth-form" novalidate>
+      <input type="hidden" id="tutorId">
+      <label class="field">
+        <span class="field-label">Nombre completo</span>
+        <input type="text" id="tutorNombre" required placeholder="Ej: Marcela Gómez">
+        <span class="field-error" data-for="tutorNombre"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Parentesco</span>
+        <select id="tutorParentesco">
+          <option>Madre</option><option>Padre</option><option>Hijo/a</option><option>Hermano/a</option>
+          <option>Abuelo/a</option><option>Pareja</option><option>Cuidador/a</option><option>Otro</option>
+        </select>
+      </label>
+      <label class="field">
+        <span class="field-label">Celular / WhatsApp</span>
+        <div class="phone-field">
+          <select id="tutorPais" class="phone-country" aria-label="Código de país"></select>
+          <input type="tel" id="tutorTelefono" required inputmode="numeric" placeholder="Número de celular">
+        </div>
+        <span class="field-error" data-for="tutorTelefono"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Correo (opcional)</span>
+        <input type="email" id="tutorEmail" placeholder="correo@ejemplo.com">
+        <span class="field-error" data-for="tutorEmail"></span>
+      </label>
+      <label class="check-linea"><input type="checkbox" id="tutorNotificar" checked> Incluir en los avisos rápidos por WhatsApp</label>
+      <button type="submit" class="btn btn-primary btn-block" id="btnGuardarTutor">Guardar tutor</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: DOCUMENTO DE LA BÓVEDA ================= -->
+<div class="modal-overlay" id="modalDocumento" hidden>
+  <div class="modal modal-md" role="dialog" aria-modal="true" aria-labelledby="tituloModalDocumento">
+    <button type="button" class="modal-close" data-close-modal="modalDocumento" aria-label="Cerrar">✕</button>
+    <h2 id="tituloModalDocumento">Subir documento médico</h2>
+    <form id="formDocumento" class="auth-form" novalidate>
+      <input type="hidden" id="documentoId">
+      <label class="field" id="campoArchivo">
+        <span class="field-label">Archivo (PDF o imagen, máx. 10 MB)</span>
+        <input type="file" id="documentoArchivo" accept="application/pdf,image/jpeg,image/png,image/webp,image/heic">
+        <span class="field-error" data-for="documentoArchivo"></span>
+      </label>
+      <label class="field" id="campoPortadorDoc">
+        <span class="field-label">Portador</span>
+        <select id="documentoPortador"></select>
+        <span class="field-error" data-for="documentoPortador"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Nombre del documento</span>
+        <input type="text" id="documentoNombre" maxlength="120" placeholder="Ej: Hemograma junio 2026">
+        <span class="field-error" data-for="documentoNombre"></span>
+      </label>
+      <label class="field">
+        <span class="field-label">Categoría</span>
+        <select id="documentoCategoria">
+          <option value="examen">Examen clínico</option>
+          <option value="receta">Receta médica</option>
+          <option value="medicamentos">Calendario de medicamentos</option>
+          <option value="otro">Otro</option>
+        </select>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block" id="btnGuardarDocumento">Subir a la bóveda</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: ALERTA DE ESCANEO EN TIEMPO REAL ================= -->
+<div class="modal-overlay modal-alerta-overlay" id="modalAlertaEscaneo" hidden>
+  <div class="modal modal-md modal-alerta" role="alertdialog" aria-modal="true" aria-labelledby="alertaEscaneoTitulo">
+    <button type="button" class="modal-close" data-close-modal="modalAlertaEscaneo" aria-label="Cerrar">✕</button>
+    <span class="alerta-pill alerta-pill--escaneo">📍 Escaneo en vía pública</span>
+    <h2 id="alertaEscaneoTitulo">La pulsera fue escaneada</h2>
+    <p class="alerta-sub" id="alertaEscaneoDetalle"></p>
+    <div class="alerta-mapa" id="alertaEscaneoMapa"></div>
+    <p class="alerta-coords" id="alertaEscaneoCoords"></p>
+    <div class="alerta-acciones">
+      <a href="#" id="alertaEscaneoMaps" target="_blank" rel="noopener" class="btn btn-primary btn-block">🗺️ Abrir ubicación exacta en Google Maps</a>
+      <div class="alarma-red" id="alertaRedTutores" hidden></div>
+      <button type="button" class="btn btn-outline btn-block" data-close-modal="modalAlertaEscaneo">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: EDITAR PORTADOR & HISTORIA CLÍNICA ================= -->
+<div class="modal-overlay" id="modalPortador" hidden>
+  <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="tituloModalPortador">
+    <button type="button" class="modal-close" data-close-modal="modalPortador" aria-label="Cerrar">✕</button>
+    <h2 id="tituloModalPortador">Historia Clínica & Ficha del Portador</h2>
+
+    <form id="formPortador" novalidate>
+      <input type="hidden" id="portadorId">
+      <input type="hidden" id="portadorPulseraId">
+
+      <div class="form-section">
+        <div class="photo-upload">
+          <div class="photo-preview" id="fotoPreviewWrap">
+            <img id="fotoPreviewImg" alt="" hidden>
+            <div id="fotoPreviewFallback" class="avatar-fallback-sm" aria-hidden="true">
+              <svg viewBox="0 0 48 48" width="34" height="34"><circle cx="24" cy="17" r="9" fill="none" stroke="#6B8F7B" stroke-width="3"/><path d="M6 42c0-10 8-18 18-18s18 8 18 18" fill="none" stroke="#6B8F7B" stroke-width="3" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <label class="btn btn-outline btn-sm photo-upload-btn">
+            Subir Foto del Portador
+            <input type="file" id="fotoInput" accept="image/*" hidden>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Hardware Vinculado</h3>
+
+        <div class="hardware-selector">
+          <span class="field-label">Producto Salva</span>
+          <div class="modelo-segmented" id="modeloIndicador">
+            <span class="modelo-opcion" data-modelo="band">Salva Band · QR + NFC</span>
+            <span class="modelo-opcion" data-modelo="watch">Salva Watch · QR</span>
+          </div>
+        </div>
+
+        <div class="hardware-selector" style="margin-top: 14px;">
+          <span class="field-label">Talla de la correa</span>
+          <div class="talla-segmented" id="tallaSelector">
+            <button type="button" class="talla-opcion" data-talla="16">16 cm<small>Infantil</small></button>
+            <button type="button" class="talla-opcion" data-talla="20">20 cm<small>Juvenil/Estándar</small></button>
+            <button type="button" class="talla-opcion" data-talla="23.8">23.8 cm<small>Adulto</small></button>
+          </div>
+          <input type="hidden" id="tallaManilla" value="20">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Datos Personales</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Nombre completo</span>
+            <input type="text" id="nombreCompleto" required placeholder="Nombre y apellidos del portador">
+            <span class="field-error" data-for="nombreCompleto"></span>
+          </label>
+          <label class="field">
+            <span class="field-label">Fecha de nacimiento</span>
+            <input type="date" id="fechaNacimiento" required>
+            <span class="field-error" data-for="fechaNacimiento"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Ficha Médica & Historia Clínica</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Grupo sanguíneo</span>
+            <select id="tipoSangre" required>
+              <option value="">Selecciona…</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+            </select>
+            <span class="field-error" data-for="tipoSangre"></span>
+          </label>
+          <label class="field">
+            <span class="field-label">EPS / Póliza de Salud</span>
+            <input type="text" id="epsSeguro" placeholder="Ej: Sura EPS, Sanitas...">
+          </label>
+        </div>
+        <label class="field">
+          <span class="field-label">Alergias críticas</span>
+          <textarea id="alergias" rows="2" placeholder="Ej: Penicilina, mariscos, AINEs..."></textarea>
+        </label>
+        <label class="field">
+          <span class="field-label">Enfermedades / Diagnósticos preexistentes</span>
+          <textarea id="enfermedades" rows="2" placeholder="Ej: Asma, diabetes tipo 2, hipertensión..."></textarea>
+        </label>
+        <label class="field">
+          <span class="field-label">Medicamentos actuales y dosis</span>
+          <textarea id="medicamentos" rows="2" placeholder="Ej: Losartán 50mg, Inhalador Salbutamol..."></textarea>
+        </label>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Contactos SOS de Emergencia</h3>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Nombre acudiente principal</span>
+            <input type="text" id="contactoPrincipalNombre" required placeholder="Ej: Andrea Vargas (Madre)">
+            <span class="field-error" data-for="contactoPrincipalNombre"></span>
+          </label>
+          <label class="field">
+            <span class="field-label">Teléfono acudiente principal</span>
+            <div class="phone-field">
+              <select id="contactoPrincipalPais" class="phone-country" aria-label="Código de país"></select>
+              <input type="tel" id="contactoPrincipalTelefono" required placeholder="Número de celular">
+            </div>
+            <span class="field-error" data-for="contactoPrincipalTelefono"></span>
+          </label>
+        </div>
+        <div class="form-grid">
+          <label class="field">
+            <span class="field-label">Nombre contacto secundario (opcional)</span>
+            <input type="text" id="contactoSecundarioNombre" placeholder="Ej: Carlos Ramírez (Padre)">
+          </label>
+          <label class="field">
+            <span class="field-label">Teléfono contacto secundario</span>
+            <div class="phone-field">
+              <select id="contactoSecundarioPais" class="phone-country" aria-label="Código de país"></select>
+              <input type="tel" id="contactoSecundarioTelefono" placeholder="Número de celular">
+            </div>
+            <span class="field-error" data-for="contactoSecundarioTelefono"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="form-section-title">Instrucciones Especiales de Rescate</h3>
+        <label class="field">
+          <textarea id="notasAdicionales" rows="2" placeholder="Instrucciones clave para paramédicos o rescatistas..."></textarea>
+        </label>
+      </div>
+
+      <button type="submit" id="btnGuardarPortador" class="btn btn-primary btn-block">Guardar Ficha & Historia Clínica</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: VISTA PREVIA FICHA MÉDICA EN ADMIN ================= -->
+<div class="modal-overlay" id="modalFichaAdminPreview" hidden>
+  <div class="modal modal-md" role="dialog" aria-modal="true" aria-labelledby="previewNombrePortador">
+    <button type="button" class="modal-close" data-close-modal="modalFichaAdminPreview" aria-label="Cerrar">✕</button>
+    
+    <div style="text-align: center; margin-bottom: 16px;">
+      <span class="badge badge-producto-band" id="previewBadgePlan" style="font-size:0.8rem;">Salva Band</span>
+      <div class="photo-preview" style="margin: 12px auto; width: 72px; height: 72px;">
+        <img id="previewFoto" alt="" hidden>
+        <div id="previewFotoFallback" class="avatar-fallback-sm" style="font-size: 2rem;">👤</div>
+      </div>
+      <h2 id="previewNombrePortador" style="margin-bottom: 2px; font-size: 1.4rem;">Nombre Portador</h2>
+      <p id="previewCodigoQr" style="font-family: monospace; color: var(--text-muted); font-size: 0.85rem;"></p>
+    </div>
+
+    <div class="form-grid" style="margin-bottom: 14px;">
+      <div style="background: var(--bg-surface-alt); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block;">Grupo Sanguíneo</span>
+        <strong id="previewSangre" style="font-size: 1.1rem; color: var(--red-alert);">O+</strong>
+      </div>
+      <div style="background: var(--bg-surface-alt); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+        <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block;">EPS / Póliza</span>
+        <strong id="previewEps" style="font-size: 1rem; color: var(--text-dark);">Sura EPS</strong>
+      </div>
+    </div>
+
+    <div style="background: #FFFBEB; border: 1px solid #FDE68A; padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 0.88rem;">
+      <strong style="color: #92400E; display: block; margin-bottom: 2px;">⚠️ Alergias Críticas:</strong>
+      <p id="previewAlergias" style="color: #B45309; margin: 0;">Sin alergias registradas.</p>
+    </div>
+
+    <div style="background: var(--bg-surface-alt); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 0.88rem;">
+      <strong style="color: var(--text-dark); display: block; margin-bottom: 2px;">🩺 Patologías & Medicamentos:</strong>
+      <p id="previewCondiciones" style="color: var(--text-body); margin: 0 0 4px;">Sin condiciones registradas.</p>
+      <p id="previewMedicamentos" style="color: var(--text-muted); margin: 0; font-size: 0.82rem;">Medicamentos: Ninguno.</p>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1.5px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-md); margin-bottom: 18px;">
+      <strong style="display: block; font-size: 0.82rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 8px;">Contactos SOS:</strong>
+      <div id="previewContactosList" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem;"></div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <a href="#" id="previewEnlacePublico" target="_blank" rel="noopener" class="btn btn-outline btn-block">
+        🔗 Abrir Ficha Pública QR
+      </a>
+      <button type="button" id="previewBtnEditar" class="btn btn-primary btn-block">
+        ✏️ Editar Historia
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

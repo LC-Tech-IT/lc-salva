@@ -1,0 +1,8 @@
+# Scripts y configuración que se ejecutan en Linux (Cloudflare Pages / GitHub Actions)
+*.sh text eol=lf
+*.yml text eol=lf
+*.py text eol=lf
+_headers text eol=lf
+_redirects text eol=lf
+*.jpg binary
+*.jpeg binary

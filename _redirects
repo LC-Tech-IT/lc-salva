@@ -1,0 +1,5 @@
+# LC Salva — Redirecciones en Cloudflare Pages
+# Las páginas (index, ficha, admin) se sirven solas: Pages resuelve /ficha y /ficha.html.
+# Solo se redirige el acceso antiguo app.html al panel.
+/app       /admin   301
+/app.html  /admin   301

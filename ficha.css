@@ -1,0 +1,599 @@
+/* =========================================================
+   Salva — Desarrollado y respaldado por LC Tech
+   Ficha Médica de Emergencia (ficha.css)
+   Estilo: Autoridad médica, seguridad, salud y alta legibilidad
+   Paleta: Verde bosque profundo, esmeralda sobrio, slate limpio
+   ========================================================= */
+:root {
+  /* Fondos Limpios y Clínicos */
+  --bg-body: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-alt: #F1F5F9;
+  --bg-header: #0F172A;
+
+  /* Marca: Verde Salud y Seguridad */
+  --brand-900: #064E3B;
+  --brand-800: #065F46;
+  --brand-700: #047857;
+  --brand-50: #ECFDF5;
+  --sage-500: #6B8F7B;
+  --sage-200: #D7E6DD;
+  --sage-100: #ECF3EF;
+
+  /* Acentos Médicos y Alertas */
+  --red-alert: #DC2626;
+  --red-alert-bg: #FEE2E2;
+  --green-ok: #059669;
+  --whatsapp: #25D366;
+  --blue-medical: #0284C7;
+  --blue-medical-bg: #E0F2FE;
+
+  /* Tipografía */
+  --text-dark: #0F172A;
+  --text-body: #334155;
+  --text-muted: #64748B;
+  --text-faint: #94A3B8;
+
+  /* Bordes y Sombras Neutras */
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --border-brand: rgba(4, 120, 87, 0.3);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --radius-pill: 999px;
+
+  --font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --transition: 0.2s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  background-color: var(--bg-body);
+  color: var(--text-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+h1, h2, h3, p { margin: 0; }
+[hidden] { display: none !important; }
+button { font-family: inherit; cursor: pointer; }
+
+.container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 18px;
+}
+
+.view { min-height: 100vh; padding-bottom: 48px; }
+.view[hidden] { display: none; }
+
+.center-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 18px;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.ficha-header {
+  background: var(--bg-header);
+  border-bottom: 2px solid var(--brand-700);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.ficha-header-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--brand-700);
+  object-fit: cover;
+  background: #ffffff;
+}
+
+.brand-name {
+  color: #FFFFFF;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.brand-name strong {
+  color: #34D399; /* Esmeralda claro para contraste sobre fondo oscuro */
+}
+
+.plan-badge-header {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.12);
+  color: #E2E8F0;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+/* =========================================================
+   BANNERS DE EMERGENCIA
+   ========================================================= */
+.emergency-banner {
+  background: #DC2626;
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.86rem;
+  letter-spacing: 0.05em;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.sos-banner {
+  background: #ECFDF5;
+  color: var(--brand-900);
+  border-bottom: 1px solid var(--sage-200);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* =========================================================
+   FICHA PRINCIPAL
+   ========================================================= */
+.ficha-container {
+  padding-top: 20px;
+}
+
+.identity-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 18px;
+  transition: border-color var(--transition);
+}
+
+.identity-card:hover {
+  border-color: var(--border-brand);
+}
+
+.identity-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid var(--brand-700);
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(4, 120, 87, 0.15);
+}
+
+.avatar-fallback {
+  background: var(--brand-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-fallback svg path,
+.avatar-fallback svg circle {
+  stroke: var(--brand-700);
+}
+
+.eyebrow-chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--brand-800);
+  background: var(--brand-50);
+  border: 1px solid rgba(4, 120, 87, 0.2);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 4px;
+}
+
+.identity-info h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.25;
+}
+
+.identity-doc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.blood-eps-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.blood-plate, .eps-plate {
+  background: var(--bg-surface-alt);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.plate-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.plate-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.plate-value.blood-red {
+  color: var(--red-alert);
+}
+
+/* =========================================================
+   ACCIONES DE AUXILIO INMEDIATO
+   ========================================================= */
+.actions-block {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 18px;
+}
+
+.actions-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform var(--transition), opacity var(--transition);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.action-call {
+  background: var(--green-ok);
+  color: #FFFFFF;
+}
+
+.action-whatsapp {
+  background: var(--whatsapp);
+  color: #FFFFFF;
+}
+
+.action-secondary {
+  background: var(--brand-900);
+  color: #FFFFFF;
+}
+
+/* =========================================================
+   PESTAÑAS DE NAVEGACIÓN CLÍNICA
+   ========================================================= */
+.ficha-tabs-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ficha-tab {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+
+.ficha-tab.active {
+  background: var(--brand-900);
+  border-color: var(--brand-900);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(6, 78, 59, 0.25);
+}
+
+/* =========================================================
+   BLOQUES DE INFORMACIÓN MÉDICA
+   ========================================================= */
+.info-block {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.block-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.block-header h2 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.info-block p {
+  font-size: 0.92rem;
+  color: var(--text-body);
+}
+
+.alert-block {
+  background: #FEF2F2;
+  border-color: #FECACA;
+}
+
+.alert-block .block-header h2 {
+  color: #991B1B;
+}
+
+.alert-block .highlight-text {
+  font-weight: 700;
+  color: #B91C1C;
+}
+
+/* =========================================================
+   HISTORIA CLÍNICA CARD
+   ========================================================= */
+.historia-clinica-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px 20px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 16px;
+}
+
+.historia-header {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.historia-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--brand-800);
+  background: var(--brand-50);
+  border: 1px solid rgba(4, 120, 87, 0.2);
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 4px;
+}
+
+.historia-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.historia-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.historia-item .h-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 3px;
+}
+
+.historia-item p {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+}
+
+.instrucciones-box {
+  background: var(--brand-50);
+  border-left: 3.5px solid var(--brand-700);
+  padding: 12px 14px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-style: italic;
+  color: var(--brand-900);
+}
+
+/* =========================================================
+   PIE DE PÁGINA
+   ========================================================= */
+.ficha-footer-card {
+  text-align: center;
+  padding: 20px 16px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.ficha-footer-card strong {
+  color: var(--brand-800);
+}
+
+.ficha-copy {
+  margin-top: 6px;
+  font-size: 0.74rem;
+}
+
+/* =========================================================
+   ESTADOS DE ERROR Y SKELETON
+   ========================================================= */
+.status-card {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 36px 24px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  max-width: 420px;
+}
+
+.status-icon {
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.status-card h1 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.status-card p {
+  font-size: 0.92rem;
+  color: var(--text-body);
+  margin-bottom: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.btn-primary {
+  background: var(--brand-700);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(4, 120, 87, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--brand-800);
+  transform: translateY(-1px);
+}
+
+.btn-block { width: 100%; }
+
+/* Skeleton */
+.skeleton-banner {
+  height: 36px;
+  background: #E2E8F0;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-card {
+  height: 140px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  margin-bottom: 14px;
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-block {
+  height: 70px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.3; }
+}

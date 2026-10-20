@@ -1,0 +1,39 @@
+# =========================================================
+# LC Salva — archivos que NUNCA deben subir al repositorio
+# =========================================================
+
+# Credenciales y configuración local de herramientas (contiene claves de API)
+.agents/
+.claude/
+.gemini/
+.vscode/
+.idea/
+.env
+.env.*
+*.pem
+*.key
+supabase/.temp/
+supabase/.branches/
+.wrangler/
+
+# Respaldos locales (datos médicos sensibles: Ley 1581)
+respaldo/
+respaldos/
+backups/
+*.dump
+*.sql.gz
+*.tar.gz
+*.gpg
+
+# Salida de construcción para Cloudflare Pages
+dist/
+
+# Sistema operativo y temporales
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*
+*.tmp
+*.log
+node_modules/
+__pycache__/

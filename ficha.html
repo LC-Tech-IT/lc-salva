@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ficha Médica de Emergencia | Salva</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Ficha de emergencia médica e historia clínica interactiva Salva.">
+<meta name="theme-color" content="#0F172A">
+<link rel="icon" type="image/jpeg" href="salva-emblem.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ficha.css">
+</head>
+<body>
+
+<!-- Header Oscuro y Elegante -->
+<header class="ficha-header">
+  <div class="ficha-header-inner">
+    <a href="index.html" class="brand-link">
+      <img src="salva-emblem.jpg" alt="Salva Logo" class="brand-logo-img">
+      <span class="brand-name"><strong>Salva</strong></span>
+    </a>
+    <span id="planBadgeHeader" class="plan-badge-header" hidden></span>
+  </div>
+</header>
+
+<main id="app" aria-live="polite">
+
+  <!-- ================= SKELETON (estado de carga) ================= -->
+  <section id="view-skeleton" class="view">
+    <div class="container">
+      <div class="skeleton-banner"></div>
+      <div class="skeleton-card">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-lines">
+          <div class="skeleton-line w-70"></div>
+          <div class="skeleton-line w-40"></div>
+        </div>
+      </div>
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block short"></div>
+    </div>
+  </section>
+
+  <!-- ================= ERROR GENÉRICO / NO ENCONTRADA ================= -->
+  <section id="view-error" class="view" hidden>
+    <div class="container center-screen">
+      <div class="status-card">
+        <div class="status-icon" id="errorIcon" aria-hidden="true">⚠️</div>
+        <h1 id="errorTitle">Ficha Médica no encontrada</h1>
+        <p id="errorMessage">No pudimos cargar la información de esta pulsera. Verifica el código o escanea nuevamente.</p>
+        <button type="button" id="retryBtn" class="btn btn-primary">Reintentar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PULSERA SIN VINCULAR ================= -->
+  <section id="view-unlinked" class="view" hidden>
+    <div class="container center-screen">
+      <div class="status-card">
+        <div class="status-icon" aria-hidden="true">
+          🛡️
+        </div>
+        <h1>Esta pulsera Salva aún no está vinculada</h1>
+        <p>Registra esta pulsera para completar la ficha médica y la historia clínica del portador ante emergencias.</p>
+        <a href="admin.html" class="btn btn-primary btn-block">Vincular a mi Cuenta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FICHA DE EMERGENCIA & HISTORIA CLÍNICA ================= -->
+  <section id="view-ficha" class="view" hidden>
+
+    <div class="emergency-banner">
+      <span class="pulse-dot" aria-hidden="true"></span>
+      <span>FICHA MÉDICA DE AUXILIO INMEDIATO</span>
+    </div>
+
+    <div class="container ficha-container">
+
+      <!-- Identidad del Portador -->
+      <div class="identity-card">
+        <div class="identity-top">
+          <img id="fotoPortador" class="avatar" alt="" src="" hidden>
+          <div id="avatarFallback" class="avatar avatar-fallback" aria-hidden="true">
+            <svg viewBox="0 0 48 48" width="46" height="46"><circle cx="24" cy="17" r="9" fill="none" stroke="#D4AF37" stroke-width="3"/><path d="M6 42c0-10 8-18 18-18s18 8 18 18" fill="none" stroke="#D4AF37" stroke-width="3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="identity-info">
+            <span class="eyebrow-chip">Portador Protegido</span>
+            <h1 id="nombrePortador">—</h1>
+            <p id="identificacionPortador" class="identity-doc"></p>
+          </div>
+        </div>
+
+        <div class="blood-eps-grid">
+          <div class="blood-plate">
+            <span class="plate-label">Grupo Sanguíneo</span>
+            <strong id="grupoSanguineo" class="plate-value blood-red">—</strong>
+          </div>
+          <div class="eps-plate">
+            <span class="plate-label">EPS / Póliza de Salud</span>
+            <strong id="epsSeguro" class="plate-value">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Rápidas de Auxilio SOS -->
+      <div class="actions-block">
+        <p class="actions-title">🚨 Contactos de Auxilio Inmediato</p>
+        <div class="actions-grid">
+          <a id="btnLlamarAcudiente" class="action-btn action-call" href="#" hidden>
+            <span class="action-icon" aria-hidden="true">📞</span>
+            <span id="labelLlamarAcudiente">Llamar a Acudiente Principal</span>
+          </a>
+          <a id="btnWhatsapp" class="action-btn action-whatsapp" href="#" target="_blank" rel="noopener" hidden>
+            <span class="action-icon" aria-hidden="true">💬</span>
+            <span>Enviar WhatsApp con Ubicación GPS</span>
+          </a>
+          <a id="btnContactoSecundario" class="action-btn action-secondary" href="#" hidden>
+            <span class="action-icon" aria-hidden="true">📱</span>
+            <span id="labelContactoSecundario">Contacto de Respaldo</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Pestañas de Navegación Clínica -->
+      <div class="ficha-tabs-nav" role="tablist">
+        <button type="button" class="ficha-tab active" data-tab="resumen" role="tab" aria-selected="true">
+          ⚡ Resumen de Auxilio
+        </button>
+        <button type="button" class="ficha-tab" data-tab="historia" role="tab" aria-selected="false">
+          📋 Historia Clínica Completa
+        </button>
+      </div>
+
+      <!-- TAB 1: Resumen de Auxilio Rápido -->
+      <div id="tabResumen" class="ficha-tab-panel">
+        <!-- Alergias críticas -->
+        <div class="info-block alert-block">
+          <div class="block-header">
+            <span class="block-icon" aria-hidden="true">⚠️</span>
+            <h2>Alergias Críticas</h2>
+          </div>
+          <p id="alergias" class="highlight-text">Sin alergias registradas.</p>
+        </div>
+
+        <!-- Medicamentos Actuales -->
+        <div class="info-block meds-block">
+          <div class="block-header">
+            <span class="block-icon" aria-hidden="true">💊</span>
+            <h2>Medicamentos & Tratamiento Actual</h2>
+          </div>
+          <p id="medicamentos">Sin medicamentos registrados.</p>
+        </div>
+
+        <!-- Condiciones Preexistentes -->
+        <div class="info-block">
+          <div class="block-header">
+            <span class="block-icon" aria-hidden="true">🩺</span>
+            <h2>Patologías & Condiciones Médicas</h2>
+          </div>
+          <p id="enfermedadesCondiciones">Sin condiciones preexistentes registradas.</p>
+        </div>
+      </div>
+
+      <!-- TAB 2: Historia Clínica Detallada -->
+      <div id="tabHistoria" class="ficha-tab-panel" hidden>
+        <div class="historia-clinica-card">
+          <div class="historia-header">
+            <span class="historia-badge">Expediente Médico de Respaldo</span>
+            <h3>Antecedentes Médicos & Quirúrgicos</h3>
+          </div>
+
+          <div class="historia-grid">
+            <div class="historia-item">
+              <span class="h-label">Enfermedades Crónicas</span>
+              <p id="historiaCronicas">Ninguna enfermedad crónica reportada.</p>
+            </div>
+
+            <div class="historia-item">
+              <span class="h-label">Cirugías & Prótesis / Dispositivos</span>
+              <p id="historiaCirugias">Sin cirugías o prótesis registradas.</p>
+            </div>
+
+            <div class="historia-item">
+              <span class="h-label">Médico Tratante / Especialista</span>
+              <p id="historiaMedico">Atención general en red EPS.</p>
+            </div>
+
+            <div class="historia-item">
+              <span class="h-label">Instrucciones Especiales para Rescatistas</span>
+              <p id="historiaInstrucciones" class="instrucciones-box">
+                En caso de emergencia, mantener la calma del portador, verificar vía aérea y llamar inmediatamente a los contactos registrados arriba.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie de página informativo -->
+      <div class="ficha-footer-card">
+        <p>🔒 Esta información médica es de acceso público exclusivo para situaciones de emergencia, auxilio y rescate.</p>
+        <p class="ficha-copy">Generado con tecnología de seguridad y auxilio <strong>Salva</strong> · LC Tech</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="ficha.js"></script>
+</body>
+</html>
