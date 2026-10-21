@@ -243,13 +243,28 @@
     }
   }
 
+  // Ficha del portador: no perder cambios por un cierre accidental (✕, fondo o Escape)
+  var hayCambiosSinGuardar = false;
+
+  function intentarCerrarModal(id) {
+    if (id === 'modalPortador' && hayCambiosSinGuardar &&
+        !window.confirm('¿Deseas salir sin guardar los cambios? Los datos modificados se perderán.')) return;
+    if (id === 'modalPortador') hayCambiosSinGuardar = false;
+    cerrarModal(id);
+  }
+
   document.querySelectorAll('[data-close-modal]').forEach(function (btn) {
-    btn.addEventListener('click', function () { cerrarModal(btn.getAttribute('data-close-modal')); });
+    btn.addEventListener('click', function () { intentarCerrarModal(btn.getAttribute('data-close-modal')); });
   });
   document.querySelectorAll('.modal-overlay').forEach(function (overlay) {
     overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) cerrarModal(overlay.id);
+      if (e.target === overlay) intentarCerrarModal(overlay.id);
     });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    var abiertos = Array.prototype.filter.call(document.querySelectorAll('.modal-overlay'), function (m) { return !m.hidden; });
+    if (abiertos.length) intentarCerrarModal(abiertos[abiertos.length - 1].id);
   });
 
   /* =========================================================
@@ -875,6 +890,7 @@
 
   function abrirModalPortador(portador) {
     el('formPortador').reset();
+    hayCambiosSinGuardar = false;
     ['nombreCompleto', 'fechaNacimiento', 'tipoSangre', 'contactoPrincipalNombre', 'contactoPrincipalTelefono']
       .forEach(function (id) { mostrarErrorCampo(id, ''); });
 
@@ -973,6 +989,10 @@
   });
 
   /* ---------- Guardar Historia Clínica & Ficha Médica ---------- */
+  ['input', 'change'].forEach(function (tipo) {
+    el('formPortador').addEventListener(tipo, function () { hayCambiosSinGuardar = true; });
+  });
+
   el('formPortador').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -1024,6 +1044,7 @@
           return;
         }
         mostrarToast('¡Historia clínica y ficha médica actualizadas con éxito!', 'exito');
+        hayCambiosSinGuardar = false;
         cerrarModal('modalPortador');
         cargarDashboard();
       });
@@ -1097,6 +1118,7 @@
     el('alertasSkeleton').hidden = false;
     el('alertasVacio').hidden = true;
     el('alertasLista').hidden = true;
+    el('btnBorrarHistorial').hidden = true;
 
     var pulserasConGps = {};
     estado.portadoresConPulsera.forEach(function (portador) {
@@ -1110,6 +1132,7 @@
     });
 
     var idsPulseras = Object.keys(pulserasConGps);
+    estado.idsPulserasHistorial = idsPulseras;
     if (!idsPulseras.length) {
       el('alertasSkeleton').hidden = true;
       el('alertasVacioTitulo').textContent = 'Aún no tienes pulseras vinculadas.';
@@ -1150,8 +1173,50 @@
         renderizarAlertas(escaneos, pulserasConGps);
         if (!bitacoraCompleta) agregarAvisoBitacoraCloud();
         el('alertasLista').hidden = false;
+        el('btnBorrarHistorial').hidden = false;
       });
   }
+
+  /* ---------- Borrar todo el historial de escaneos de mis pulseras ---------- */
+  el('btnBorrarHistorial').addEventListener('click', function () {
+    var ids = estado.idsPulserasHistorial || [];
+    if (!ids.length) return;
+    if (!window.confirm('¿Estás seguro de que deseas eliminar todo el historial de escaneos? Esta acción no se puede deshacer.')) return;
+
+    var boton = el('btnBorrarHistorial');
+    boton.disabled = true;
+    var cerrarCarga = mostrarToast('Eliminando historial…', 'carga');
+
+    // .select() devuelve las filas borradas: 0 filas = la política de borrado aún no existe en Supabase
+    supabase
+      .from('escaneos_ubicacion')
+      .delete()
+      .in('pulsera_id', ids)
+      .select('id')
+      .then(function (res) {
+        cerrarCarga();
+        boton.disabled = false;
+        if (res.error) {
+          mostrarToast('No se pudo eliminar el historial: ' + res.error.message, 'error');
+          return;
+        }
+        if (!res.data || !res.data.length) {
+          mostrarToast('No se eliminó ningún escaneo. Verifica que la migración de borrado esté aplicada en Supabase.', 'error');
+          return;
+        }
+
+        el('alertasLista').innerHTML = '';
+        el('alertasLista').hidden = true;
+        boton.hidden = true;
+        vigilancia.pendientes = 0;
+        el('contadorAlertas').textContent = '0';
+        el('contadorAlertas').hidden = true;
+        el('alertasVacioTitulo').textContent = 'Aún no hay escaneos registrados.';
+        el('alertasVacioSub').textContent = 'Cuando alguien escanee tu Salva, verás aquí la fecha, la hora y la ubicación del rescate.';
+        el('alertasVacio').hidden = false;
+        mostrarToast('Historial de escaneos eliminado con éxito', 'exito');
+      });
+  });
 
   function agregarAvisoBitacoraCloud() {
     var aviso = document.createElement('div');

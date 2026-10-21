@@ -1583,3 +1583,37 @@ body { background: var(--superficie) !important; background-attachment: fixed !i
   justify-content: center;
   flex-shrink: 0;
 }
+
+/* =========================================================
+   VISTA PREVIA DE FICHA: ACCIONES Y AJUSTE MÓVIL
+   ========================================================= */
+#modalFichaAdminPreview .modal {
+  max-width: min(540px, calc(100vw - 32px));
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.modal-preview-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-preview-acciones .btn { min-width: 0; white-space: normal; text-align: center; }
+
+@media (max-width: 640px) {
+  #modalFichaAdminPreview { padding: 16px; }
+  .modal-preview-acciones { flex-direction: column; width: 100%; gap: 8px; }
+  .modal-preview-acciones .btn { width: 100%; }
+  .modal-preview-acciones .btn-primary { order: -1; } /* Editar primero en móvil */
+}
+
+/* =========================================================
+   BORRAR HISTORIAL DE ESCANEOS
+   ========================================================= */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-subtle);
+}
+
+.btn-ghost:hover { color: var(--red-alert); border-color: rgba(185, 28, 28, 0.3); background: rgba(185, 28, 28, 0.04); }
