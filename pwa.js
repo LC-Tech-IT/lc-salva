@@ -17,6 +17,11 @@
   var recargando = false;
 
   function avisarNuevaVersion(trabajadorEnEspera) {
+    // Solo dentro de la app (panel o instalada): en la landing comercial la
+    // actualización es silenciosa y se aplica sola al cerrar la pestaña
+    var enPanel = /\/admin(\.html)?\/?$/i.test(window.location.pathname);
+    var enModoApp = instalada || window.matchMedia('(display-mode: standalone)').matches;
+    if (!enPanel && !enModoApp) return;
     if (document.getElementById('pwaActualizacion')) return;
     var aviso = document.createElement('div');
     aviso.id = 'pwaActualizacion';
