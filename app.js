@@ -1193,7 +1193,8 @@
       var isOpen = chatWidget.classList.toggle('open');
       chatToggle.setAttribute('aria-expanded', String(isOpen));
       if (isOpen && chatMessages && chatMessages.children.length === 0) {
-        agregarMensajeChat('¡Hola! 👋 Soy tu Asistente Virtual de Salva. Te ayudo a elegir el modelo ideal, el color de tu pulsera, resolver dudas sobre tallas o coordinar tu pedido y enlace de pago.', 'bot');
+        agregarMensajeChat('¡Hola! 👋 Soy tu Asistente Virtual de Salva. Pregúntame por modelos, precios, colores o tallas.' +
+          '<a class="chat-burbuja-wa" href="https://wa.me/573505208592?text=Hola%20Salva,%20deseo%20atenci%C3%B3n%20personalizada" target="_blank" rel="noopener">💬 Hablar con un Asesor Humano por WhatsApp</a>', 'bot');
       }
     });
   }
@@ -1223,7 +1224,7 @@
       resp: 'Tu pulsera Salva es de pago único: funciona de por vida sin cuotas obligatorias. De forma opcional puedes activar Salva Cloud Familiar ($9.900 COP/mes o $79.000 COP/año): red de hasta 5 tutores a los que avisas con un toque, historial completo de escaneos, bóveda médica para exámenes y recetas, y 50% de descuento en reposición. Al comprar puedes añadir 1 año por solo $49.000 COP.'
     },
     {
-      claves: ['modelo', 'modelos', 'diferencia', 'diferencias', 'cual', 'recomiendas', 'tipos', 'versiones', 'opciones'],
+      claves: ['modelo', 'modelos', 'diferencia', 'diferencias', 'recomiendas', 'recomienda', 'tipos', 'versiones', 'opciones'],
       resp: 'Todo nuestro hardware es 100% pasivo (sin baterías ni cargas):\n• Salva Band ($59.000 COP): pulsera de silicona médica con QR + chip NFC.\n• Salva Watch ($45.000 COP): pasador de acero 316L con QR para la correa de tu smartwatch (20 o 22 mm).\n• Pack Dúo Familiar ($89.000 COP): 1 Watch + 1 Band, ahorras $15.000.\nAl escanearse, quien te encuentre avisa a tu familia en 1 toque por WhatsApp con la ubicación del rescate.'
     },
     {
@@ -1273,24 +1274,34 @@
     var normal = normalizarTexto(pregunta);
     var respuesta = 'Con gusto te asesoramos personalmente en minutos. Puedes escribirnos directamente a nuestro WhatsApp oficial: <a href="https://wa.me/573505208592?text=' + encodeURIComponent('Hola Salva, tengo una consulta: ' + pregunta) + '" target="_blank" style="color:#065F46;font-weight:700;text-decoration:underline;">+57 350 520 8592</a>.';
 
-    for (var i = 0; i < RESPUESTAS_CHAT.length; i++) {
-      var regla = RESPUESTAS_CHAT[i];
-      var encontrado = false;
-      for (var j = 0; j < regla.claves.length; j++) {
-        var claveNormal = normalizarTexto(regla.claves[j]);
-        if (normal.indexOf(claveNormal) !== -1) {
-          respuesta = regla.resp;
-          encontrado = true;
-          break;
-        }
-      }
-      if (encontrado) break;
-    }
+    var elegida = elegirRespuesta(normal);
+    if (elegida) respuesta = elegida.resp;
 
+    // Pausa breve para que se sienta conversacional (la respuesta se calcula en < 1 ms)
     setTimeout(function () {
       agregarMensajeChat(respuesta, 'bot');
-    }, 350);
+    }, 250);
   }
+
+  // MOTOR-INICIO: puntúa cada regla por palabras completas (acepta plurales) y elige la de más coincidencias.
+  // Evita falsos positivos por fragmentos ("nosotros" ya no activa "sos"; "cuáles son los precios" responde precios).
+  function elegirRespuesta(normal) {
+    var texto = ' ' + normal.replace(/\s+/g, ' ') + ' ';
+    var mejor = null;
+    var mejorPuntaje = 0;
+    for (var i = 0; i < RESPUESTAS_CHAT.length; i++) {
+      var puntaje = 0;
+      for (var j = 0; j < RESPUESTAS_CHAT[i].claves.length; j++) {
+        var clave = normalizarTexto(RESPUESTAS_CHAT[i].claves[j]);
+        if (!clave) continue;
+        var raiz = clave.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (new RegExp(' ' + raiz + '(s|es)? ').test(texto)) puntaje += clave.indexOf(' ') !== -1 ? 2 : 1;
+      }
+      if (puntaje > mejorPuntaje) { mejor = RESPUESTAS_CHAT[i]; mejorPuntaje = puntaje; }
+    }
+    return mejor;
+  }
+  // MOTOR-FIN
 
   if (chatForm && chatInput) {
     chatForm.addEventListener('submit', function (e) {

@@ -22,5 +22,9 @@ VERSION="${CF_PAGES_COMMIT_SHA:-$(date +%s)}"
 sed -i "s/__SALVA_VERSION__/${VERSION:0:12}/" dist/sw.js
 echo "Service worker versión: ${VERSION:0:12}"
 
+# Cache-busting automático: style.css?v=2.2 → style.css?v=2.2-<commit> en cada despliegue
+sed -i -E 's/\?v=([0-9.]+)"/?v=\1-'"${VERSION:0:8}"'"/g' dist/*.html
+echo "Recursos versionados con el sufijo -${VERSION:0:8}"
+
 echo "Sitio listo en dist/:"
 ls -1 dist

@@ -530,6 +530,13 @@
     return texto ? texto : alternativa;
   }
 
+  // Íconos lineales de la barra de acciones de cada credencial
+  var ICONOS_CREDENCIAL = {
+    ver: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    editar: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+    desvincular: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 0 1 4 8"/><path d="M8 12h3"/><path d="m3 3 18 18"/></svg>'
+  };
+
   // Resumen compacto: lo que incluye el producto + estado de Salva Cloud (sin listas largas)
   function funcionesProductoHtml(producto) {
     var lectura = producto === 'watch' ? 'Ficha por QR' : 'Ficha por QR + NFC';
@@ -582,16 +589,16 @@
           '<span class="badge ' + claseEstado + '">● ' + (pulsera.estado === 'vinculada' ? 'Vinculada' : 'Disponible') + '</span>' +
         '</header>' +
         '<dl class="credencial-vitales">' +
-          '<div class="vital vital--sangre"><dt>Grupo sanguíneo</dt><dd>' + (sangre ? '🩸 ' + escaparHtml(sangre) : '<span class="vital-pendiente">Sin registrar</span>') + '</dd></div>' +
+          '<div class="vital vital--sangre"><dt>Grupo sanguíneo</dt><dd>' + (sangre ? '<span class="sangre-chip">🩸 ' + escaparHtml(sangre) + '</span>' : '<span class="vital-pendiente">Sin registrar</span>') + '</dd></div>' +
           '<div class="vital"><dt>EPS / Póliza</dt><dd>' + (portador.eps_seguro ? escaparHtml(portador.eps_seguro) : '<span class="vital-pendiente">Sin registrar</span>') + '</dd></div>' +
           '<div class="vital vital--ancho"><dt>Contacto SOS principal</dt><dd>' + contactoSos + '</dd></div>' +
         '</dl>' +
         (alergias ? '<p class="credencial-alerta"><strong>⚠ Alergias:</strong> ' + escaparHtml(alergias) + '</p>' : '') +
         funcionesProductoHtml(producto) +
         '<footer class="credencial-acciones">' +
-          '<button type="button" class="credencial-accion btn-ver-ficha">Ver ficha</button>' +
-          '<button type="button" class="credencial-accion credencial-accion--principal btn-editar">Editar historia</button>' +
-          '<button type="button" class="credencial-accion credencial-accion--peligro btn-desvincular" title="Desvincular esta pulsera">Desvincular</button>' +
+          '<button type="button" class="credencial-accion btn-ver-ficha">' + ICONOS_CREDENCIAL.ver + '<span>Ver ficha</span></button>' +
+          '<button type="button" class="credencial-accion credencial-accion--principal btn-editar">' + ICONOS_CREDENCIAL.editar + '<span>Editar historia</span></button>' +
+          '<button type="button" class="credencial-accion credencial-accion--peligro btn-desvincular" title="Desvincular esta pulsera">' + ICONOS_CREDENCIAL.desvincular + '<span>Desvincular</span></button>' +
         '</footer>';
 
       // Eventos de interacción solicitados:

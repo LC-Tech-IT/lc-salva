@@ -22,11 +22,12 @@
     aviso.id = 'pwaActualizacion';
     aviso.className = 'pwa-actualizacion';
     aviso.setAttribute('role', 'status');
-    aviso.innerHTML = '<span>Nueva versión de Salva disponible</span>' +
+    aviso.innerHTML = '<span class="pwa-icono" aria-hidden="true">⚡</span>' +
+      '<span class="pwa-txt">Actualización lista</span>' +
       '<button type="button" class="pwa-actualizacion-btn">Actualizar</button>' +
       '<button type="button" class="pwa-actualizacion-cerrar" aria-label="Más tarde">✕</button>';
     aviso.querySelector('.pwa-actualizacion-btn').addEventListener('click', function () {
-      aviso.querySelector('.pwa-actualizacion-btn').textContent = 'Actualizando…';
+      aviso.querySelector('.pwa-actualizacion-btn').textContent = 'Aplicando…';
       trabajadorEnEspera.postMessage({ tipo: 'ACTIVAR_NUEVA_VERSION' });
     });
     aviso.querySelector('.pwa-actualizacion-cerrar').addEventListener('click', function () { aviso.remove(); });

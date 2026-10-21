@@ -3439,3 +3439,139 @@ section {
   .demo-cta { flex-direction: column; align-items: stretch; }
   .demo-cta .btn { justify-content: center; }
 }
+
+/* =========================================================
+   AVISO DE ACTUALIZACIÓN: CÁPSULA ESTILO DYNAMIC ISLAND
+   (arriba y centrada: nunca choca con el botón flotante del chat)
+   ========================================================= */
+.pwa-actualizacion {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 450;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  max-width: calc(100vw - 24px);
+  height: 44px;
+  padding: 4px 6px 4px 14px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.90);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  color: #FFFFFF;
+  font-size: 0.84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.28);
+  animation: capsula-entrada 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes capsula-entrada {
+  from { opacity: 0; transform: translate(-50%, -12px) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.pwa-icono { font-size: 0.9rem; flex-shrink: 0; }
+.pwa-txt { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+.pwa-actualizacion-btn {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 9999px;
+  background: #047857;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.pwa-actualizacion-btn:hover { background: #065F46; }
+
+.pwa-actualizacion-cerrar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.pwa-actualizacion-cerrar:hover { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
+
+@media (max-width: 600px) {
+  .pwa-actualizacion {
+    height: 40px;
+    padding: 4px 6px 4px 12px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pwa-actualizacion { animation: none; }
+}
+
+/* =========================================================
+   CHATBOT: ACCESO DIRECTO A UN ASESOR HUMANO (WHATSAPP)
+   ========================================================= */
+.chat-header { gap: 10px; }
+
+.chat-wa-directo {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: var(--brand-900);
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--shadow-btn);
+  transition: background var(--transition);
+}
+
+.chat-wa-directo:hover { background: var(--sage-100); }
+
+.chat-burbuja-wa {
+  display: block;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--brand-900);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-align: center;
+  text-decoration: none;
+}
+
+.chat-burbuja-wa:hover { background: var(--brand-700); }
+
+.chat-sugerencia-wa {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-chip);
+  background: var(--brand-900);
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.chat-sugerencia-wa:hover { background: var(--brand-700); }

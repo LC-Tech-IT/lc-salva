@@ -1493,3 +1493,149 @@ body { background: var(--superficie) !important; background-attachment: fixed !i
 .credencial-funciones + .credencial-mejorar { margin-top: -6px; }
 
 .barra-estado .vigilancia-dot { margin: 0 6px 0 4px; flex-shrink: 0; }
+
+/* =========================================================
+   AVISO DE ACTUALIZACIÓN: CÁPSULA ESTILO DYNAMIC ISLAND
+   (arriba y centrada: nunca choca con el botón flotante del chat)
+   ========================================================= */
+.pwa-actualizacion {
+  position: fixed;
+  top: calc(10px + env(safe-area-inset-top));
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 450;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  max-width: calc(100vw - 24px);
+  height: 44px;
+  padding: 4px 6px 4px 14px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.90);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  color: #FFFFFF;
+  font-size: 0.84rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.28);
+  animation: capsula-entrada 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes capsula-entrada {
+  from { opacity: 0; transform: translate(-50%, -12px) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.pwa-icono { font-size: 0.9rem; flex-shrink: 0; }
+.pwa-txt { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+.pwa-actualizacion-btn {
+  flex-shrink: 0;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 9999px;
+  background: #047857;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.pwa-actualizacion-btn:hover { background: #065F46; }
+
+.pwa-actualizacion-cerrar {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.pwa-actualizacion-cerrar:hover { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
+
+@media (max-width: 600px) {
+  .pwa-actualizacion {
+    height: 40px;
+    padding: 4px 6px 4px 12px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pwa-actualizacion { animation: none; }
+}
+
+/* =========================================================
+   CREDENCIAL FÍSICA DE ALTA TECNOLOGÍA (contraste con la barra de estado)
+   ========================================================= */
+/* La barra de estado es una superficie del sistema: plana, sin elevación */
+.barra-estado {
+  background: rgba(241, 245, 249, 0.75);
+  box-shadow: none;
+  border-color: var(--border-subtle);
+}
+
+/* La credencial es un objeto: blanco puro, borde nítido y elevación sobria */
+.pulsera-card.credencial {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(15, 23, 42, 0.10);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.pulsera-card.credencial:hover {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 12px 32px rgba(15, 23, 42, 0.10);
+}
+
+.credencial-head { background: #FFFFFF; }
+
+.credencial .pulsera-avatar,
+.credencial .pulsera-avatar-fallback {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--bg-surface-alt);
+}
+
+.vital--sangre dd { font-size: inherit; color: inherit; }
+
+.sangre-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-chip);
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  color: #B91C1C;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.credencial-acciones { background: #FFFFFF; }
+
+.credencial-accion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.credencial-accion svg { flex-shrink: 0; opacity: 0.85; }
+.credencial-accion:hover { background: var(--bg-surface-alt); }
+
+@media (max-width: 400px) {
+  .credencial-accion { flex-direction: column; gap: 2px; font-size: 0.74rem; padding: 10px 4px; }
+}

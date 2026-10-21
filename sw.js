@@ -4,9 +4,10 @@
    Privacidad (Ley 1581): NUNCA guarda en caché datos médicos ni
    respuestas de Supabase/Wompi; las páginas se piden siempre a la red.
    ========================================================= */
-// El script de construcción reemplaza __SALVA_VERSION__ por el commit de cada despliegue:
-// así el navegador detecta la versión nueva y la app ofrece "Actualizar".
-var VERSION = 'salva-__SALVA_VERSION__';
+// Versión de la app + commit de cada despliegue (lo inserta el script de construcción):
+// "v2.2" identifica la versión del producto y el commit garantiza que el navegador
+// detecte CADA despliegue nuevo y ofrezca "Actualizar".
+var VERSION = 'salva-v2.2-__SALVA_VERSION__';
 var OFFLINE = '/offline.html';
 var PRECARGA = [OFFLINE, '/icons/icon-192.png', '/salva-emblem.jpg'];
 var ESTATICOS = /\.(css|js|jpg|jpeg|png|svg|webp|woff2?)$/i;
@@ -20,6 +21,7 @@ self.addEventListener('message', function (evento) {
   if (evento.data && evento.data.tipo === 'ACTIVAR_NUEVA_VERSION') self.skipWaiting();
 });
 
+// Al activarse, se borran de inmediato TODAS las cachés anteriores
 self.addEventListener('activate', function (evento) {
   evento.waitUntil(
     caches.keys().then(function (claves) {
