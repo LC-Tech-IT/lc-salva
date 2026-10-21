@@ -597,3 +597,29 @@ button { font-family: inherit; cursor: pointer; }
   0%, 100% { opacity: 0.6; }
   50% { opacity: 0.3; }
 }
+
+/* =========================================================
+   FICHA ABIERTA DESDE MI PANEL / APP SALVA
+   ========================================================= */
+.volver-panel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.volver-panel:hover { background: rgba(255, 255, 255, 0.2); }
+
+.ficha-en-app .ficha-header-inner { gap: 10px; }
+
+@media (max-width: 480px) {
+  .ficha-en-app .brand-name { display: none; }
+}

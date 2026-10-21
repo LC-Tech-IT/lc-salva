@@ -13,9 +13,55 @@
   var promptDiferido = null;
   var oyentes = [];
 
+  /* ---------- Service Worker + aviso de nueva versión ---------- */
+  var recargando = false;
+
+  function avisarNuevaVersion(trabajadorEnEspera) {
+    if (document.getElementById('pwaActualizacion')) return;
+    var aviso = document.createElement('div');
+    aviso.id = 'pwaActualizacion';
+    aviso.className = 'pwa-actualizacion';
+    aviso.setAttribute('role', 'status');
+    aviso.innerHTML = '<span>Nueva versión de Salva disponible</span>' +
+      '<button type="button" class="pwa-actualizacion-btn">Actualizar</button>' +
+      '<button type="button" class="pwa-actualizacion-cerrar" aria-label="Más tarde">✕</button>';
+    aviso.querySelector('.pwa-actualizacion-btn').addEventListener('click', function () {
+      aviso.querySelector('.pwa-actualizacion-btn').textContent = 'Actualizando…';
+      trabajadorEnEspera.postMessage({ tipo: 'ACTIVAR_NUEVA_VERSION' });
+    });
+    aviso.querySelector('.pwa-actualizacion-cerrar').addEventListener('click', function () { aviso.remove(); });
+    document.body.appendChild(aviso);
+  }
+
   if ('serviceWorker' in navigator) {
+    // Cuando la versión nueva toma el control: limpiar cachés antiguas y recargar una sola vez
+    var teniaControlador = !!navigator.serviceWorker.controller; // false en la primera visita
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (recargando || !teniaControlador) return;
+      recargando = true;
+      window.location.reload();
+    });
+
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('sw.js').catch(function (error) {
+      navigator.serviceWorker.register('sw.js').then(function (registro) {
+        // Ya había una versión esperando (p. ej. se descargó en una visita anterior)
+        if (registro.waiting && navigator.serviceWorker.controller) avisarNuevaVersion(registro.waiting);
+
+        registro.addEventListener('updatefound', function () {
+          var nuevo = registro.installing;
+          if (!nuevo) return;
+          nuevo.addEventListener('statechange', function () {
+            // "installed" con un controlador activo = actualización (no primera instalación)
+            if (nuevo.state === 'installed' && navigator.serviceWorker.controller) avisarNuevaVersion(nuevo);
+          });
+        });
+
+        // Buscar actualizaciones al volver a la app y cada hora
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'visible') registro.update().catch(function () {});
+        });
+        setInterval(function () { registro.update().catch(function () {}); }, 60 * 60 * 1000);
+      }).catch(function (error) {
         console.warn('Service Worker no registrado:', error && error.message);
       });
     });

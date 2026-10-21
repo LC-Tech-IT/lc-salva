@@ -14,6 +14,21 @@
 
   var supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
+  /* Contexto: abierta desde Mi Panel o desde la App Salva instalada (no por un socorrista).
+     En ese caso la navegación se queda dentro de la app: nunca salta a la landing. */
+  var params = new URLSearchParams(window.location.search);
+  var enApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  var desdePanel = params.get('desde') === 'panel' ||
+    (document.referrer.indexOf(window.location.origin) === 0 && /\/admin(\.html)?(\?|#|$)/.test(document.referrer.slice(window.location.origin.length)));
+
+  if (enApp || desdePanel) {
+    var volver = document.getElementById('btnVolverPanel');
+    var logo = document.getElementById('fichaBrandLink');
+    if (volver) volver.hidden = false;
+    if (logo) logo.href = 'admin.html';
+    document.body.classList.add('ficha-en-app');
+  }
+
   function nombreProducto(codigoQr) {
     return /^SALVA-W-/i.test(codigoQr || '') ? 'Salva Watch' : 'Salva Band';
   }

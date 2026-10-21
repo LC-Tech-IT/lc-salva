@@ -17,5 +17,10 @@ cp manifest.webmanifest dist/
 cp -r icons dist/
 cp _headers _redirects dist/
 
+# Versión del service worker = commit desplegado (CF_PAGES_COMMIT_SHA en Cloudflare Pages)
+VERSION="${CF_PAGES_COMMIT_SHA:-$(date +%s)}"
+sed -i "s/__SALVA_VERSION__/${VERSION:0:12}/" dist/sw.js
+echo "Service worker versión: ${VERSION:0:12}"
+
 echo "Sitio listo en dist/:"
 ls -1 dist

@@ -71,6 +71,22 @@
 
     <!-- ---- Registro ---- -->
     <form id="formRegistro" class="auth-form" novalidate hidden>
+      <div class="registro-pulsera-aviso">
+        <strong>🔐 Registro exclusivo para portadores Salva</strong>
+        <span>Necesitas el código impreso en tu Salva Band o Salva Watch (ej. SALVA-B-0001).</span>
+      </div>
+      <label class="field">
+        <span class="field-label">Código de tu pulsera o pasador</span>
+        <input type="text" id="registroCodigo" required autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SALVA-B-0001">
+        <span class="field-error" data-for="registroCodigo"></span>
+      </label>
+      <div class="registro-sin-pulsera" id="registroSinPulsera" hidden>
+        <p>Para registrarte necesitas tener una pulsera o pasador Salva oficial. Adquiere el tuyo en la tienda o solicita asesoría.</p>
+        <div class="registro-sin-pulsera-acciones">
+          <a href="index.html#modelos" class="btn btn-primary btn-sm">Ir a la tienda</a>
+          <a href="https://wa.me/573505208592?text=Hola%20Salva%2C%20quiero%20adquirir%20mi%20pulsera%20para%20registrarme" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Solicitar asesoría</a>
+        </div>
+      </div>
       <label class="field">
         <span class="field-label">Correo electrónico</span>
         <input type="email" id="registroEmail" required autocomplete="email" placeholder="tucorreo@ejemplo.com">
@@ -122,7 +138,7 @@
 <!-- ================= APP: ENCABEZADO ================= -->
 <header id="appHeader" class="app-header" hidden>
   <div class="container header-inner">
-    <a href="index.html" class="brand">
+    <a href="admin.html" class="brand" aria-label="Salva · Inicio de Mi Panel">
       <img src="salva-emblem.jpg" alt="Salva" class="admin-logo-img">
       <span class="brand-text"><strong>Salva</strong> · Mi Panel</span>
     </a>

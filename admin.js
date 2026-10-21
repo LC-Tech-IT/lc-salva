@@ -329,9 +329,35 @@
   activarValidacionEnVivo('registroEmail', function () { validarCampoEmail('registroEmail'); });
   activarValidacionEnVivo('registroPassword', function () { validarCampoPassword('registroPassword'); });
 
+  /* Registro exclusivo con hardware: se exige un código de pulsera 'disponible'.
+     El navegador solo orienta; el bloqueo real lo hace el trigger de Supabase
+     (20261021_registro_con_pulsera.sql). Excepción: la cuenta creadora. */
+  var MENSAJE_SIN_PULSERA = 'Para registrarte necesitas tener una pulsera o pasador Salva oficial. Adquiere el tuyo en la tienda o solicita asesoría.';
+
+  function verificarCodigoRegistro(codigo) {
+    return supabase.rpc('verificar_codigo_pulsera', { p_codigo_qr: codigo }).then(function (res) {
+      if (res.error) throw res.error;
+      return res.data === true;
+    });
+  }
+
+  el('registroCodigo').addEventListener('input', function () {
+    el('registroSinPulsera').hidden = true;
+    mostrarErrorCampo('registroCodigo', '');
+  });
+
   el('formRegistro').addEventListener('submit', function (e) {
     e.preventDefault();
     if (!validarCampoEmail('registroEmail') || !validarCampoPassword('registroPassword')) return;
+
+    var correo = el('registroEmail').value.trim();
+    var esCuentaCreadora = correo.toLowerCase() === 'lee.fesna@gmail.com';
+    var codigo = normalizarCodigoPulsera(el('registroCodigo').value);
+    if (!codigo && !esCuentaCreadora) {
+      mostrarErrorCampo('registroCodigo', 'Ingresa el código de tu pulsera o pasador.');
+      el('registroSinPulsera').hidden = false;
+      return;
+    }
 
     var p1 = el('registroPassword').value;
     var p2 = el('registroPasswordConfirm').value;
@@ -342,21 +368,62 @@
 
     var boton = el('formRegistro').querySelector('button[type="submit"]');
     boton.disabled = true;
-    var cerrarCarga = mostrarToast('Creando cuenta…', 'carga');
+    var cerrarCarga = mostrarToast('Verificando tu pulsera…', 'carga');
 
-    supabase.auth.signUp({
-      email: el('registroEmail').value.trim(),
-      password: p1
-    }).then(function (res) {
-      cerrarCarga();
-      boton.disabled = false;
-      if (res.error) {
-        mostrarToast(res.error.message, 'error');
-        return;
-      }
-      mostrarToast('¡Cuenta creada con éxito!', 'exito');
-    });
+    (esCuentaCreadora && !codigo ? Promise.resolve(true) : verificarCodigoRegistro(codigo))
+      .then(function (valido) {
+        if (!valido) {
+          cerrarCarga();
+          boton.disabled = false;
+          mostrarErrorCampo('registroCodigo', 'Ese código no existe o ya está vinculado a otra cuenta.');
+          el('registroSinPulsera').hidden = false;
+          return;
+        }
+        return supabase.auth.signUp({
+          email: correo,
+          password: p1,
+          options: { data: codigo ? { codigo_pulsera: codigo } : {} }
+        }).then(function (res) {
+          cerrarCarga();
+          boton.disabled = false;
+          if (res.error) {
+            var bloqueado = /pulsera|database error/i.test(res.error.message || '');
+            mostrarToast(bloqueado ? MENSAJE_SIN_PULSERA : res.error.message, 'error', 7000);
+            if (bloqueado) el('registroSinPulsera').hidden = false;
+            return;
+          }
+          mostrarToast(res.data && res.data.session
+            ? '¡Cuenta creada! Estamos vinculando tu pulsera…'
+            : '¡Cuenta creada! Revisa tu correo para confirmarla; tu pulsera se vinculará al entrar.', 'exito', 7000);
+        });
+      })
+      .catch(function () {
+        cerrarCarga();
+        boton.disabled = false;
+        mostrarToast('No pudimos verificar el código en este momento. Inténtalo de nuevo en unos minutos.', 'error');
+      });
   });
+
+  // Desde la ficha de una pulsera sin vincular (admin.html?qr=CODIGO): registro con el código listo
+  (function prellenarCodigoDesdeQr() {
+    var params = new URLSearchParams(window.location.search);
+    var qr = params.get('qr');
+    if (!qr) return;
+    el('registroCodigo').value = normalizarCodigoPulsera(qr);
+    el('codigoQrInput').value = normalizarCodigoPulsera(qr);
+    estado.codigoDesdeQr = normalizarCodigoPulsera(qr);
+    mostrarFormularioAuth('formRegistro');
+  })();
+
+  // Registro nuevo con Google bloqueado por el servidor (no puede enviar el código)
+  (function avisoErrorOAuth() {
+    var texto = window.location.search + window.location.hash;
+    if (!/error_description=/.test(texto)) return;
+    mostrarFormularioAuth('formRegistro');
+    el('registroSinPulsera').hidden = false;
+    mostrarToast('Para crear una cuenta nueva usa “Crear Cuenta” con el código de tu pulsera Salva.', 'error', 8000);
+    window.history.replaceState({}, document.title, window.location.pathname);
+  })();
 
   /* ---------- Google Login ---------- */
   el('btnGoogleLogin').addEventListener('click', function () {
@@ -383,11 +450,36 @@
         estado.usuario = sesion.user;
         actualizarSaludo();
         mostrarVistaApp();
-        cargarDashboard();
+        vincularPulseraDelRegistro().then(function () {
+          cargarDashboard();
+          // Llegó desde la ficha de una pulsera sin vincular y ya tenía cuenta: ofrecer vincularla
+          var codigoRegistro = (estado.usuario.user_metadata || {}).codigo_pulsera;
+          if (estado.codigoDesdeQr && !estado.ofrecioVincularQr && estado.codigoDesdeQr !== codigoRegistro) {
+            estado.ofrecioVincularQr = true;
+            el('codigoQrInput').value = estado.codigoDesdeQr;
+            abrirModal('modalVincular');
+          }
+        });
       } else {
         estado.usuario = null;
         mostrarVistaAuth();
       }
+    });
+  }
+
+  // Primer ingreso tras registrarse: vincula automáticamente la pulsera usada en el registro
+  function vincularPulseraDelRegistro() {
+    var meta = estado.usuario.user_metadata || {};
+    var codigo = meta.codigo_pulsera;
+    var clave = 'salva_autovinculo_' + estado.usuario.id;
+    var yaIntentado = false;
+    try { yaIntentado = localStorage.getItem(clave) === '1'; } catch (e) { yaIntentado = false; }
+    if (!codigo || yaIntentado || estado.autoVinculoEnCurso) return Promise.resolve();
+    estado.autoVinculoEnCurso = true;
+    return supabase.rpc('vincular_pulsera', { p_codigo_qr: codigo }).then(function (res) {
+      estado.autoVinculoEnCurso = false;
+      try { localStorage.setItem(clave, '1'); } catch (e) { /* sin almacenamiento */ }
+      if (!res.error && res.data) finalizarVinculacion(res.data.portador, res.data.pulsera);
     });
   }
 
@@ -574,7 +666,11 @@
 
     // Enlace a la Ficha Pública real
     var qrParam = pulsera.codigo_qr || pulsera.id || '';
-    el('previewEnlacePublico').href = 'ficha.html' + (qrParam ? '?qr=' + encodeURIComponent(qrParam) : '');
+    // desde=panel: la ficha muestra "Volver a Mi Panel" y su logo regresa al panel, no a la landing
+    el('previewEnlacePublico').href = 'ficha.html' + (qrParam ? '?qr=' + encodeURIComponent(qrParam) + '&desde=panel' : '?desde=panel');
+    var enApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (enApp) el('previewEnlacePublico').removeAttribute('target'); // dentro de la app, misma ventana
+    else el('previewEnlacePublico').setAttribute('target', '_blank');
 
     // Botón de editar desde la vista previa
     el('previewBtnEditar').onclick = function () {

@@ -39,12 +39,16 @@
         <li><a href="#simulador">Demostración en Vivo</a></li>
         <li><a href="#como-funciona">Cómo Funciona</a></li>
         <li><a href="#modelos">Modelos e Inversión</a></li>
+        <li class="nav-panel-movil"><a href="admin.html">👤 Entrar a Mi Panel</a></li>
         <li><a href="#preguntas">Preguntas Frecuentes</a></li>
       </ul>
     </nav>
 
     <div class="header-actions">
-      <a href="admin.html" class="admin-link">Mi Panel</a>
+      <a href="admin.html" class="admin-link" aria-label="Mi Panel">
+        <svg class="admin-link-icono" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+        <span class="admin-link-texto">Mi Panel</span>
+      </a>
       <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-header-wa">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
         <span class="wa-texto-largo">Asesoría por WhatsApp</span>
@@ -583,9 +587,46 @@
       <div class="app-movil-visual" aria-hidden="true">
         <div class="telefono-maqueta">
           <div class="telefono-pantalla">
-            <img src="icons/icon-192.png" alt="" class="telefono-icono">
-            <strong>Salva</strong>
-            <span>Mi Panel</span>
+            <div class="mini-app-barra">
+              <span class="mini-app-hora">9:41</span>
+              <span class="mini-app-isla"></span>
+              <span class="mini-app-senal">●●●</span>
+            </div>
+            <div class="mini-app-header">
+              <img src="icons/icon-192.png" alt="" class="mini-app-logo">
+              <div>
+                <strong>Hola, Andrea 👋</strong>
+                <span><i class="mini-punto"></i> Familia protegida · 2 Salva</span>
+              </div>
+            </div>
+            <div class="mini-tarjeta">
+              <div class="mini-portador">
+                <img src="salva-child-hero.jpg" alt="" class="mini-avatar">
+                <div class="mini-portador-info">
+                  <strong>Sofía Ramírez</strong>
+                  <span>SALVA-B-0042</span>
+                </div>
+              </div>
+              <div class="mini-badges">
+                <span class="mini-badge mini-badge--ok">VINCULADA</span>
+                <span class="mini-badge mini-badge--sangre">🩸 O+</span>
+              </div>
+              <div class="mini-acciones">
+                <span class="mini-btn mini-btn--claro">Ver Ficha</span>
+                <span class="mini-btn mini-btn--oscuro">Ubicación</span>
+              </div>
+            </div>
+            <div class="mini-tarjeta mini-escaneo">
+              <span class="mini-etiqueta">📍 Último escaneo · hace 5 min</span>
+              <div class="mini-mapa">
+                <span class="mini-calle mini-calle--h"></span>
+                <span class="mini-calle mini-calle--v"></span>
+                <span class="mini-calle mini-calle--d"></span>
+                <span class="mini-parque"></span>
+                <span class="mini-pin"></span>
+              </div>
+              <span class="mini-lugar">C.C. Andino · Bogotá</span>
+            </div>
           </div>
         </div>
       </div>
