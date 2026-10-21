@@ -1166,51 +1166,6 @@ button { font-family: inherit; cursor: pointer; }
 .talla-segmented--1 { grid-template-columns: 1fr; }
 
 /* =========================================================
-   AVISO: NUEVA VERSIÓN DE SALVA DISPONIBLE
-   ========================================================= */
-.pwa-actualizacion {
-  position: fixed;
-  left: 50%;
-  bottom: calc(20px + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  z-index: 450;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: calc(100vw - 32px);
-  padding: 10px 10px 10px 18px;
-  border-radius: 12px;
-  background: #0F172A;
-  color: #FFFFFF;
-  font-size: 0.88rem;
-  font-weight: 600;
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
-}
-
-.pwa-actualizacion-btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  background: #047857;
-  color: #FFFFFF;
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.pwa-actualizacion-cerrar {
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-/* =========================================================
    REGISTRO EXCLUSIVO CON PULSERA SALVA
    ========================================================= */
 .registro-pulsera-aviso {
@@ -1495,90 +1450,6 @@ body { background: var(--superficie) !important; background-attachment: fixed !i
 .barra-estado .vigilancia-dot { margin: 0 6px 0 4px; flex-shrink: 0; }
 
 /* =========================================================
-   AVISO DE ACTUALIZACIÓN: CÁPSULA ESTILO DYNAMIC ISLAND
-   (arriba y centrada: nunca choca con el botón flotante del chat)
-   ========================================================= */
-.pwa-actualizacion {
-  position: fixed;
-  top: calc(10px + env(safe-area-inset-top));
-  bottom: auto;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 450;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 8px;
-  width: auto;
-  max-width: calc(100vw - 24px);
-  height: 44px;
-  padding: 4px 6px 4px 14px;
-  border-radius: 9999px;
-  background: rgba(15, 23, 42, 0.90);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  color: #FFFFFF;
-  font-size: 0.84rem;
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.28);
-  animation: capsula-entrada 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes capsula-entrada {
-  from { opacity: 0; transform: translate(-50%, -12px) scale(0.96); }
-  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
-}
-
-.pwa-icono { font-size: 0.9rem; flex-shrink: 0; }
-.pwa-txt { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-
-.pwa-actualizacion-btn {
-  flex-shrink: 0;
-  padding: 5px 12px;
-  border: none;
-  border-radius: 9999px;
-  background: #047857;
-  color: #FFFFFF;
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 1.4;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: none;
-}
-
-.pwa-actualizacion-btn:hover { background: #065F46; }
-
-.pwa-actualizacion-cerrar {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.72rem;
-  cursor: pointer;
-}
-
-.pwa-actualizacion-cerrar:hover { background: rgba(255, 255, 255, 0.2); color: #FFFFFF; }
-
-@media (max-width: 600px) {
-  .pwa-actualizacion {
-    height: 40px;
-    padding: 4px 6px 4px 12px;
-    font-size: 0.8rem;
-    gap: 6px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pwa-actualizacion { animation: none; }
-}
-
-/* =========================================================
    CREDENCIAL FÍSICA DE ALTA TECNOLOGÍA (contraste con la barra de estado)
    ========================================================= */
 /* La barra de estado es una superficie del sistema: plana, sin elevación */
@@ -1638,4 +1509,77 @@ body { background: var(--superficie) !important; background-attachment: fixed !i
 
 @media (max-width: 400px) {
   .credencial-accion { flex-direction: column; gap: 2px; font-size: 0.74rem; padding: 10px 4px; }
+}
+
+/* =========================================================
+   AVISO DE NUEVA VERSIÓN: CÁPSULA ÚNICA, SIEMPRE ARRIBA Y EN UNA LÍNEA
+   (pwa.js también aplica estos estilos críticos en línea)
+   ========================================================= */
+.pwa-actualizacion {
+  position: fixed;
+  top: calc(14px + env(safe-area-inset-top));
+  bottom: auto;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  height: 38px;
+  padding: 4px 6px 4px 14px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  max-width: 90vw;
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.pwa-icono { font-size: 0.85rem; flex-shrink: 0; }
+
+.pwa-txt {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+}
+
+.pwa-actualizacion-btn {
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  background: #047857;
+  color: #FFFFFF;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: none;
+}
+
+.pwa-actualizacion-btn:hover { background: #065F46; }
+
+.pwa-actualizacion-cerrar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }

@@ -23,9 +23,23 @@
     aviso.className = 'pwa-actualizacion';
     aviso.setAttribute('role', 'status');
     aviso.innerHTML = '<span class="pwa-icono" aria-hidden="true">⚡</span>' +
-      '<span class="pwa-txt">Actualización lista</span>' +
+      '<span class="pwa-txt">Nueva versión</span>' +
       '<button type="button" class="pwa-actualizacion-btn">Actualizar</button>' +
-      '<button type="button" class="pwa-actualizacion-cerrar" aria-label="Más tarde">✕</button>';
+      '<button type="button" class="pwa-actualizacion-cerrar" aria-label="Cerrar">✕</button>';
+    // Estilos críticos en línea: la cápsula queda arriba y en una sola línea aunque
+    // la hoja de estilos que tenga cargada el usuario sea de otra versión
+    aviso.style.cssText = 'position:fixed;top:calc(14px + env(safe-area-inset-top));bottom:auto;left:50%;right:auto;' +
+      'transform:translateX(-50%);z-index:9999;display:flex;flex-wrap:nowrap;align-items:center;gap:10px;' +
+      'width:max-content;max-width:90vw;height:38px;padding:4px 6px 4px 14px;border-radius:9999px;' +
+      'background:rgba(15,23,42,0.92);border:1px solid rgba(255,255,255,0.15);box-shadow:0 8px 24px rgba(0,0,0,0.25);' +
+      'color:#FFFFFF;white-space:nowrap;font-size:0.8rem;line-height:1;box-sizing:border-box;' +
+      'font-family:inherit;font-weight:600;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);';
+    aviso.querySelector('.pwa-actualizacion-btn').style.cssText = 'height:28px;padding:0 12px;border-radius:9999px;' +
+      'background:#047857;color:#FFFFFF;font-size:0.76rem;font-weight:700;border:none;cursor:pointer;' +
+      'white-space:nowrap;flex-shrink:0;font-family:inherit;box-sizing:border-box;';
+    aviso.querySelector('.pwa-actualizacion-cerrar').style.cssText = 'width:24px;height:24px;border-radius:50%;' +
+      'background:rgba(255,255,255,0.12);color:#FFFFFF;border:none;cursor:pointer;font-size:0.75rem;padding:0;' +
+      'display:flex;align-items:center;justify-content:center;flex-shrink:0;';
     aviso.querySelector('.pwa-actualizacion-btn').addEventListener('click', function () {
       aviso.querySelector('.pwa-actualizacion-btn').textContent = 'Aplicando…';
       trabajadorEnEspera.postMessage({ tipo: 'ACTIVAR_NUEVA_VERSION' });
