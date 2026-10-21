@@ -172,6 +172,45 @@
     document.body.style.overflow = '';
   }
 
+  /* ---------- Demo en vivo: credencial que ve el socorrista ---------- */
+  function iniciales(nombre) {
+    return nombre.split(/\s+/).filter(Boolean).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join('');
+  }
+
+  function pintarDemo(persona) {
+    var info = DATOS_FICHAS[persona];
+    if (!info || !document.getElementById('demoNombre')) return;
+    document.getElementById('demoAvatar').textContent = iniciales(info.nombre);
+    document.getElementById('demoNombre').textContent = info.nombre;
+    document.getElementById('demoSub').textContent = info.sub;
+    document.getElementById('demoSangre').textContent = info.sangre;
+    document.getElementById('demoEps').textContent = info.eps;
+    document.getElementById('demoAlergias').textContent = info.alergias;
+    document.getElementById('demoContacto1').textContent = info.contactos[0].texto
+      .replace(/\s*-\s*[\d ]+\)/, ')').replace(/^📞\s*/, '📞 Llamar a ');
+    var tarjeta = document.querySelector('.demo-credencial');
+    tarjeta.classList.remove('is-cambiando');
+    void tarjeta.offsetWidth;
+    tarjeta.classList.add('is-cambiando');
+    document.getElementById('btnProbarFichaDemo').setAttribute('data-persona', persona);
+    document.querySelectorAll('.demo-perfil').forEach(function (b) {
+      var activo = b.getAttribute('data-persona') === persona;
+      b.classList.toggle('active', activo);
+      b.setAttribute('aria-checked', String(activo));
+    });
+  }
+
+  document.querySelectorAll('.demo-perfil').forEach(function (b) {
+    b.addEventListener('click', function () { pintarDemo(b.getAttribute('data-persona')); });
+  });
+
+  var btnProbarFichaDemo = document.getElementById('btnProbarFichaDemo');
+  if (btnProbarFichaDemo) {
+    btnProbarFichaDemo.addEventListener('click', function () {
+      abrirFichaDemo(btnProbarFichaDemo.getAttribute('data-persona') || 'nino');
+    });
+  }
+
   document.querySelectorAll('.btn-ver-ficha').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var persona = btn.getAttribute('data-persona');

@@ -35,16 +35,19 @@
   --text-light: #F8FAFC;
 
   /* Bordes y sombras neutras */
-  --border-subtle: #E2E8F0;
-  --border-strong: #CBD5E1;
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 1px 3px rgba(15, 23, 42, 0.06), 0 6px 16px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 2px 6px rgba(15, 23, 42, 0.05), 0 16px 40px rgba(15, 23, 42, 0.09);
+  --shadow-btn: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --superficie: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
 
-  --radius-lg: 16px;
-  --radius-md: 12px;
+  --radius-lg: 12px;
+  --radius-md: 10px;
   --radius-sm: 8px;
-  --radius-pill: 999px;
+  --radius-pill: 9px;   /* botones, pestañas y campos: estructurados, no píldora */
+  --radius-chip: 999px;  /* solo badges y chips de estado */
 
   /* Contenedor fluido: sin márgenes muertos en escritorio */
   --container-max: 1320px;
@@ -938,7 +941,7 @@ section {
 .step-icon-wrap {
   background: var(--sage-100);
   color: var(--brand-900);
-  border-radius: 14px;
+  border-radius: 10px;
   width: 56px;
   height: 56px;
   display: flex;
@@ -1927,7 +1930,7 @@ section {
 .chat-bubble {
   max-width: 85%;
   padding: 10px 14px;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 0.88rem;
   line-height: 1.45;
   word-break: break-word;
@@ -2537,7 +2540,7 @@ section {
   .modal {
     max-height: 94vh;
     max-height: 94dvh;
-    border-radius: 18px 18px 0 0;
+    border-radius: 12px 12px 0 0;
   }
   .checkout-modal, .ficha-modal, .privacidad-modal {
     padding: 22px 16px calc(22px + env(safe-area-inset-bottom));
@@ -3028,7 +3031,7 @@ section {
   width: 100%;
   max-width: 440px;
   background: #FFFFFF;
-  border-radius: 18px 18px 0 0;
+  border-radius: 12px 12px 0 0;
   padding: 26px 22px calc(24px + env(safe-area-inset-bottom));
   text-align: center;
   color: #334155;
@@ -3036,7 +3039,7 @@ section {
 
 @media (min-width: 600px) {
   .pwa-guia { align-items: center; padding: 20px; }
-  .pwa-guia-tarjeta { border-radius: 18px; }
+  .pwa-guia-tarjeta { border-radius: 12px; }
 }
 
 .pwa-guia-icono { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12); }
@@ -3060,7 +3063,7 @@ section {
   width: 100%;
   padding: 13px;
   border: none;
-  border-radius: 999px;
+  border-radius: 9px;
   background: #064E3B;
   color: #FFFFFF;
   font-weight: 700;
@@ -3095,7 +3098,7 @@ section {
   gap: 12px;
   max-width: calc(100vw - 32px);
   padding: 10px 10px 10px 18px;
-  border-radius: 999px;
+  border-radius: 12px;
   background: #0F172A;
   color: #FFFFFF;
   font-size: 0.88rem;
@@ -3106,7 +3109,7 @@ section {
 .pwa-actualizacion-btn {
   padding: 8px 16px;
   border: none;
-  border-radius: 999px;
+  border-radius: 8px;
   background: #047857;
   color: #FFFFFF;
   font-weight: 700;
@@ -3221,7 +3224,7 @@ section {
 .mini-badge--sangre { background: #FEE2E2; color: #B91C1C; }
 
 .mini-acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.mini-btn { text-align: center; font-size: 0.58rem; font-weight: 700; padding: 6px 4px; border-radius: 999px; }
+.mini-btn { text-align: center; font-size: 0.58rem; font-weight: 700; padding: 6px 4px; border-radius: 6px; }
 .mini-btn--claro { border: 1px solid var(--border-strong); color: var(--text-dark); }
 .mini-btn--oscuro { background: var(--brand-900); color: #FFFFFF; }
 
@@ -3258,3 +3261,181 @@ section {
 .mini-pin::after { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #FFFFFF; }
 
 .telefono-maqueta { aspect-ratio: 9 / 15.5; }
+
+/* =========================================================
+   SISTEMA VISUAL 2026: PRECISIÓN MÉDICA (sin "carditis" ni píldoras)
+   ========================================================= */
+/* Píldoras reservadas para badges y chips de estado */
+.carousel-badge, .story-media-badge, .plan-category-pill, .badge-smartwatch-compatible, .cloud-ahorro, .mini-badge, .mini-app-isla, .chat-suggestions button { border-radius: var(--radius-chip); }
+
+/* Botones estructurados con elevación natural */
+.btn, .btn-primary, .btn-ghost, .btn-outline, .btn-plan-select, .btn-hero-whatsapp, .btn-hero-demo,
+.btn-wa-direct, .btn-header-wa, .btn-ficha-cerrar, .admin-link, .app-badge {
+  box-shadow: var(--shadow-btn);
+}
+
+.btn:hover, .btn-primary:hover, .btn-ghost:hover, .btn-outline:hover, .btn-plan-select:hover,
+.btn-hero-whatsapp:hover, .btn-hero-demo:hover, .btn-wa-direct:hover, .btn-header-wa:hover, .app-badge:hover {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.10);
+}
+
+.btn:active, .btn-primary:active, .btn-ghost:active, .btn-outline:active { box-shadow: none; }
+
+/* Superficies con luz natural */
+.historias, .how-it-works, .app-movil, .salva-cloud, .faq { background: var(--superficie); }
+.story-card, .step-card, .plan-card, .faq-item, .modal, .chat-window, .color-preview { border-color: var(--border-subtle); }
+.step-card, .plan-card, .story-card { box-shadow: var(--shadow-sm); }
+.plan-card:hover, .story-card:hover { box-shadow: var(--shadow-md); }
+
+/* =========================================================
+   DEMO INTERACTIVA EN VIVO (DOS COLUMNAS)
+   ========================================================= */
+.simulador { background: var(--bg-body); }
+.demo-vivo { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); align-items: center; text-align: left; }
+
+.demo-puntos { display: grid; gap: 14px; margin: 24px 0; }
+.demo-puntos li { display: flex; gap: 12px; align-items: flex-start; }
+.demo-puntos strong { display: block; font-size: 0.95rem; color: var(--text-dark); }
+.demo-puntos p { font-size: 0.88rem; color: var(--text-body); line-height: 1.5; margin: 0; }
+
+.demo-selector { margin-bottom: 20px; }
+.demo-selector-titulo { display: block; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+
+.demo-perfiles {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 11px;
+  background: var(--bg-surface-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.demo-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 7px 14px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-body);
+  line-height: 1.2;
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+.demo-perfil small { font-size: 0.7rem; font-weight: 500; color: var(--text-muted); }
+.demo-perfil.active { background: #FFFFFF; color: var(--text-dark); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12); }
+.demo-perfil:focus-visible { outline: 2px solid var(--brand-700); outline-offset: 1px; }
+
+.demo-cta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.demo-cta .btn { padding: 13px 22px; font-size: 0.95rem; }
+.demo-cta .btn-ghost { gap: 8px; }
+
+/* Credencial que ve el socorrista */
+.demo-credencial {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 380px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #FFFFFF;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05), 0 24px 48px rgba(15, 23, 42, 0.12);
+}
+
+.demo-credencial.is-cambiando .demo-credencial-cuerpo { animation: demo-entrada 0.35s var(--ease); }
+
+@keyframes demo-entrada {
+  from { opacity: 0.35; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.demo-credencial-estado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  background: var(--text-dark);
+  color: #E2E8F0;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.demo-escaneo-punto { width: 8px; height: 8px; border-radius: 50%; background: #34D399; box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.25); }
+
+.demo-credencial-alerta {
+  padding: 8px 16px;
+  background: #DC2626;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.demo-credencial-cuerpo { padding: 16px; display: grid; gap: 12px; }
+
+.demo-identidad { display: flex; align-items: center; gap: 12px; }
+.demo-avatar {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--sage-100);
+  border: 1px solid var(--sage-200);
+  color: var(--brand-900);
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.demo-identidad strong { display: block; font-size: 1.05rem; color: var(--text-dark); line-height: 1.25; }
+.demo-identidad span { font-size: 0.8rem; color: var(--text-muted); }
+
+.demo-vitales { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
+.demo-vital { padding: 10px 12px; border-radius: 10px; background: var(--bg-surface-alt); border: 1px solid var(--border-subtle); }
+.demo-vital dt { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+.demo-vital dd { margin: 2px 0 0; font-size: 0.88rem; font-weight: 800; color: var(--text-dark); }
+.demo-vital--sangre dd { color: #B91C1C; }
+
+.demo-alergias {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #FEF2F2;
+  border: 1px solid #FECACA;
+  font-size: 0.82rem;
+  color: #991B1B;
+}
+
+.demo-alergias strong { display: block; font-size: 0.74rem; letter-spacing: 0.03em; text-transform: uppercase; margin-bottom: 2px; }
+
+.demo-contactos { display: grid; gap: 8px; }
+.demo-contacto { padding: 11px; border-radius: 9px; text-align: center; font-size: 0.86rem; font-weight: 700; }
+.demo-contacto--llamar { background: var(--brand-900); color: #FFFFFF; }
+.demo-contacto--wa { border: 1.5px solid var(--brand-900); color: var(--brand-900); }
+
+.demo-credencial figcaption {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-surface-alt);
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .demo-vivo { grid-template-columns: 1fr; text-align: left; }
+}
+
+@media (max-width: 600px) {
+  .demo-perfiles { display: grid; grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); width: 100%; }
+  .demo-perfil { padding: 7px 8px; }
+  .demo-cta { flex-direction: column; align-items: stretch; }
+  .demo-cta .btn { justify-content: center; }
+}

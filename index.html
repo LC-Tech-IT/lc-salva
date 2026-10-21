@@ -296,65 +296,61 @@
 
   <!-- ===================== DEMOSTRACIÓN EN VIVO (PANTALLA REAL DE RESCATE) ===================== -->
   <section class="simulador" id="simulador">
-    <div class="container simulador-inner">
+    <div class="container simulador-inner demo-vivo">
       <div class="simulador-texto">
-        <span class="eyebrow">Respuesta Médica Inmediata</span>
+        <span class="eyebrow">Demostración en vivo</span>
         <h2>Cero aplicaciones por instalar. <span class="highlight-text">Auxilio en 2 segundos.</span></h2>
-        <p class="section-lead">
-          El mayor secreto de <strong>Salva</strong> es su universalidad: quien encuentre a tu familiar no necesita tener una app instalada, ni registrarse, ni saber de tecnología.
-        </p>
-        <p class="simulador-subdesc">
-          Basta con apuntar la cámara o acercar cualquier celular del mundo para que la ficha médica aparezca en 1 segundo en su navegador nativo.
-        </p>
+        <p class="section-lead">Quien encuentre a tu familiar solo apunta la cámara o acerca su celular: la ficha médica se abre al instante en su navegador, sin apps, sin registros y sin claves.</p>
 
-        <!-- 3 Puntos Clave de Auxilio (Sin emojis en cajas) -->
-        <div class="simulador-key-points">
-          <div class="sim-point-item">
-            <div class="point-bullet-num">1</div>
-            <div>
-              <strong>Escaneo instantáneo sin barreras:</strong>
-              <p>Funciona con cualquier iPhone o Android moderno. La cámara nativa abre la ficha de auxilio sin pedir claves ni descargas.</p>
-            </div>
-          </div>
+        <ul class="demo-puntos">
+          <li><span class="point-bullet-num">1</span><div><strong>Escaneo universal</strong><p>Cualquier iPhone o Android lee el QR (y el NFC de la Salva Band).</p></div></li>
+          <li><span class="point-bullet-num">2</span><div><strong>Datos vitales a la vista</strong><p>Grupo sanguíneo, EPS y alergias críticas resaltadas en rojo.</p></div></li>
+          <li><span class="point-bullet-num">3</span><div><strong>Familia en 1 toque</strong><p>Llamada directa o WhatsApp con la ubicación GPS del rescate.</p></div></li>
+        </ul>
 
-          <div class="sim-point-item">
-            <div class="point-bullet-num">2</div>
-            <div>
-              <strong>Información clínica vital a la vista:</strong>
-              <p>Muestra fotografía, grupo sanguíneo, EPS y alertas críticas en rojo (ej. Alergias mortales a medicamentos como Penicilina).</p>
-            </div>
-          </div>
-
-          <div class="sim-point-item">
-            <div class="point-bullet-num">3</div>
-            <div>
-              <strong>Contacto SOS y envío de GPS:</strong>
-              <p>Botones de un solo toque para llamar a los padres o tutores y compartir la ubicación geográfica del rescate por WhatsApp.</p>
-            </div>
+        <div class="demo-selector">
+          <span class="demo-selector-titulo">Prueba con un perfil:</span>
+          <div class="demo-perfiles" role="radiogroup" aria-label="Perfil de demostración">
+            <button type="button" class="demo-perfil active" data-persona="nino" role="radio" aria-checked="true">Sofía <small>7 años</small></button>
+            <button type="button" class="demo-perfil" data-persona="mayor" role="radio" aria-checked="false">Don Alberto <small>74 años</small></button>
+            <button type="button" class="demo-perfil" data-persona="motero" role="radio" aria-checked="false">Carlos <small>Ciclista</small></button>
           </div>
         </div>
 
-        <div class="simulador-cta-row">
-          <button type="button" class="btn btn-primary btn-abrir-asesoria" data-modelo="band">
-            <span>Elegir Color y Comprar</span>
-          </button>
-          <button type="button" class="btn btn-ghost btn-ver-ficha" data-persona="nino">
-            <span>Ver Ficha Interactiva</span>
+        <div class="demo-cta">
+          <button type="button" class="btn btn-primary btn-abrir-asesoria" data-modelo="band">Elegir Color y Comprar</button>
+          <button type="button" class="btn btn-ghost" id="btnProbarFichaDemo" data-persona="nino">
+            Probar Ficha de Emergencia
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
         </div>
       </div>
 
-      <!-- Pantalla Real de Escaneo en Celular (Fotografía de Producto Real) -->
+      <!-- Vista previa: así ve la ficha quien escanea -->
       <div class="simulador-visual">
-        <div class="screen-showcase-card">
-          <div class="screen-photo-frame">
-            <img src="salva-screen-scan.jpg" alt="Ficha médica real de Salva en la pantalla de un iPhone tras escanear el QR" class="screen-photo-img">
-            <div class="screen-badge-overlay">
-              <span class="badge-dot">●</span>
-              <span>Pantalla real desplegada al escanear la pulsera</span>
+        <figure class="demo-credencial" aria-live="polite">
+          <div class="demo-credencial-estado"><span class="demo-escaneo-punto"></span>Escaneado por NFC · hace 2 s</div>
+          <div class="demo-credencial-alerta">● Ficha médica de auxilio inmediato</div>
+          <div class="demo-credencial-cuerpo">
+            <div class="demo-identidad">
+              <span class="demo-avatar" id="demoAvatar">SR</span>
+              <div>
+                <strong id="demoNombre">Sofía Ramírez Vargas</strong>
+                <span id="demoSub">7 años · Portadora de Salva Band</span>
+              </div>
+            </div>
+            <dl class="demo-vitales">
+              <div class="demo-vital demo-vital--sangre"><dt>Grupo sanguíneo</dt><dd id="demoSangre">O Positivo (O+)</dd></div>
+              <div class="demo-vital"><dt>EPS / Seguro</dt><dd id="demoEps">Sura EPS</dd></div>
+            </dl>
+            <p class="demo-alergias"><strong>⚠ Alergias críticas</strong><span id="demoAlergias">Penicilina y Frutos Secos (Riesgo Anafilaxia).</span></p>
+            <div class="demo-contactos">
+              <span class="demo-contacto demo-contacto--llamar" id="demoContacto1">📞 Llamar a Mamá (Andrea V.)</span>
+              <span class="demo-contacto demo-contacto--wa">💬 WhatsApp con ubicación GPS</span>
             </div>
           </div>
-        </div>
+          <figcaption>Vista previa de la ficha que ve el socorrista al escanear</figcaption>
+        </figure>
       </div>
     </div>
   </section>

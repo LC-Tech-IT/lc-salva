@@ -530,21 +530,21 @@
     return texto ? texto : alternativa;
   }
 
+  // Resumen compacto: lo que incluye el producto + estado de Salva Cloud (sin listas largas)
   function funcionesProductoHtml(producto) {
-    var cloud = usuarioTieneSalvaCloud();
-    var filas = [
-      { activa: true, texto: PRODUCTOS[producto].lectura },
-      { activa: true, texto: 'Aviso del último escaneo con ubicación' },
-      { activa: cloud, texto: 'Historial completo de escaneos', cloud: true },
-      { activa: cloud, texto: 'Red Multi-Tutor (hasta 5)', cloud: true },
-      { activa: cloud, texto: 'Bóveda Médica Cloud', cloud: true }
-    ];
-    return '<ul class="plan-funciones">' + filas.map(function (f) {
-      return '<li class="' + (f.activa ? 'is-activa' : 'is-bloqueada') + '">' +
-        '<span aria-hidden="true">' + (f.activa ? '✓' : '🔒') + '</span>' + f.texto +
-        (f.activa ? '' : ' <a href="#" class="plan-mejorar" data-ir-cloud>Salva Cloud</a>') +
-        '</li>';
-    }).join('') + '</ul>';
+    var lectura = producto === 'watch' ? 'Ficha por QR' : 'Ficha por QR + NFC';
+    if (usuarioTieneSalvaCloud()) {
+      return '<ul class="credencial-funciones" aria-label="Protección incluida">' +
+        '<li class="is-activa"><span aria-hidden="true">✓</span>' + lectura + '</li>' +
+        '<li class="is-activa"><span aria-hidden="true">✓</span>Aviso de escaneo</li>' +
+        '<li class="is-cloud" title="Historial completo, Red Multi-Tutor y Bóveda Médica"><span aria-hidden="true">☁</span>Salva Cloud activo</li>' +
+      '</ul>';
+    }
+    return '<ul class="credencial-funciones" aria-label="Protección incluida">' +
+        '<li class="is-activa"><span aria-hidden="true">✓</span>' + lectura + '</li>' +
+        '<li class="is-activa"><span aria-hidden="true">✓</span>Aviso de escaneo</li>' +
+      '</ul>' +
+      '<a href="#" class="credencial-mejorar" data-ir-cloud title="Historial completo, Red Multi-Tutor y Bóveda Médica">🔒 Desbloquear 3 funciones con Salva Cloud →</a>';
   }
 
   function renderizarPulseras() {
@@ -558,29 +558,41 @@
       card.className = 'pulsera-card pulsera-card--' + producto;
 
       var nombre = textoOAlternativa(portador.nombre_completo, 'Portador Seguro');
-      var clasePlan = 'badge-producto-' + producto;
       var claseEstado = pulsera.estado === 'vinculada' ? 'badge-estado-vinculada' : 'badge-estado-disponible';
 
+      card.className += ' credencial';
+      var telefonoSos = portador.contacto_emergencia_1_telefono && !/^\+?0+$/.test(portador.contacto_emergencia_1_telefono)
+        ? portador.contacto_emergencia_1_telefono : '';
+      var contactoSos = telefonoSos
+        ? escaparHtml(textoOAlternativa(portador.contacto_emergencia_1_nombre, 'Contacto principal')) + '<small>' + escaparHtml(telefonoSos) + '</small>'
+        : '<span class="vital-pendiente">Sin registrar</span>';
+      var sangre = textoOAlternativa(portador.tipo_sangre, '');
+      var alergias = textoOAlternativa(portador.alergias, '');
+
       card.innerHTML =
-        '<div class="pulsera-card-top">' +
+        '<header class="credencial-head">' +
           (portador.foto_url
-            ? '<img class="pulsera-avatar" src="' + portador.foto_url + '" alt="Foto de ' + escaparHtml(nombre) + '">'
+            ? '<img class="pulsera-avatar" src="' + escaparHtml(portador.foto_url) + '" alt="Foto de ' + escaparHtml(nombre) + '">'
             : '<div class="pulsera-avatar-fallback" aria-hidden="true">' + iconoAvatarSvg() + '</div>') +
-          '<div class="pulsera-info">' +
-            '<button type="button" class="pulsera-nombre-btn" title="Clic para ver Ficha Médica">' + escaparHtml(nombre) + '</button>' +
-            '<p class="pulsera-codigo">ID: ' + (pulsera.codigo_qr || 'Sin QR') + '</p>' +
+          '<div class="credencial-identidad">' +
+            '<span class="credencial-tipo" title="' + PRODUCTOS[producto].detalle + '">' + PRODUCTOS[producto].nombre + '</span>' +
+            '<button type="button" class="pulsera-nombre-btn" title="Ver ficha médica">' + escaparHtml(nombre) + '</button>' +
+            '<span class="credencial-id">ID ' + escaparHtml(pulsera.codigo_qr || 'sin código') + '</span>' +
           '</div>' +
-        '</div>' +
-        '<div class="pulsera-badges">' +
-          '<span class="badge ' + clasePlan + '">' + PRODUCTOS[producto].nombre + ' · ' + PRODUCTOS[producto].detalle + '</span>' +
-          '<span class="badge ' + claseEstado + '">' + (pulsera.estado === 'vinculada' ? 'Vinculada' : 'Disponible') + '</span>' +
-        '</div>' +
+          '<span class="badge ' + claseEstado + '">● ' + (pulsera.estado === 'vinculada' ? 'Vinculada' : 'Disponible') + '</span>' +
+        '</header>' +
+        '<dl class="credencial-vitales">' +
+          '<div class="vital vital--sangre"><dt>Grupo sanguíneo</dt><dd>' + (sangre ? '🩸 ' + escaparHtml(sangre) : '<span class="vital-pendiente">Sin registrar</span>') + '</dd></div>' +
+          '<div class="vital"><dt>EPS / Póliza</dt><dd>' + (portador.eps_seguro ? escaparHtml(portador.eps_seguro) : '<span class="vital-pendiente">Sin registrar</span>') + '</dd></div>' +
+          '<div class="vital vital--ancho"><dt>Contacto SOS principal</dt><dd>' + contactoSos + '</dd></div>' +
+        '</dl>' +
+        (alergias ? '<p class="credencial-alerta"><strong>⚠ Alergias:</strong> ' + escaparHtml(alergias) + '</p>' : '') +
         funcionesProductoHtml(producto) +
-        '<div class="pulsera-card-actions">' +
-          '<button type="button" class="btn btn-outline btn-sm btn-ver-ficha">👁️ Ver Ficha</button>' +
-          '<button type="button" class="btn btn-primary btn-sm btn-editar">✏️ Editar Historia</button>' +
-          '<button type="button" class="btn btn-outline btn-sm btn-desvincular" style="color:#DC2626; border-color:rgba(220,38,38,0.25);" title="Desvincular esta pulsera">🗑️ Desvincular</button>' +
-        '</div>';
+        '<footer class="credencial-acciones">' +
+          '<button type="button" class="credencial-accion btn-ver-ficha">Ver ficha</button>' +
+          '<button type="button" class="credencial-accion credencial-accion--principal btn-editar">Editar historia</button>' +
+          '<button type="button" class="credencial-accion credencial-accion--peligro btn-desvincular" title="Desvincular esta pulsera">Desvincular</button>' +
+        '</footer>';
 
       // Eventos de interacción solicitados:
       // 1. Al dar clic sobre el nombre, avatar o botón "Ver Ficha" -> Muestra la Ficha Médica
@@ -1253,7 +1265,7 @@
     var boton = el('btnActivarAvisos');
     if (!boton) return;
     var concedido = 'Notification' in window && Notification.permission === 'granted';
-    boton.textContent = concedido ? '🔔 Sonido y notificaciones activos' : '🔔 Activar sonido y notificaciones';
+    boton.textContent = concedido ? '🔔 Alertas activas' : '🔔 Activar alertas';
     boton.classList.toggle('is-activo', concedido);
   }
 
@@ -1316,10 +1328,10 @@
   function estadoVigilancia(tipo) {
     var total = Object.keys(vigilancia.pulseras).length;
     var textos = {
-      inactivo: ['Vigilancia de escaneos inactiva', 'Vincula tu Salva Band o Salva Watch para recibir aquí cada escaneo con su ubicación.'],
-      conectando: ['Conectando vigilancia…', 'Estableciendo canal seguro con el servidor.'],
-      'tiempo-real': ['Vigilancia en tiempo real activa', total + (total === 1 ? ' Salva protegida' : ' Salva protegidas') + ' · verás cada escaneo y su ubicación al instante.'],
-      sondeo: ['Vigilancia activa', total + (total === 1 ? ' Salva protegida' : ' Salva protegidas') + ' · revisión automática cada 15 segundos.']
+      inactivo: ['Escudo Salva inactivo', 'Vincula tu Salva Band o Salva Watch para activarlo'],
+      conectando: ['Activando escudo…', 'Conexión segura en curso'],
+      'tiempo-real': ['Escudo Salva activo', total + (total === 1 ? ' familiar protegido' : ' familiares protegidos') + ' · escaneos en tiempo real'],
+      sondeo: ['Escudo Salva activo', total + (total === 1 ? ' familiar protegido' : ' familiares protegidos') + ' · revisión cada 15 s']
     };
     el('vigilanciaDot').setAttribute('data-estado', tipo);
     el('vigilanciaTitulo').textContent = textos[tipo][0];

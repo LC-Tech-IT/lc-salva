@@ -158,29 +158,22 @@
     <button type="button" class="app-tab" data-tab="cloud" id="tabCloud" role="tab" aria-selected="false">☁️ Salva Cloud</button>
   </div>
 
-  <!-- Instalar la App Salva (PWA) -->
-  <div class="instalar-app" id="bannerInstalarApp" hidden>
-    <img src="icons/icon-192.png" alt="" class="instalar-app-icono">
-    <div class="instalar-app-texto">
-      <strong>📲 Instala la App Salva</strong>
-      <span id="instalarAppDetalle">Entra a tu panel con un toque desde la pantalla de inicio de tu celular.</span>
-    </div>
-    <div class="instalar-app-acciones">
-      <button type="button" class="btn btn-primary btn-sm" id="btnInstalarApp">Instalar App Salva</button>
-      <button type="button" class="link-btn" id="btnCerrarInstalarApp">Ahora no</button>
-    </div>
-  </div>
-
-  <!-- Barra de vigilancia en tiempo real -->
-  <div class="vigilancia-bar" id="vigilanciaBar">
-    <div class="vigilancia-estado">
+  <!-- Barra de estado del sistema: escudo, alertas e instalación de la app -->
+  <div class="barra-estado" id="vigilanciaBar" role="status">
+    <div class="barra-estado-escudo">
       <span class="vigilancia-dot" id="vigilanciaDot" data-estado="inactivo" aria-hidden="true"></span>
-      <div>
-        <strong id="vigilanciaTitulo">Vigilancia de escaneos inactiva</strong>
-        <span id="vigilanciaDetalle">Vincula tu Salva Band o Salva Watch para recibir aquí cada escaneo con su ubicación.</span>
-      </div>
+      <strong id="vigilanciaTitulo">Escudo Salva inactivo</strong>
+      <span class="barra-estado-sep" aria-hidden="true">·</span>
+      <span id="vigilanciaDetalle">Vincula tu Salva Band o Salva Watch para activar el escudo.</span>
     </div>
-    <button type="button" id="btnActivarAvisos" class="btn btn-outline btn-sm">🔔 Activar sonido y notificaciones</button>
+    <div class="barra-estado-acciones">
+      <button type="button" id="btnActivarAvisos" class="accion-sutil">🔔 Activar alertas</button>
+      <span class="accion-instalar" id="bannerInstalarApp" hidden>
+        <button type="button" class="accion-sutil" id="btnInstalarApp">📲 Llevar App al móvil</button>
+        <button type="button" class="accion-cerrar" id="btnCerrarInstalarApp" aria-label="Ocultar sugerencia de instalación">✕</button>
+        <span class="sr-only" id="instalarAppDetalle"></span>
+      </span>
+    </div>
   </div>
 
   <!-- ---- Panel: Mis Pulseras ---- -->
