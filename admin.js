@@ -1541,11 +1541,10 @@
 
   var cloud = { membresia: null, tutores: [], documentos: [] };
 
-  function enlaceActivarCloud(plan) {
-    var texto = plan === 'anual' ? 'Anual ($79.000 COP / año)' : 'Mensual ($9.900 COP / mes)';
+  function enlaceActivarCloud() {
     var correo = estado.usuario ? estado.usuario.email : '';
     return 'https://wa.me/573505208592?text=' + encodeURIComponent(
-      '☁️ *SALVA CLOUD FAMILIAR*\nHola, deseo activar la membresía ' + texto + ' para mi cuenta ' + correo + '.');
+      '☁️ *SALVA CLOUD FAMILIAR*\nHola, deseo activar la membresía Anual ($79.000 COP / año) para mi cuenta ' + correo + '.');
   }
 
   function cargarMembresia() {
@@ -1585,8 +1584,7 @@
     }
     el('cloudPaywall').hidden = acceso;
     el('cloudContenido').hidden = !acceso;
-    el('paywallAnual').href = enlaceActivarCloud('anual');
-    el('paywallMensual').href = enlaceActivarCloud('mensual');
+    el('paywallAnual').href = enlaceActivarCloud();
   }
 
   function consultaCloud(promesa, nombre) {

@@ -1169,11 +1169,10 @@
 
   /* ---------- Membresía Salva Cloud Familiar (suscripción asistida) ---------- */
   var PLANES_CLOUD = {
-    mensual: 'Mensual ($9.900 COP / mes, sin contrato)',
-    anual: 'Anual ($79.000 COP / año, ahorro del 33%)'
+    anual: 'Anual ($79.000 COP / año)'
   };
   document.querySelectorAll('.btn-cloud').forEach(function (btn) {
-    var plan = PLANES_CLOUD[btn.getAttribute('data-cloud-plan')] || PLANES_CLOUD.mensual;
+    var plan = PLANES_CLOUD[btn.getAttribute('data-cloud-plan')] || PLANES_CLOUD.anual;
     var mensaje = '☁️ *SALVA CLOUD FAMILIAR*\nHola Asistente Salva, deseo activar la membresía ' + plan +
       '.\nCódigo de mi pulsera (si ya la tengo): ____\nPor favor envíenme el enlace de pago seguro.';
     btn.href = 'https://wa.me/' + NUMERO_WHATSAPP_VENTAS + '?text=' + encodeURIComponent(mensaje);
@@ -1221,7 +1220,7 @@
   var RESPUESTAS_CHAT = [
     {
       claves: ['mensual', 'mensualidad', 'cuota', 'cuotas', 'suscripcion', 'recurrente', 'mes a mes', 'pagar', 'cloud', 'membresia'],
-      resp: 'Tu pulsera Salva es de pago único: funciona de por vida sin cuotas obligatorias. De forma opcional puedes activar Salva Cloud Familiar ($9.900 COP/mes o $79.000 COP/año): red de hasta 5 tutores a los que avisas con un toque, historial completo de escaneos, bóveda médica para exámenes y recetas, y 50% de descuento en reposición. Al comprar puedes añadir 1 año por solo $49.000 COP.'
+      resp: 'Tu pulsera Salva es de pago único: funciona de por vida sin cuotas obligatorias. De forma opcional puedes activar Salva Cloud Familiar ($79.000 COP/año): incluye Salva Respuesta con red de hasta 5 tutores, historial completo de escaneos, bóveda médica para exámenes y recetas, y 50% de descuento en reposición. Al comprar tu pulsera puedes añadir el primer año por solo $49.000 COP.'
     },
     {
       claves: ['modelo', 'modelos', 'diferencia', 'diferencias', 'recomiendas', 'recomienda', 'tipos', 'versiones', 'opciones'],
