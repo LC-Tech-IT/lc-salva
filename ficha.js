@@ -216,7 +216,10 @@
     if (escaneoRegistrado || !supabase || !pulsera.codigo_qr || pulsera.id === 'demo-1') return;
     escaneoRegistrado = true;
 
+    var enviado = false;
     function enviar(lat, lng, precision) {
+      if (enviado) return;
+      enviado = true;
       supabase.rpc('registrar_escaneo', {
         p_codigo_qr: pulsera.codigo_qr,
         p_latitud: lat,
@@ -237,14 +240,20 @@
 
     if (!('geolocation' in navigator)) { enviar(null, null, null); return; }
 
+    // El timeout de getCurrentPosition no corre mientras el permiso está sin responder:
+    // si quien escanea ignora la pregunta de ubicación, la alerta sale igual sin GPS
+    var respaldo = setTimeout(function () { enviar(null, null, null); }, 10000);
+
     navigator.geolocation.getCurrentPosition(
       function (posicion) {
+        clearTimeout(respaldo);
         var lat = posicion.coords.latitude;
         var lng = posicion.coords.longitude;
         enviar(lat, lng, posicion.coords.accuracy);
-        actualizarWhatsappConUbicacion(lat, lng);
+        actualizarWhatsappConUbicacion(lat, lng); // aun si llega tarde, el botón de WhatsApp lleva el GPS
       },
       function (error) {
+        clearTimeout(respaldo);
         console.warn('Geolocalización omitida:', error.message);
         enviar(null, null, null);
       },
