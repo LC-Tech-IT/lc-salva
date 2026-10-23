@@ -1,0 +1,25 @@
+# =========================================================
+# LOTE DE FABRICACIÓN #2: SALVA BAND (PULSERAS DE SILICONA)
+# Proveedor: Fabricante de Pulseras de Silicona
+# Cantidad: 15 unidades de prueba
+# Tecnología: Doble lectura (Grabado Láser QR + Chip NFC NTAG pasivo)
+# IMPORTANTE: La URL es idéntica tanto para el código QR como para el chip NFC de cada pulsera.
+# =========================================================
+
+CÓDIGO HARDWARE | URL PARA CÓDIGO QR Y CHIP NFC
+----------------|---------------------------------------------------------
+SALVA-B-T011    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T011
+SALVA-B-T012    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T012
+SALVA-B-T013    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T013
+SALVA-B-T014    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T014
+SALVA-B-T015    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T015
+SALVA-B-T016    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T016
+SALVA-B-T017    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T017
+SALVA-B-T018    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T018
+SALVA-B-T019    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T019
+SALVA-B-T020    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T020
+SALVA-B-T021    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T021
+SALVA-B-T022    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T022
+SALVA-B-T023    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T023
+SALVA-B-T024    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T024
+SALVA-B-T025    | https://lc-salva.pages.dev/ficha?qr=SALVA-B-T025
