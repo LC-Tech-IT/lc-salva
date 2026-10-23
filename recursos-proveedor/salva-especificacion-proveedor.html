@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>LC Salva - Manual de Identidad Vectorial y Grabado Láser</title>
+<style>
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #0F172A;
+    background: #FFFFFF;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 2px solid #0F172A;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .header p {
+    margin: 4px 0 0;
+    color: #64748B;
+    font-size: 13px;
+  }
+  .badge-confidential {
+    background: #0F172A;
+    color: #FFFFFF;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 4px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .card {
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #F8FAFC;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0369A1;
+    margin-bottom: 12px;
+  }
+  .card-full {
+    grid-column: 1 / -1;
+  }
+  .svg-box {
+    background: #FFFFFF;
+    border: 1px dashed #CBD5E1;
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 140px;
+  }
+  .svg-box img {
+    max-width: 100%;
+    max-height: 130px;
+  }
+  .tech-specs {
+    margin-top: 14px;
+    font-size: 11px;
+    line-height: 1.6;
+    color: #334155;
+  }
+  .tech-specs strong {
+    color: #0F172A;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>LC SALVA · FICHA TÉCNICA DE IDENTIDAD Y GRABADO LÁSER</h1>
+    <p>Documento de Especificaciones Técnicas para Fabricación de Pulseras (Salva Band) y Pasadores de Reloj (Salva Watch)</p>
+  </div>
+  <div class="badge-confidential">Producción Industrial</div>
+</div>
+
+<div class="grid">
+  <!-- Tarjeta 1: Logo Color -->
+  <div class="card">
+    <div class="card-title">1. Logotipo Corporativo (Uso en Impresión / Packaging)</div>
+    <div class="svg-box">
+      <img src="salva-logo-color.svg" alt="Salva Logo Color">
+    </div>
+    <div class="tech-specs">
+      <strong>Paleta cromática:</strong> Emerald (#10B981), Cyan (#06B6D4), Medical Blue (#0284C7), Dark Slate (#0F172A).<br>
+      <strong>Aplicación:</strong> Serigrafía en estuches, tarjetas de garantía, packaging y serigrafía en silicona.
+    </div>
+  </div>
+
+  <!-- Tarjeta 2: Logo Monocromo Láser -->
+  <div class="card">
+    <div class="card-title">2. Versión Monocromática Láser (Curvas 100% K)</div>
+    <div class="svg-box">
+      <img src="salva-logo-laser-mono.svg" alt="Salva Logo Láser Monocromo">
+    </div>
+    <div class="tech-specs">
+      <strong>Formato:</strong> Trazos vectoriales cerrados sin gradientes ni medios tonos (100% Black).<br>
+      <strong>Compatibilidad:</strong> Software EzCad, LightBurn, máquinas de marcado láser Fibra / MOPA y CNC.
+    </div>
+  </div>
+
+  <!-- Tarjeta 3: Isotipo Emblema -->
+  <div class="card">
+    <div class="card-title">3. Isotipo / Emblema de Auxilio (Corazón + Geoubicación)</div>
+    <div class="svg-box" style="gap: 24px;">
+      <img src="salva-isotipo-color.svg" alt="Isotipo Color" style="max-height: 110px;">
+      <img src="salva-isotipo-laser-mono.svg" alt="Isotipo Monocromo" style="max-height: 110px;">
+    </div>
+    <div class="tech-specs">
+      <strong>Significado:</strong> Corazón de soporte vital + Chincheta / Pin de geolocalización de rescate inmediato.<br>
+      <strong>Uso:</strong> Relieve en pastilla central de la pulsera de silicona (debossed o embossed).
+    </div>
+  </div>
+
+  <!-- Tarjeta 4: Especificación Placa Completa -->
+  <div class="card">
+    <div class="card-title">4. Distribución de Grabado en Placa Metálica 316L</div>
+    <div class="svg-box">
+      <img src="salva-placa-grabado-laser-especificacion.svg" alt="Placa Grabado Láser" style="max-height: 120px;">
+    </div>
+    <div class="tech-specs">
+      <strong>Composición:</strong> Estrella de la vida médica (izquierda) + QR de alta resolución (centro) + Marca LC Salva / NFC (derecha).<br>
+      <strong>Profundidad:</strong> 0.03 mm - 0.05 mm con acabado de recocido térmico oscuro (Black Annealing).
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

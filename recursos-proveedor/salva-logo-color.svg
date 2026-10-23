@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradHeartH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="gradPinH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="gradBandH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ISOTIPO IZQUIERDA -->
+  <g transform="translate(40, 20) scale(0.52)">
+    <!-- Corazón -->
+    <path d="M 250, 115 C 220, 55, 120, 45, 75, 115 C 25, 195, 80, 290, 250, 415 C 420, 290, 475, 195, 425, 115 C 380, 45, 280, 55, 250, 115 Z" 
+          fill="none" stroke="url(#gradHeartH)" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Anillo Base -->
+    <path d="M 115, 335 C 160, 395, 340, 395, 385, 335 C 400, 315, 415, 290, 395, 280 C 355, 260, 145, 260, 105, 280 C 85, 290, 100, 315, 115, 335 Z" fill="url(#gradBandH)"/>
+    <!-- Pin -->
+    <path d="M 250, 320 C 240, 300, 175, 215, 175, 175 A 75, 75 0 1, 1 325, 175 C 325, 215, 260, 300, 250, 320 Z" fill="url(#gradPinH)"/>
+    <circle cx="250" cy="175" r="30" fill="#FFFFFF"/>
+    <!-- Barra sensor -->
+    <rect x="220" y="325" width="60" height="14" rx="7" fill="#38BDF8"/>
+  </g>
+
+  <!-- TIPOGRAFÍA SALVA -->
+  <g transform="translate(340, 160)">
+    <!-- Letras SALVA trazadas o con tipografía robusta -->
+    <text x="0" y="0" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="800" font-size="115" fill="#0F172A" letter-spacing="-1">Salva</text>
+    
+    <!-- Subtítulo de Auxilio -->
+    <text x="5" y="44" font-family="'Inter', sans-serif" font-weight="700" font-size="19" fill="#0284C7" letter-spacing="4">EMERGENCIA MÉDICA · QR &amp; NFC</text>
+    <text x="5" y="70" font-family="'Inter', sans-serif" font-weight="600" font-size="14" fill="#64748B" letter-spacing="2">TECNOLOGÍA DE SALVAGUARDA · LC TECH</text>
+  </g>
+
+  <!-- ONDA NFC VECTORIAL -->
+  <g transform="translate(680, 75)" stroke="#0EA5E9" stroke-width="4.5" fill="none" stroke-linecap="round">
+    <path d="M 10, 20 A 15, 15 0 0, 1 10, 50"/>
+    <path d="M 18, 12 A 25, 25 0 0, 1 18, 58"/>
+    <path d="M 26, 4  A 35, 35 0 0, 1 26, 66"/>
+  </g>
+</svg>

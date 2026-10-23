@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="gradHeart" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+    <linearGradient id="gradPin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="gradRing" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+    <filter id="subtleDrop" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Corazón de Vida / Contorno Clínico -->
+  <path d="M 250, 115 
+           C 220, 55, 120, 45, 75, 115 
+           C 25, 195, 80, 290, 250, 415 
+           C 420, 290, 475, 195, 425, 115 
+           C 380, 45, 280, 55, 250, 115 Z" 
+        fill="none" 
+        stroke="url(#gradHeart)" 
+        stroke-width="38" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"
+        filter="url(#subtleDrop)"/>
+
+  <!-- Anillo Protector Salva Band / Sensor -->
+  <path d="M 115, 335
+           C 160, 395, 340, 395, 385, 335
+           C 400, 315, 415, 290, 395, 280
+           C 355, 260, 145, 260, 105, 280
+           C 85, 290, 100, 315, 115, 335 Z"
+        fill="url(#gradRing)"
+        opacity="0.95"/>
+
+  <!-- Pin de Geolocalización Médica -->
+  <g filter="url(#subtleDrop)">
+    <path d="M 250, 320 
+             C 240, 300, 175, 215, 175, 175 
+             A 75, 75 0 1, 1 325, 175 
+             C 325, 215, 260, 300, 250, 320 Z" 
+          fill="url(#gradPin)"/>
+    <!-- Orificio central del Pin -->
+    <circle cx="250" cy="175" r="30" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Pastilla / Sensor Indicador en Pulsera -->
+  <rect x="220" y="325" width="60" height="14" rx="7" fill="#38BDF8"/>
+</svg>
