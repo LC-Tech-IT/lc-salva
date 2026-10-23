@@ -1,15 +1,15 @@
 # =========================================================
-# LOTE DE FABRICACIÓN #2: SALVA WATCH (LÁMINAS / PASADORES EN ACERO 316L)
+# LOTE DE FABRICACIÓN OFICIAL: SALVA WATCH (LÁMINAS / PASADORES EN ACERO 316L)
 # Proveedor: Fabricante de Placas de Acero Inoxidable para Reloj
-# Cantidad: 5 unidades de prueba
+# Cantidad: 5 unidades de prueba activas
 # Tecnología: Grabado Láser de Fibra de Alta Densidad (QR + Marca)
 # Compatibilidad: Correas de reloj de 20 mm y 22 mm
 # =========================================================
 
 CÓDIGO HARDWARE | URL PARA GRABADO LÁSER CÓDIGO QR
 ----------------|---------------------------------------------------------
-SALVA-W-T006    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T006
-SALVA-W-T007    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T007
-SALVA-W-T008    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T008
-SALVA-W-T009    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T009
-SALVA-W-T010    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T010
+SALVA-W-T001    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T001
+SALVA-W-T002    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T002
+SALVA-W-T003    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T003
+SALVA-W-T004    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T004
+SALVA-W-T005    | https://lc-salva.pages.dev/ficha?qr=SALVA-W-T005
