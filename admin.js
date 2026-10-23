@@ -664,7 +664,7 @@
     var nombre = textoOAlternativa(portador.nombre_completo, 'Portador Seguro');
 
     el('previewNombrePortador').textContent = nombre;
-    el('previewCodigoQr').textContent = 'Código QR / NFC: ' + (pulsera.codigo_qr || 'SALVA-0000');
+    el('previewCodigoQr').textContent = pulsera.codigo_qr || 'SALVA-0000';
     var productoPreview = productoDe(pulsera.codigo_qr);
     el('previewBadgePlan').textContent = PRODUCTOS[productoPreview].nombre;
     el('previewBadgePlan').className = 'badge badge-producto-' + productoPreview;
@@ -673,7 +673,7 @@
     el('previewEps').textContent = textoOAlternativa(portador.eps_seguro, 'Sin EPS');
     el('previewAlergias').textContent = textoOAlternativa(portador.alergias, 'Sin alergias registradas.');
     el('previewCondiciones').textContent = textoOAlternativa(portador.enfermedades_condiciones, 'Sin condiciones o patologías reportadas.');
-    el('previewMedicamentos').textContent = 'Medicamentos: ' + textoOAlternativa(portador.medicamentos, 'Ninguno registrado.');
+    el('previewMedicamentos').textContent = textoOAlternativa(portador.medicamentos, 'Ninguno registrado.');
 
     var fotoImg = el('previewFoto');
     var fotoFallback = el('previewFotoFallback');
@@ -687,16 +687,21 @@
     }
 
     var listContactos = el('previewContactosList');
-    listContactos.innerHTML = '';
+    function filaContacto(rol, nombreContacto, telefono) {
+      return '<div class="fp-contacto">' +
+        '<span class="fp-contacto-rol">' + rol + '</span>' +
+        '<span class="fp-contacto-nombre">' + escaparHtml(nombreContacto) + '</span>' +
+        '<span class="fp-contacto-tel">' + escaparHtml(telefono) + '</span>' +
+      '</div>';
+    }
+    var filas = '';
     if (portador.contacto_emergencia_1_telefono) {
-      listContactos.innerHTML += '<div>📞 <strong>' + textoOAlternativa(portador.contacto_emergencia_1_nombre, 'Tutor Principal') + ':</strong> ' + portador.contacto_emergencia_1_telefono + '</div>';
+      filas += filaContacto('Principal', textoOAlternativa(portador.contacto_emergencia_1_nombre, 'Tutor principal'), portador.contacto_emergencia_1_telefono);
     }
     if (portador.contacto_emergencia_2_telefono) {
-      listContactos.innerHTML += '<div>📱 <strong>' + textoOAlternativa(portador.contacto_emergencia_2_nombre, 'Contacto Secundario') + ':</strong> ' + portador.contacto_emergencia_2_telefono + '</div>';
+      filas += filaContacto('Respaldo', textoOAlternativa(portador.contacto_emergencia_2_nombre, 'Contacto secundario'), portador.contacto_emergencia_2_telefono);
     }
-    if (!portador.contacto_emergencia_1_telefono && !portador.contacto_emergencia_2_telefono) {
-      listContactos.innerHTML = '<span style="color:var(--text-muted);">Sin contactos SOS registrados.</span>';
-    }
+    listContactos.innerHTML = filas || '<p class="fp-vacio">Sin contactos de emergencia registrados.</p>';
 
     // Enlace a la Ficha Pública real
     var qrParam = pulsera.codigo_qr || pulsera.id || '';

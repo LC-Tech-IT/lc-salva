@@ -58,13 +58,11 @@
     return { qr: qr, id: id };
   }
 
-  function mostrarError(titulo, mensaje, icono) {
+  function mostrarError(titulo, mensaje) {
     var titleEl = document.getElementById('errorTitle');
     var msgEl = document.getElementById('errorMessage');
-    var iconEl = document.getElementById('errorIcon');
     if (titleEl) titleEl.textContent = titulo;
     if (msgEl) msgEl.textContent = mensaje;
-    if (iconEl) iconEl.textContent = icono || '⚠️';
     mostrarVista('error');
   }
 
@@ -281,7 +279,7 @@
         { id: 'demo-1', codigo_qr: 'SALVA-B-DEMO', estado: 'activa' },
         {
           nombre_completo: 'Sofía Ramírez Vargas',
-          tipo_sangre: 'O Positivo (O+)',
+          tipo_sangre: 'O+',
           alergias: 'Penicilina y Frutos Secos (Riesgo Anafilaxia).',
           enfermedades_condiciones: 'Asma bronquial leve controlada.',
           medicamentos: 'Inhalador Salbutamol (2 disparos ante crisis asmática).',

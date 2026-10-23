@@ -537,52 +537,60 @@
 
 <!-- ================= MODAL: VISTA PREVIA FICHA MÉDICA EN ADMIN ================= -->
 <div class="modal-overlay" id="modalFichaAdminPreview" hidden>
-  <div class="modal modal-md" role="dialog" aria-modal="true" aria-labelledby="previewNombrePortador">
+  <div class="modal modal-md modal-ficha-preview" role="dialog" aria-modal="true" aria-labelledby="previewNombrePortador">
     <button type="button" class="modal-close" data-close-modal="modalFichaAdminPreview" aria-label="Cerrar">✕</button>
-    
-    <div style="text-align: center; margin-bottom: 16px;">
-      <span class="badge badge-producto-band" id="previewBadgePlan" style="font-size:0.8rem;">Salva Band</span>
-      <div class="photo-preview" style="margin: 12px auto; width: 72px; height: 72px;">
+
+    <div class="fp-identidad">
+      <div class="fp-avatar">
         <img id="previewFoto" alt="" hidden>
-        <div id="previewFotoFallback" class="avatar-fallback-sm" style="font-size: 2rem;">👤</div>
+        <div id="previewFotoFallback" class="fp-avatar-fallback"><svg class="ico" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></div>
       </div>
-      <h2 id="previewNombrePortador" style="margin-bottom: 2px; font-size: 1.4rem;">Nombre Portador</h2>
-      <p id="previewCodigoQr" style="font-family: monospace; color: var(--text-muted); font-size: 0.85rem;"></p>
-    </div>
-
-    <div class="form-grid" style="margin-bottom: 14px;">
-      <div style="background: var(--bg-surface-alt); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-        <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block;">Grupo Sanguíneo</span>
-        <strong id="previewSangre" style="font-size: 1.1rem; color: var(--red-alert);">O+</strong>
-      </div>
-      <div style="background: var(--bg-surface-alt); padding: 10px 14px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-        <span style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); display: block;">EPS / Póliza</span>
-        <strong id="previewEps" style="font-size: 1rem; color: var(--text-dark);">Sura EPS</strong>
+      <div class="fp-identidad-texto">
+        <span class="badge badge-producto-band" id="previewBadgePlan">Salva Band</span>
+        <h2 id="previewNombrePortador">Nombre Portador</h2>
+        <p id="previewCodigoQr" class="fp-codigo"></p>
       </div>
     </div>
 
-    <div style="background: #FFFBEB; border: 1px solid #FDE68A; padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 0.88rem;">
-      <strong style="color: #92400E; display: block; margin-bottom: 2px;">⚠️ Alergias Críticas:</strong>
-      <p id="previewAlergias" style="color: #B45309; margin: 0;">Sin alergias registradas.</p>
-    </div>
+    <dl class="fp-vitales">
+      <div class="fp-vital">
+        <dt class="fp-micro">Grupo sanguíneo</dt>
+        <dd id="previewSangre" class="fp-vital-valor fp-vital-valor--sangre">O+</dd>
+      </div>
+      <div class="fp-vital">
+        <dt class="fp-micro">EPS / Póliza</dt>
+        <dd id="previewEps" class="fp-vital-valor">Sura EPS</dd>
+      </div>
+    </dl>
 
-    <div style="background: var(--bg-surface-alt); padding: 12px; border-radius: var(--radius-md); margin-bottom: 12px; font-size: 0.88rem;">
-      <strong style="color: var(--text-dark); display: block; margin-bottom: 2px;">🩺 Patologías & Medicamentos:</strong>
-      <p id="previewCondiciones" style="color: var(--text-body); margin: 0 0 4px;">Sin condiciones registradas.</p>
-      <p id="previewMedicamentos" style="color: var(--text-muted); margin: 0; font-size: 0.82rem;">Medicamentos: Ninguno.</p>
-    </div>
+    <dl class="fp-registro">
+      <div class="fp-fila fp-fila--critica">
+        <dt class="fp-micro">Alergias críticas</dt>
+        <dd id="previewAlergias">Sin alergias registradas.</dd>
+      </div>
+      <div class="fp-fila">
+        <dt class="fp-micro">Patologías y condiciones</dt>
+        <dd id="previewCondiciones">Sin condiciones registradas.</dd>
+      </div>
+      <div class="fp-fila">
+        <dt class="fp-micro">Medicamentos</dt>
+        <dd id="previewMedicamentos">Ninguno registrado.</dd>
+      </div>
+    </dl>
 
-    <div style="background: #FFFFFF; border: 1.5px solid var(--border-subtle); padding: 12px; border-radius: var(--radius-md); margin-bottom: 18px;">
-      <strong style="display: block; font-size: 0.82rem; text-transform: uppercase; color: var(--text-dark); margin-bottom: 8px;">Contactos SOS:</strong>
-      <div id="previewContactosList" style="display: flex; flex-direction: column; gap: 6px; font-size: 0.88rem;"></div>
+    <div class="fp-registro">
+      <div class="fp-fila">
+        <span class="fp-micro">Contactos de emergencia</span>
+        <div id="previewContactosList" class="fp-contactos"></div>
+      </div>
     </div>
 
     <div class="modal-preview-acciones">
       <a href="#" id="previewEnlacePublico" target="_blank" rel="noopener" class="btn btn-outline btn-block">
-        🔗 Abrir Ficha Pública QR
+        <svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M10 14L20 4"/><path d="M19 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h6"/></svg>Ver Ficha Pública
       </a>
       <button type="button" id="previewBtnEditar" class="btn btn-primary btn-block">
-        ✏️ Editar Historia
+        <svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>Editar Ficha
       </button>
     </div>
   </div>
