@@ -273,8 +273,19 @@
     var identificador = obtenerIdentificadorDeUrl();
     var valorBusqueda = identificador.qr || identificador.id;
 
-    if (!valorBusqueda) {
-      // Demo por defecto si no se pasa parámetro en la URL
+    var params = new URLSearchParams(window.location.search);
+    var esDemo = !valorBusqueda ||
+                 params.get('demo') === '1' ||
+                 params.get('demo') === 'true' ||
+                 (valorBusqueda && (
+                   valorBusqueda.toUpperCase() === 'SALVA-B-DEMO' ||
+                   valorBusqueda.toUpperCase() === 'SALVA-W-DEMO' ||
+                   valorBusqueda.toUpperCase() === 'DEMO' ||
+                   valorBusqueda === 'demo-1'
+                 ));
+
+    if (esDemo) {
+      // Demo por defecto si no se pasa parámetro en la URL o si se solicita explícitamente demo
       renderFicha(
         { id: 'demo-1', codigo_qr: 'SALVA-B-DEMO', estado: 'activa' },
         {
