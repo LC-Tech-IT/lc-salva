@@ -59,51 +59,53 @@
 
   <!-- ===================== NIVEL 1 · CERTEZA ===================== -->
   <section class="l-hero" id="inicio" aria-labelledby="heroTitulo">
-    <div class="l-hero-media" id="heroCarousel" aria-label="Galería visual de Salva en acción">
-      <div class="l-hero-slides">
-        <!-- Slide 1: Niño portador y reencuentro en parque público -->
-        <article class="carousel-slide active" data-index="0">
-          <img src="salva-child-hero.jpg" alt="Madre abrazando a su hijo con lágrimas de alivio en un parque público tras reencontrarlo gracias a Salva, sosteniendo su celular en mano mientras el niño porta la pulsera en su muñeca" width="1376" height="768" fetchpriority="high">
-        </article>
+    <div class="l-contenedor l-hero-grid">
+      <div class="l-hero-texto">
+        <p class="l-kicker">Identificación médica de emergencia</p>
+        <h1 class="l-display" id="heroTitulo">Que siempre vuelvan a casa.</h1>
+        <p class="l-lead">Si tu hijo se pierde, si tu papá se desorienta o si tu pareja cae en la ruta, quien los encuentre sabrá quiénes son, qué necesitan y cómo llamarte. Con cualquier celular, en dos segundos.</p>
 
-        <!-- Slide 2: Adulto mayor escaneado por transeúnte en la calle -->
-        <article class="carousel-slide" data-index="1">
-          <img src="salva-senior-scan.jpg" alt="Transeúnte en la calle escaneando la pulsera tecnológica Salva de un adulto mayor sentado en un parque" width="1376" height="768" loading="lazy">
-        </article>
+        <!-- Selector de casos protegidos -->
+        <div class="l-hero-tabs" id="carouselDots" role="tablist" aria-label="Casos de auxilio protegidos por Salva">
+          <button type="button" class="carousel-dot active" data-target="0" role="tab" aria-selected="true">
+            <span>Niños y familia</span>
+            <span class="dot-progress"></span>
+          </button>
+          <button type="button" class="carousel-dot" data-target="1" role="tab" aria-selected="false">
+            <span>Adultos mayores</span>
+            <span class="dot-progress"></span>
+          </button>
+          <button type="button" class="carousel-dot" data-target="2" role="tab" aria-selected="false">
+            <span>Ciclistas en ruta</span>
+            <span class="dot-progress"></span>
+          </button>
+        </div>
 
-        <!-- Slide 3: Paramédico escaneando ciclista en carretera -->
-        <article class="carousel-slide" data-index="2">
-          <img src="salva-cyclist-scan.jpg" alt="Paramédico de emergencias escaneando el pasador Salva Watch en la muñeca de un ciclista en carretera" width="1376" height="768" loading="lazy">
-        </article>
-      </div>
-    </div>
-
-    <div class="l-contenedor l-hero-texto">
-      <p class="l-kicker">Identificación médica de emergencia</p>
-      <h1 class="l-display" id="heroTitulo">Que siempre vuelvan a casa.</h1>
-      <p class="l-lead">Si tu hijo se pierde, si tu papá se desorienta o si tu pareja cae en la ruta, quien los encuentre sabrá quiénes son, qué necesitan y cómo llamarte. Con cualquier celular, en dos segundos.</p>
-
-      <!-- Selector de casos protegidos -->
-      <div class="l-hero-tabs" id="carouselDots" role="tablist" aria-label="Casos de auxilio protegidos por Salva">
-        <button type="button" class="carousel-dot active" data-target="0" role="tab" aria-selected="true">
-          <span>Niños y familia</span>
-          <span class="dot-progress"></span>
-        </button>
-        <button type="button" class="carousel-dot" data-target="1" role="tab" aria-selected="false">
-          <span>Adultos mayores</span>
-          <span class="dot-progress"></span>
-        </button>
-        <button type="button" class="carousel-dot" data-target="2" role="tab" aria-selected="false">
-          <span>Ciclistas en ruta</span>
-          <span class="dot-progress"></span>
-        </button>
+        <div class="l-acciones">
+          <button type="button" class="l-btn btn-abrir-asesoria" data-modelo="band">Elegir su Salva</button>
+          <a href="#simulador" class="l-enlace">Ver lo que verá quien los encuentre</a>
+        </div>
+        <p class="l-hechos">Pago único <span aria-hidden="true">·</span> Sin baterías <span aria-hidden="true">·</span> Sin aplicaciones <span aria-hidden="true">·</span> Cualquier iPhone o Android</p>
       </div>
 
-      <div class="l-acciones">
-        <button type="button" class="l-btn btn-abrir-asesoria" data-modelo="band">Elegir su Salva</button>
-        <a href="#simulador" class="l-enlace">Ver lo que verá quien los encuentre</a>
+      <div class="l-hero-media" id="heroCarousel" aria-label="Galería visual de Salva en acción">
+        <div class="l-hero-slides">
+          <!-- Slide 1: Niño portador y reencuentro en parque público -->
+          <article class="carousel-slide active" data-index="0">
+            <img src="salva-child-hero.jpg" alt="Madre abrazando a su hijo con lágrimas de alivio en un parque público tras reencontrarlo gracias a Salva, sosteniendo su celular en mano mientras el niño porta la pulsera en su muñeca" width="1376" height="768" fetchpriority="high">
+          </article>
+
+          <!-- Slide 2: Adulto mayor escaneado por transeúnte en la calle -->
+          <article class="carousel-slide" data-index="1">
+            <img src="salva-senior-scan.jpg" alt="Transeúnte en la calle escaneando la pulsera tecnológica Salva de un adulto mayor sentado en un parque" width="1376" height="768" loading="lazy">
+          </article>
+
+          <!-- Slide 3: Paramédico escaneando ciclista en carretera -->
+          <article class="carousel-slide" data-index="2">
+            <img src="salva-cyclist-scan.jpg" alt="Paramédico de emergencias escaneando el pasador Salva Watch en la muñeca de un ciclista en carretera" width="1376" height="768" loading="lazy">
+          </article>
+        </div>
       </div>
-      <p class="l-hechos">Pago único <span aria-hidden="true">·</span> Sin baterías <span aria-hidden="true">·</span> Sin aplicaciones <span aria-hidden="true">·</span> Cualquier iPhone o Android</p>
     </div>
   </section>
 
