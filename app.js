@@ -298,9 +298,8 @@
     scriptUrl: 'https://checkout.wompi.co/widget.js',
     timeoutMs: 8000,
     // Wompi exige signature:integrity = SHA256(referencia + montoEnCentavos + moneda + secretoIntegridad).
-    // El secreto NUNCA va en el frontend: se calcula en la Edge Function supabase/functions/wompi-firma.
-    // Pega aquí su URL una vez desplegada (ej: https://<proyecto>.supabase.co/functions/v1/wompi-firma).
-    firmaIntegridadUrl: ''
+    // El secreto vive en la Edge Function supabase/functions/wompi-firma.
+    firmaIntegridadUrl: 'https://bfxolduuqkrhyfjrvwsx.supabase.co/functions/v1/wompi-firma'
   };
   WOMPI.apiUrl = WOMPI.publicKey.indexOf('pub_test_') === 0
     ? 'https://sandbox.wompi.co/v1'
@@ -888,15 +887,16 @@
   }
 
   function obtenerFirmaIntegridad(referencia, montoEnCentavos) {
-    if (!WOMPI.firmaIntegridadUrl) return Promise.reject(new Error('sin-firma'));
+    if (!WOMPI.firmaIntegridadUrl) return Promise.resolve(null);
     return fetch(WOMPI.firmaIntegridadUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify({ reference: referencia, amountInCents: montoEnCentavos, currency: 'COP' })
-    }).then(function (res) { return res.ok ? res.json() : Promise.reject(new Error('sin-firma')); })
+    }).then(function (res) { return res.ok ? res.json() : null; })
       .then(function (json) {
-        if (!json || !json.integrity) throw new Error('sin-firma');
-        return json.integrity;
+        return json && json.integrity ? json.integrity : null;
+      }).catch(function () {
+        return null;
       });
   }
 
@@ -932,7 +932,6 @@
         currency: 'COP',
         amountInCents: montoEnCentavos,
         reference: referenciaPago,
-        signature: { integrity: firma },
         publicKey: WOMPI.publicKey,
         customerData: {
           fullName: envio.nombre,
@@ -949,6 +948,9 @@
           phoneNumber: envio.telefono
         }
       };
+      if (firma) {
+        config.signature = { integrity: firma };
+      }
       // Wompi solo acepta redirecciones a sitios públicos (no localhost)
       if (window.location.protocol === 'https:') config.redirectUrl = window.location.origin + window.location.pathname;
 
