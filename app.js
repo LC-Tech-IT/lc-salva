@@ -447,7 +447,7 @@
   function ajustarOpcionesPorProducto() {
     var band = incluyeBand();
     var watch = incluyeWatch();
-    [['checkoutBloqueColor', !band], ['checkoutColorPreview', !band], ['checkoutBloqueTalla', !band],
+    [['checkoutBloqueColor', !band], ['checkoutColorPreview', false], ['checkoutBloqueTalla', !band],
      ['checkoutBloqueAncho', !watch], ['checkoutAcabadoWatch', !watch]].forEach(function (par) {
       var nodo = document.getElementById(par[0]);
       if (nodo) nodo.hidden = par[1];
@@ -461,28 +461,40 @@
     }
   }
 
-  /* ---------- Previsualizador de color en tiempo real ---------- */
-  function pintarPreview(previewEl, color, descripcion) {
-    if (!previewEl) return;
-    var info = COLORES_SALVA[color] || COLORES_SALVA['Negro Carbón'];
-    previewEl.style.setProperty('--band', info.hex);
-    previewEl.style.setProperty('--band-ink', info.tinta);
-    var nombreEl = previewEl.querySelector('[data-preview-name]');
-    var descEl = previewEl.querySelector('[data-preview-desc]');
-    if (nombreEl) nombreEl.textContent = color;
-    if (descEl) descEl.textContent = descripcion;
-    previewEl.classList.remove('is-updating');
-    void previewEl.offsetWidth; // reinicia la animación de feedback
-    previewEl.classList.add('is-updating');
-  }
+  /* ---------- Previsualizador de producto y color en tiempo real ---------- */
+  var FOTOS_PRODUCTO = {
+    band: 'salva-band.jpg',
+    watch: 'salva-watch.jpg',
+    pack: 'salva-duo.jpg'
+  };
 
   function actualizarPreviews() {
+    var modelo = modeloActual();
     var color = colorActual();
-    var info = COLORES_SALVA[color];
-    pintarPreview(document.getElementById('checkoutColorPreview'), color,
-      info.desc + ' · ' + (modeloActual() === 'pack' ? 'Salva Band del pack' : 'Salva Band') + ' · talla única ajustable');
-    pintarPreview(document.getElementById('modelosColorPreview'), color,
-      info.desc + ' · Silicona anatómica con hebilla');
+    var info = COLORES_SALVA[color] || COLORES_SALVA['Negro Carbón'];
+    var previewEl = document.getElementById('checkoutColorPreview');
+    if (previewEl) {
+      var imgEl = previewEl.querySelector('#checkoutPreviewFoto');
+      if (imgEl && FOTOS_PRODUCTO[modelo]) {
+        imgEl.src = FOTOS_PRODUCTO[modelo];
+        imgEl.alt = NOMBRES_MODELO[modelo];
+      }
+      var nombreEl = previewEl.querySelector('[data-preview-name]');
+      var descEl = previewEl.querySelector('[data-preview-desc]');
+      if (modelo === 'band') {
+        if (nombreEl) nombreEl.textContent = 'Salva Band · ' + color;
+        if (descEl) descEl.textContent = info.desc + ' · Silicona hipoalergénica con placa de acero grabada a láser (QR + NFC pasivo). Talla única ajustable.';
+      } else if (modelo === 'watch') {
+        if (nombreEl) nombreEl.textContent = 'Salva Watch · Pasador de acero 316L';
+        if (descEl) descEl.textContent = 'Placa de acero inoxidable con código QR grabado a láser, deslizable en la correa de tu reloj inteligente.';
+      } else if (modelo === 'pack') {
+        if (nombreEl) nombreEl.textContent = 'Pack Dúo · Salva Watch + Salva Band (' + color + ')';
+        if (descEl) descEl.textContent = 'Una Salva Watch y una Salva Band para dos integrantes de la familia con fichas médicas independientes.';
+      }
+      previewEl.classList.remove('is-updating');
+      void previewEl.offsetWidth;
+      previewEl.classList.add('is-updating');
+    }
   }
 
   function seleccionarColor(color, conFeedback) {
@@ -757,8 +769,8 @@
     var envio = datosEnvio();
     var destinatario = checkoutDestinatario ? checkoutDestinatario.options[checkoutDestinatario.selectedIndex].text : 'mi familia';
     var lineas = [
-      '🤖 *PEDIDO SALVA* — Ref: ' + (estadoCheckout.codigoPedido || 'por asignar'),
-      motivo || 'Hola Asistente Salva, deseo completar mi pedido:',
+      '🛡️ *PEDIDO SALVA* — Ref: ' + (estadoCheckout.codigoPedido || 'por asignar'),
+      motivo || 'Hola equipo Salva, deseo completar mi pedido:',
       '',
       '• Modelo: ' + NOMBRES_MODELO[modeloActual()] + ' (' + formatoCOP(precioModeloActual()) + ')',
       '• Color / acabado: ' + descripcionColor(),
@@ -1180,7 +1192,7 @@
   };
   document.querySelectorAll('.btn-cloud').forEach(function (btn) {
     var plan = PLANES_CLOUD[btn.getAttribute('data-cloud-plan')] || PLANES_CLOUD.anual;
-    var mensaje = '☁️ *SALVA CLOUD FAMILIAR*\nHola Asistente Salva, deseo activar la membresía ' + plan +
+    var mensaje = '☁️ *SALVA CLOUD FAMILIAR*\nHola equipo Salva, deseo activar la membresía ' + plan +
       '.\nCódigo de mi pulsera (si ya la tengo): ____\nPor favor envíenme el enlace de pago seguro.';
     btn.href = 'https://wa.me/' + NUMERO_WHATSAPP_VENTAS + '?text=' + encodeURIComponent(mensaje);
   });
@@ -1199,8 +1211,8 @@
       var isOpen = chatWidget.classList.toggle('open');
       chatToggle.setAttribute('aria-expanded', String(isOpen));
       if (isOpen && chatMessages && chatMessages.children.length === 0) {
-        agregarMensajeChat('¡Hola! 👋 Soy tu Asistente Virtual de Salva. Pregúntame por modelos, precios, colores o tallas.' +
-          '<a class="chat-burbuja-wa" href="https://wa.me/573505208592?text=Hola%20Salva,%20deseo%20atenci%C3%B3n%20personalizada" target="_blank" rel="noopener">💬 Hablar con un Asesor Humano por WhatsApp</a>', 'bot');
+        agregarMensajeChat('¡Hola! Te damos la bienvenida a Salva. Con gusto te asesoramos sobre modelos, envíos o la ficha médica.' +
+          '<a class="chat-burbuja-wa" href="https://wa.me/573505208592?text=Hola%20equipo%20Salva,%20deseo%20asesor%C3%ADa%20personalizada" target="_blank" rel="noopener">💬 Hablar por WhatsApp con un Asesor</a>', 'bot');
       }
     });
   }

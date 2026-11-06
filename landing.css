@@ -482,9 +482,9 @@
 
 .l-hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.15fr);
   align-items: center;
-  gap: clamp(36px, 5vw, 76px);
+  gap: clamp(16px, 3.5vw, 48px);
 }
 
 .l-hero-texto {
@@ -496,16 +496,28 @@
   max-width: 620px;
 }
 
+/* Fotos que rotan con difuminado suave hacia el texto (sin caja rígida) */
 .l-hero-media {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 11;
-  min-height: 420px;
-  max-height: 560px;
-  border-radius: var(--l-radio);
+  min-height: 460px;
+  max-height: 600px;
+  border-radius: 0;
   overflow: hidden;
-  background: var(--l-piedra);
-  box-shadow: 0 24px 50px -15px rgba(22, 32, 28, 0.16), 0 8px 20px -8px rgba(22, 32, 28, 0.08);
+  background: transparent;
+  box-shadow: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.2) 8%, rgba(0, 0, 0, 0.8) 22%, black 36%, black 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.2) 8%, rgba(0, 0, 0, 0.8) 22%, black 36%, black 100%);
+}
+
+.l-hero-media::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--l-papel) 0%, rgba(250, 248, 244, 0.8) 10%, rgba(250, 248, 244, 0.25) 24%, rgba(250, 248, 244, 0) 42%);
+  z-index: 3;
+  pointer-events: none;
 }
 
 .l-hero-slides {
@@ -596,12 +608,18 @@
   .l-hero { padding: 24px 0 48px; }
   .l-hero-grid {
     grid-template-columns: 1fr;
-    gap: 32px;
+    gap: 28px;
   }
   .l-hero-media {
     order: -1;
     min-height: auto;
     aspect-ratio: 16 / 10;
+    border-radius: 16px;
+    -webkit-mask-image: linear-gradient(180deg, black 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, black 82%, transparent 100%);
+  }
+  .l-hero-media::before {
+    background: linear-gradient(0deg, var(--l-papel) 0%, rgba(250, 248, 244, 0) 32%);
   }
   .l-hero-texto > * { max-width: none; }
   .l-hero-tabs { gap: 14px 18px; margin-top: 24px; }
@@ -1268,4 +1286,348 @@
 @media (prefers-reduced-motion: reduce) {
   .l-telefono.is-cambiando .l-telefono-pantalla > * { animation: none; }
   .l-enlace::after, .l-nav-toggle span { transition: none; }
+}
+
+/* =========================================================
+   MODAL DE COMPRA EDITORIAL (ALINEADO AL SISTEMA VISUAL)
+   ========================================================= */
+.checkout-modal {
+  background: var(--l-papel) !important;
+  border-radius: 20px !important;
+  border: 1px solid var(--l-linea) !important;
+  padding: clamp(24px, 4vw, 36px) !important;
+  max-width: 620px !important;
+  color: var(--l-tinta) !important;
+  font-family: var(--l-sans) !important;
+  box-shadow: 0 32px 72px -16px rgba(22, 32, 28, 0.22) !important;
+}
+
+.modal-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--l-linea);
+}
+
+.modal-brand-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(15, 61, 48, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#tituloModalCompra {
+  font-family: var(--l-serif) !important;
+  font-size: 1.65rem !important;
+  font-weight: 400 !important;
+  color: var(--l-tinta) !important;
+  line-height: 1.2 !important;
+  margin: 0 !important;
+}
+
+.checkout-modal .checkout-sub {
+  font-size: 0.92rem !important;
+  color: var(--l-suave) !important;
+  line-height: 1.45 !important;
+}
+
+/* Stepper sobrio y elegante */
+.checkout-stepper {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 26px;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--l-linea);
+  padding-bottom: 12px;
+}
+
+.checkout-stepper .stepper-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent !important;
+  border: none !important;
+  padding: 6px 10px !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  color: var(--l-suave) !important;
+  border-radius: 0 !important;
+}
+
+.checkout-stepper .stepper-item.active {
+  color: var(--l-verde) !important;
+  position: relative;
+}
+
+.checkout-stepper .stepper-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -13px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--l-verde);
+  border-radius: 2px;
+}
+
+.checkout-stepper .stepper-num {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  background: rgba(22, 32, 28, 0.1) !important;
+  color: var(--l-suave) !important;
+  border: none !important;
+}
+
+.checkout-stepper .stepper-item.active .stepper-num {
+  background: var(--l-verde) !important;
+  color: #FFFFFF !important;
+}
+
+/* Previsualizador real con fotografía física */
+.checkout-real-preview {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 18px;
+  background: #FFFFFF;
+  border: 1px solid var(--l-linea);
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+
+.checkout-preview-media {
+  flex-shrink: 0;
+  width: 120px;
+  height: 85px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--l-piedra);
+}
+
+.checkout-preview-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.checkout-real-preview .color-preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.checkout-real-preview .color-preview-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--l-salvia);
+  font-weight: 700;
+}
+
+.checkout-real-preview .color-preview-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--l-tinta);
+  font-family: var(--l-sans);
+}
+
+.checkout-real-preview .color-preview-desc {
+  font-size: 0.86rem;
+  color: var(--l-texto);
+  line-height: 1.45;
+}
+
+/* Tarjetas de modelo */
+.modelo-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.modelo-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 14px 12px;
+  border: 1.5px solid var(--l-linea);
+  border-radius: 12px;
+  background: #FFFFFF;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s var(--l-ease);
+}
+
+.modelo-card:hover {
+  border-color: var(--l-salvia);
+}
+
+.modelo-card.active {
+  border-color: var(--l-verde);
+  background: #FAFDFB;
+  box-shadow: 0 4px 14px rgba(15, 61, 48, 0.08);
+}
+
+.modelo-card strong {
+  font-size: 0.98rem;
+  color: var(--l-tinta);
+}
+
+.modelo-card small {
+  font-size: 0.78rem;
+  color: var(--l-suave);
+  line-height: 1.3;
+}
+
+.modelo-card .modelo-precio {
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--l-verde);
+}
+
+/* Campos de formulario */
+.checkout-modal .field-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--l-tinta);
+  margin-bottom: 6px;
+  display: block;
+}
+
+.checkout-modal input[type="text"],
+.checkout-modal input[type="tel"],
+.checkout-modal select,
+.checkout-modal textarea {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(22, 32, 28, 0.2) !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  font-family: var(--l-sans) !important;
+  font-size: 0.95rem !important;
+  color: var(--l-tinta) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.checkout-modal input:focus,
+.checkout-modal select:focus,
+.checkout-modal textarea:focus {
+  border-color: var(--l-verde) !important;
+  box-shadow: 0 0 0 3px rgba(15, 61, 48, 0.12) !important;
+  outline: none !important;
+}
+
+/* Order bump box */
+.checkout-modal .order-bump {
+  border: 1.5px dashed var(--l-salvia);
+  background: #FAFDFB;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin: 18px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.checkout-modal .order-bump input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--l-verde);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.checkout-modal .order-bump-texto {
+  font-size: 0.88rem;
+  color: var(--l-tinta);
+  line-height: 1.45;
+}
+
+/* Totalizador */
+.checkout-modal .checkout-total {
+  background: #FFFFFF;
+  border: 1px solid var(--l-linea);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 18px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.checkout-modal .checkout-total strong {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--l-verde);
+}
+
+/* Botones principales de acción */
+#btnPagarOnlineWompi,
+#btnCheckoutContinuar {
+  background: var(--l-verde) !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 16px 24px !important;
+  font-size: 1.02rem !important;
+  font-weight: 600 !important;
+  font-family: var(--l-sans) !important;
+  cursor: pointer !important;
+  transition: background 0.2s var(--l-ease), transform 0.15s !important;
+}
+
+#btnPagarOnlineWompi:hover,
+#btnCheckoutContinuar:hover {
+  background: var(--l-verde-hover) !important;
+}
+
+/* Alerta de pago declinado / error */
+.checkout-modal .checkout-alerta {
+  background: #FEF3F2 !important;
+  border: 1px solid #FECDCA !important;
+  border-radius: 12px !important;
+  padding: 16px 18px !important;
+  color: #912018 !important;
+  margin: 16px 0 !important;
+}
+
+.checkout-modal .checkout-alerta strong {
+  color: #B42318 !important;
+}
+
+.checkout-modal .checkout-alerta-acciones .btn-primary {
+  background: var(--l-whatsapp-formal) !important;
+  border-radius: 10px !important;
+  color: #FFFFFF !important;
+}
+
+.checkout-modal .btn-wa-secundario {
+  background: transparent !important;
+  border: 1px solid var(--l-linea) !important;
+  color: var(--l-texto) !important;
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+}
+
+.checkout-modal .btn-wa-secundario:hover {
+  background: #FFFFFF !important;
+  color: var(--l-tinta) !important;
 }
