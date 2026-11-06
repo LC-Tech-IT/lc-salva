@@ -3,634 +3,385 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Salva | La Certeza de que Siempre Volverán a Casa</title>
-<meta name="description" content="Salva: pulsera médica y pasador para smartwatch con QR y NFC, sin baterías. Abre la ficha de emergencia al instante y permite contactar a tu familia en 1 toque por WhatsApp con la ubicación GPS del rescate.">
-<meta name="keywords" content="pulsera tecnologica, Salva, identificacion emergencia, QR auxilio, pulsera NFC, adultos mayores, ninos, ciclistas, proteccion familiar">
+<title>Salva | Que siempre vuelvan a casa</title>
+<meta name="description" content="Salva: pulsera médica y pasador para smartwatch con QR y NFC, sin baterías. Quien encuentre a tu familiar ve su ficha médica de emergencia con cualquier celular y te contacta en un toque, con la ubicación del lugar.">
+<meta name="keywords" content="pulsera médica, identificación de emergencia, QR, NFC, adultos mayores, niños, ciclistas, Salva, Colombia">
 <meta name="author" content="Salva">
 <meta name="robots" content="index, follow">
-<meta property="og:title" content="Salva | La certeza de saber que están a salvo">
-<meta property="og:description" content="Porque 10 segundos pueden cambiarlo todo. Identificación médica instantánea y contacto familiar con cualquier smartphone.">
+<meta property="og:title" content="Salva | Que siempre vuelvan a casa">
+<meta property="og:description" content="Identificación médica de emergencia que cualquier celular puede leer. Sin baterías, sin aplicaciones, pago único.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#064E3B">
+<meta name="theme-color" content="#FAF8F4">
 <link rel="icon" type="image/jpeg" href="salva-emblem.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.2">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=2.3">
+<link rel="stylesheet" href="landing.css?v=2.3">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-title" content="Salva">
 </head>
-<body>
+<body class="l-body">
 
-<!-- ===================== HEADER HUMANO Y PROFESIONAL ===================== -->
-<header class="site-header" id="top">
-  <div class="container header-inner">
-    <a href="#top" class="brand" aria-label="Salva — Inicio">
-      <span class="brand-logo-wrap brand-logo-wrap--header">
-        <img src="salva-emblem.jpg" alt="Salva Logo" class="brand-logo-img">
-      </span>
-      <span class="brand-text"><strong>Salva</strong></span>
+<a class="l-saltar" href="#contenido">Saltar al contenido</a>
+
+<!-- ===================== ENCABEZADO ===================== -->
+<header class="l-header" id="top">
+  <div class="l-contenedor l-header-inner">
+    <a href="#top" class="l-marca" aria-label="Salva, inicio">
+      <img src="salva-emblem.jpg" alt="" class="l-marca-logo" width="30" height="30">
+      <span>Salva</span>
     </a>
 
-    <nav class="main-nav" aria-label="Navegación principal" id="mainNav">
+    <nav class="l-nav" id="mainNav" aria-label="Navegación principal">
       <ul>
-        <li><a href="#historias">¿Cómo Salva Vidas?</a></li>
-        <li><a href="#simulador">Demostración en Vivo</a></li>
-        <li><a href="#como-funciona">Cómo Funciona</a></li>
-        <li><a href="#modelos">Modelos e Inversión</a></li>
-        <li class="nav-panel-movil"><a href="admin.html">👤 Entrar a Mi Panel</a></li>
-        <li><a href="#preguntas">Preguntas Frecuentes</a></li>
+        <li><a href="#historias">Historias</a></li>
+        <li><a href="#simulador">La ficha</a></li>
+        <li><a href="#modelos">Las piezas</a></li>
+        <li><a href="#salva-cloud">Salva Cloud</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+        <li class="l-nav-panel"><a href="admin.html">Entrar a Mi Panel</a></li>
       </ul>
     </nav>
 
-    <div class="header-actions">
-      <a href="admin.html" class="admin-link" aria-label="Mi Panel">
-        <svg class="admin-link-icono" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-        <span class="admin-link-texto">Mi Panel</span>
-      </a>
-      <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-header-wa">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-        <span class="wa-texto-largo">Asesoría por WhatsApp</span>
-        <span class="wa-texto-corto">WhatsApp</span>
-      </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
-        <span></span><span></span><span></span>
+    <div class="l-header-acciones">
+      <a href="admin.html" class="l-header-panel">Mi Panel</a>
+      <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="l-header-wa">Hablar con Salva</a>
+      <button class="l-nav-toggle" id="navToggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="mainNav">
+        <span></span><span></span>
       </button>
     </div>
   </div>
 </header>
 
-<main>
-  <!-- ===================== HERO (CARRUSEL AL FRENTE + TEXTO CONCISO DEBAJO) ===================== -->
-  <section class="hero-showcase-section" id="inicio">
-    <div class="container hero-full-container">
+<main id="contenido">
 
-      <!-- Carrusel Automático de Alto Impacto Ocupando el Frente -->
-      <div class="hero-carousel" id="heroCarousel" aria-label="Galería visual de Salva en acción">
-        <div class="carousel-track">
-          
-          <!-- Slide 1: Niño portador y alivio familiar -->
-          <article class="carousel-slide active" data-index="0">
-            <img src="salva-child-hero.jpg?v=4" alt="Madre abrazando a su hijo con lágrimas de alivio tras reencontrarlo gracias a Salva, sosteniendo su celular en mano mientras el niño porta la pulsera en su muñeca" class="carousel-img">
-            <div class="carousel-caption">
-              <span class="carousel-badge">Protección Activa para Niños</span>
-              <p class="carousel-headline">El dispositivo que habla por tus hijos cuando se extravían o no pueden responder.</p>
-            </div>
-          </article>
-
-          <!-- Slide 2: Adulto mayor escaneado por transeúnte -->
-          <article class="carousel-slide" data-index="1">
-            <img src="salva-senior-scan.jpg?v=3" alt="Transeúnte escaneando la pulsera tecnológica Salva de un adulto mayor en la calle" class="carousel-img">
-            <div class="carousel-caption">
-              <span class="carousel-badge">Auxilio para Adultos Mayores</span>
-              <p class="carousel-headline">En 2 segundos, cualquier socorrista conoce su historia médica, alergias y contacto familiar.</p>
-            </div>
-          </article>
-
-          <!-- Slide 3: Paramédico escaneando ciclista en ruta -->
-          <article class="carousel-slide" data-index="2">
-            <img src="salva-cyclist-scan.jpg?v=5" alt="Paramédico escaneando la pulsera Salva en la muñeca de un ciclista en carretera" class="carousel-img">
-            <div class="carousel-caption">
-              <span class="carousel-badge">Seguridad Extrema en Ruta</span>
-              <p class="carousel-headline">Atención médica certera en caídas o accidentes: tipo de sangre y alertas vitales al instante.</p>
-            </div>
-          </article>
-
-        </div>
-
-        <!-- Indicadores de barra y controles discretos -->
-        <div class="carousel-controls">
-          <button type="button" class="carousel-arrow carousel-prev" id="carouselPrev" aria-label="Slide anterior">‹</button>
-          <div class="carousel-indicators" id="carouselDots">
-            <button type="button" class="carousel-dot active" data-target="0" aria-label="Ver slide 1"><span class="dot-progress"></span></button>
-            <button type="button" class="carousel-dot" data-target="1" aria-label="Ver slide 2"><span class="dot-progress"></span></button>
-            <button type="button" class="carousel-dot" data-target="2" aria-label="Ver slide 3"><span class="dot-progress"></span></button>
-          </div>
-          <button type="button" class="carousel-arrow carousel-next" id="carouselNext" aria-label="Siguiente slide">›</button>
-        </div>
-      </div>
-
-      <!-- Texto Conciso de Alto Impacto Debajo del Carrusel -->
-      <div class="hero-text-block">
-        <h1 class="hero-main-title">
-          Un descuido de 10 segundos no debería costar una vida.
-        </h1>
-        <p class="hero-main-lead">
-          <strong>Protección médica física indestructible:</strong> cero baterías que recargar, cero cables, sumergible IP68. Se lleva en la muñeca o se desliza en la correa de tu reloj inteligente. Al escanear el QR o acercar el celular por NFC, abre la ficha clínica al instante y permite contactar a tu familia en 1 toque por WhatsApp con la ubicación GPS del rescate.
-        </p>
-
-        <!-- Acciones Principales Asistidas -->
-        <div class="hero-cta-group">
-          <button type="button" class="btn btn-primary btn-hero-whatsapp btn-abrir-asesoria" data-modelo="band">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
-            <span>Elegir Color y Comprar</span>
-          </button>
-          <a href="#simulador" class="btn btn-ghost btn-hero-demo">
-            <span>Ver cómo funciona el rescate</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-
-        <!-- Certezas Clave en Línea Horizontal -->
-        <div class="hero-key-assurances">
-          <div class="assurance-pill-item">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            <span>Pago único de por vida (Sin mensualidades)</span>
-          </div>
-          <div class="assurance-pill-item">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            <span>Cero descargas: Funciona con cualquier iPhone o Android</span>
-          </div>
-          <div class="assurance-pill-item">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-            <span>En la muñeca o en la correa de tu Apple Watch, Garmin o Galaxy Watch</span>
-          </div>
-        </div>
-
-        <!-- Badges de certificación y respaldo -->
-        <div class="trust-badges" aria-label="Respaldo y certificaciones">
-          <span class="trust-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7 4.5 5.6v6c0 4.6 3.2 8.4 7.5 9.7 4.3-1.3 7.5-5.1 7.5-9.7v-6z"/><path d="m8.8 12 2.2 2.2 4.3-4.4"/></svg>
-            Datos protegidos · Ley 1581 de 2012
-          </span>
-          <span class="trust-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5c3.5 4.2 6 7.4 6 10.6a6 6 0 0 1-12 0c0-3.2 2.5-6.4 6-10.6z"/></svg>
-            Certificación IP68 sumergible
-          </span>
-          <span class="trust-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Pago seguro Wompi · Bancolombia
-          </span>
-          <span class="trust-badge">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg>
-            Respaldo familiar LC Tech · Colombia
-          </span>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ===================== HISTORIAS: DE LA ANGUSTIA AL ALIVIO (FINAL FELIZ) ===================== -->
-  <section class="historias" id="historias">
-    <div class="container">
-      <div class="section-heading">
-        <span class="eyebrow">Historias Reales de Auxilio</span>
-        <h2>La diferencia entre una tragedia <span class="highlight-text">y un final feliz.</span></h2>
-        <p class="section-lead">Nadie planea una emergencia. Pero quienes llevan Salva cuentan con una respuesta médica que salva vidas cuando cada segundo cuenta.</p>
-      </div>
-
-      <div class="story-grid">
-        <!-- Caso 1: Padres e Hijos -->
-        <article class="story-card" id="historiaNinos">
-          <div class="story-card-media">
-            <img src="family-hero.jpg" alt="Familia feliz y protegida con Salva" class="story-media-img">
-            <span class="story-media-badge">Padres &amp; Hijos</span>
-          </div>
-          <div class="story-body">
-            <div class="story-header">
-              <span class="story-profile-tag">Sofía · 7 años · Bogotá</span>
-            </div>
-            <h3>El domingo en el centro comercial</h3>
-            
-            <div class="story-timeline">
-              <div class="timeline-step step-fear">
-                <span class="step-badge">La Angustia</span>
-                <p>Un segundo de distracción entre la multitud. Sofía suelta la mano de su mamá y se extravía en los pasillos abarrotados. Pánico absoluto para los padres.</p>
-              </div>
-
-              <div class="timeline-step step-action">
-                <span class="step-badge">Escaneo y Aviso en su Reloj</span>
-                <p>Una vendedora encontró a la niña, escaneó el QR de su pulsera con la cámara y tocó el botón de WhatsApp de la ficha. En ese mismo instante, el <strong>Apple Watch de su mamá vibró con el mensaje</strong> y la ubicación exacta de la tienda en Google Maps.</p>
-              </div>
-
-              <div class="timeline-step step-happy">
-                <span class="step-badge">El Final Feliz</span>
-                <p>A los 40 segundos, la mamá recibe la llamada: <em>"Señora Andrea, Sofía está aquí en la tienda con nosotros, sana y salva"</em>. El abrazo de regreso a casa no tiene precio.</p>
-              </div>
-            </div>
-
-            <button type="button" class="btn btn-ver-ficha" data-persona="nino">
-              <span>Ver Ficha Médica que vio la socorrista</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-          </div>
+  <!-- ===================== NIVEL 1 · CERTEZA ===================== -->
+  <section class="l-hero" id="inicio" aria-labelledby="heroTitulo">
+    <div class="l-hero-media" id="heroCarousel" aria-label="Galería visual de Salva en acción">
+      <div class="l-hero-slides">
+        <!-- Slide 1: Niño portador y reencuentro en parque público -->
+        <article class="carousel-slide active" data-index="0">
+          <img src="salva-child-hero.jpg" alt="Madre abrazando a su hijo con lágrimas de alivio en un parque público tras reencontrarlo gracias a Salva, sosteniendo su celular en mano mientras el niño porta la pulsera en su muñeca" width="1376" height="768" fetchpriority="high">
         </article>
 
-        <!-- Caso 2: Adultos Mayores -->
-        <article class="story-card" id="historiaMayores">
-          <div class="story-card-media">
-            <img src="senior-safety-hero.jpg" alt="Adulto mayor y familia seguros con Salva" class="story-media-img">
-            <span class="story-media-badge story-badge--blue">Adultos Mayores</span>
-          </div>
-          <div class="story-body">
-            <div class="story-header">
-              <span class="story-profile-tag">Don Alberto · 74 años · Medellín</span>
-            </div>
-            <h3>La caminata matutina y el desvanecimiento</h3>
-            
-            <div class="story-timeline">
-              <div class="timeline-step step-fear">
-                <span class="step-badge">La Angustia</span>
-                <p>Don Alberto sufre un mareo por baja de presión en una calle poco transitada. Se sienta desorientado, no recuerda la dirección y su teléfono móvil está bloqueado con clave.</p>
-              </div>
-
-              <div class="timeline-step step-action">
-                <span class="step-badge">El Auxilio Inmediato</span>
-                <p>Un transeúnte nota la pulsera y escanea el código con su cámara. Aparece su ficha médica: <em>Hipertensión arterial, medicación actual, grupo O+</em> y el botón para llamar a su hijo mayor.</p>
-              </div>
-
-              <div class="timeline-step step-happy">
-                <span class="step-badge">El Final Feliz</span>
-                <p>Los paramédicos llegan y administran el tratamiento exacto sabiendo sus antecedentes clínicos, evitando complicaciones mortales. Don Alberto regresa a su hogar en total calma.</p>
-              </div>
-            </div>
-
-            <button type="button" class="btn btn-ver-ficha" data-persona="mayor">
-              <span>Ver Historial Clínico de Auxilio</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-          </div>
+        <!-- Slide 2: Adulto mayor escaneado por transeúnte en la calle -->
+        <article class="carousel-slide" data-index="1">
+          <img src="salva-senior-scan.jpg" alt="Transeúnte en la calle escaneando la pulsera tecnológica Salva de un adulto mayor sentado en un parque" width="1376" height="768" loading="lazy">
         </article>
 
-        <!-- Caso 3: Ciclistas & Moteros -->
-        <article class="story-card" id="historiaMoteros">
-          <div class="story-card-media">
-            <img src="rider-cyclist-hero.jpg" alt="Ciclistas y moteros en carretera seguros con Salva" class="story-media-img">
-            <span class="story-media-badge story-badge--emerald">Ciclistas &amp; Moteros</span>
-          </div>
-          <div class="story-body">
-            <div class="story-header">
-              <span class="story-profile-tag">Carlos · Ruta Alto de Patios</span>
-            </div>
-            <h3>La caída en carretera a 40 km/h</h3>
-            
-            <div class="story-timeline">
-              <div class="timeline-step step-fear">
-                <span class="step-badge">La Angustia</span>
-                <p>Una mancha de aceite en una curva provoca una fuerte caída. Carlos queda inconsciente en la berma. Su celular se apagó por el impacto y su pantalla quedó destrozada.</p>
-              </div>
-
-              <div class="timeline-step step-action">
-                <span class="step-badge">El Auxilio Inmediato</span>
-                <p>El paramédico de la concesión vial escanea con su celular el QR del pasador Salva Watch en la correa del reloj de Carlos. Alerta roja inmediata: <em>¡Alérgico Severo a la Penicilina!</em> EPS: Sura. Contacto SOS: Esposa.</p>
-              </div>
-
-              <div class="timeline-step step-happy">
-                <span class="step-badge">El Final Feliz</span>
-                <p>Los médicos le aplican analgesia segura sin desencadenar un shock anafiláctico que hubiera sido fatal. Su esposa llega a la clínica informada desde el primer minuto.</p>
-              </div>
-            </div>
-
-            <button type="button" class="btn btn-ver-ficha" data-persona="motero">
-              <span>Ver Ficha Médica de Ruta de Carlos</span>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </button>
-          </div>
+        <!-- Slide 3: Paramédico escaneando ciclista en carretera -->
+        <article class="carousel-slide" data-index="2">
+          <img src="salva-cyclist-scan.jpg" alt="Paramédico de emergencias escaneando el pasador Salva Watch en la muñeca de un ciclista en carretera" width="1376" height="768" loading="lazy">
         </article>
       </div>
     </div>
-  </section>
 
-  <!-- ===================== DEMOSTRACIÓN EN VIVO (PANTALLA REAL DE RESCATE) ===================== -->
-  <section class="simulador" id="simulador">
-    <div class="container simulador-inner demo-vivo">
-      <div class="simulador-texto">
-        <span class="eyebrow">Demostración en vivo</span>
-        <h2>Cero aplicaciones por instalar. <span class="highlight-text">Auxilio en 2 segundos.</span></h2>
-        <p class="section-lead">Quien encuentre a tu familiar solo apunta la cámara o acerca su celular: la ficha médica se abre al instante en su navegador, sin apps, sin registros y sin claves.</p>
+    <div class="l-contenedor l-hero-texto">
+      <p class="l-kicker">Identificación médica de emergencia</p>
+      <h1 class="l-display" id="heroTitulo">Que siempre vuelvan a casa.</h1>
+      <p class="l-lead">Si tu hijo se pierde, si tu papá se desorienta o si tu pareja cae en la ruta, quien los encuentre sabrá quiénes son, qué necesitan y cómo llamarte. Con cualquier celular, en dos segundos.</p>
 
-        <ul class="demo-puntos">
-          <li><span class="point-bullet-num">1</span><div><strong>Escaneo universal</strong><p>Cualquier iPhone o Android lee el QR (y el NFC de la Salva Band).</p></div></li>
-          <li><span class="point-bullet-num">2</span><div><strong>Datos vitales a la vista</strong><p>Grupo sanguíneo, EPS y alergias críticas resaltadas en rojo.</p></div></li>
-          <li><span class="point-bullet-num">3</span><div><strong>Familia en 1 toque</strong><p>Llamada directa o WhatsApp con la ubicación GPS del rescate.</p></div></li>
-        </ul>
-
-        <div class="demo-selector">
-          <span class="demo-selector-titulo">Prueba con un perfil:</span>
-          <div class="demo-perfiles" role="radiogroup" aria-label="Perfil de demostración">
-            <button type="button" class="demo-perfil active" data-persona="nino" role="radio" aria-checked="true">Sofía <small>7 años</small></button>
-            <button type="button" class="demo-perfil" data-persona="mayor" role="radio" aria-checked="false">Don Alberto <small>74 años</small></button>
-            <button type="button" class="demo-perfil" data-persona="motero" role="radio" aria-checked="false">Carlos <small>Ciclista</small></button>
-          </div>
-        </div>
-
-        <div class="demo-cta">
-          <button type="button" class="btn btn-primary btn-abrir-asesoria" data-modelo="band">Elegir Color y Comprar</button>
-          <button type="button" class="btn btn-ghost" id="btnProbarFichaDemo" data-persona="nino">
-            Probar Ficha de Emergencia
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </button>
-        </div>
+      <!-- Selector de casos protegidos -->
+      <div class="l-hero-tabs" id="carouselDots" role="tablist" aria-label="Casos de auxilio protegidos por Salva">
+        <button type="button" class="carousel-dot active" data-target="0" role="tab" aria-selected="true">
+          <span>Niños y familia</span>
+          <span class="dot-progress"></span>
+        </button>
+        <button type="button" class="carousel-dot" data-target="1" role="tab" aria-selected="false">
+          <span>Adultos mayores</span>
+          <span class="dot-progress"></span>
+        </button>
+        <button type="button" class="carousel-dot" data-target="2" role="tab" aria-selected="false">
+          <span>Ciclistas en ruta</span>
+          <span class="dot-progress"></span>
+        </button>
       </div>
 
-      <!-- Vista previa: así ve la ficha quien escanea -->
-      <div class="simulador-visual">
-        <figure class="demo-credencial" aria-live="polite">
-          <div class="demo-credencial-estado"><span class="demo-escaneo-punto"></span>Escaneado por NFC · hace 2 s</div>
-          <div class="demo-credencial-alerta">● Ficha médica de auxilio inmediato</div>
-          <div class="demo-credencial-cuerpo">
-            <div class="demo-identidad">
-              <span class="demo-avatar" id="demoAvatar">SR</span>
-              <div>
-                <strong id="demoNombre">Sofía Ramírez Vargas</strong>
-                <span id="demoSub">7 años · Portadora de Salva Band</span>
-              </div>
-            </div>
-            <dl class="demo-vitales">
-              <div class="demo-vital demo-vital--sangre"><dt>Grupo sanguíneo</dt><dd id="demoSangre">O Positivo (O+)</dd></div>
-              <div class="demo-vital"><dt>EPS / Seguro</dt><dd id="demoEps">Sura EPS</dd></div>
-            </dl>
-            <p class="demo-alergias"><strong>⚠ Alergias críticas</strong><span id="demoAlergias">Penicilina y Frutos Secos (Riesgo Anafilaxia).</span></p>
-            <div class="demo-contactos">
-              <span class="demo-contacto demo-contacto--llamar" id="demoContacto1">📞 Llamar a Mamá (Andrea V.)</span>
-              <span class="demo-contacto demo-contacto--wa">💬 WhatsApp con ubicación GPS</span>
-            </div>
-          </div>
-          <figcaption>Vista previa de la ficha que ve el socorrista al escanear</figcaption>
+      <div class="l-acciones">
+        <button type="button" class="l-btn btn-abrir-asesoria" data-modelo="band">Elegir su Salva</button>
+        <a href="#simulador" class="l-enlace">Ver lo que verá quien los encuentre</a>
+      </div>
+      <p class="l-hechos">Pago único <span aria-hidden="true">·</span> Sin baterías <span aria-hidden="true">·</span> Sin aplicaciones <span aria-hidden="true">·</span> Cualquier iPhone o Android</p>
+    </div>
+  </section>
+
+  <!-- ===================== NIVEL 2 · LA REALIDAD DE UNA EMERGENCIA ===================== -->
+  <section class="l-seccion l-historias" id="historias" aria-labelledby="historiasTitulo">
+    <div class="l-contenedor">
+      <header class="l-encabezado l-encabezado--split">
+        <div class="l-encabezado-titular">
+          <p class="l-kicker">Tres historias de auxilio</p>
+          <h2 class="l-titulo" id="historiasTitulo">Nadie planea una emergencia. <em>Sí se puede decidir cómo termina.</em></h2>
+        </div>
+        <div class="l-encabezado-bajada">
+          <figure class="l-escena">
+            <img src="salva-scan.jpg" alt="En la calle, un transeúnte escanea con su celular la Salva que lleva en la muñeca un hombre sentado." width="1376" height="768" loading="lazy">
+            <figcaption class="l-aviso">
+              <img src="salva-emblem.jpg" alt="" class="l-aviso-icono" width="34" height="34">
+              <span class="l-aviso-texto">
+                <span class="l-aviso-meta">Salva <span aria-hidden="true">·</span> ahora</span>
+                <strong>Escanearon la Salva de Carlos</strong>
+                <span>Calle 85 con 15, Bogotá <span aria-hidden="true">·</span> Ver ubicación</span>
+              </span>
+            </figcaption>
+          </figure>
+          <p class="l-escena-pie">Con <strong>Salva Cloud</strong>, este aviso te llega por WhatsApp, a ti y a hasta cuatro familiares más, en el mismo segundo del escaneo. <a class="l-enlace" href="#salva-cloud">Conocer Salva Cloud</a></p>
+        </div>
+      </header>
+
+      <article class="l-historia" id="historiaNinos">
+        <figure class="l-historia-media">
+          <img src="family-hero.jpg" alt="Una familia de tres generaciones se abraza en la playa al atardecer." width="1200" height="896" loading="lazy">
         </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== CÓMO FUNCIONA ===================== -->
-  <section class="how-it-works" id="como-funciona">
-    <div class="container">
-      <div class="section-heading">
-        <span class="eyebrow">Tecnología Simple y Segura</span>
-        <h2>Tres pasos para activar tu <span class="highlight-text">escudo tecnológico</span></h2>
-        <p class="section-lead">Sin configuraciones complejas. Listo para proteger en cuestión de minutos.</p>
-      </div>
-
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number-badge">01</div>
-          <div class="step-icon-wrap">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 4a8 8 0 1 0 0 16"/>
-              <circle cx="9" cy="4" r="1.3" fill="currentColor" stroke="none"/>
-              <circle cx="9" cy="20" r="1.3" fill="currentColor" stroke="none"/>
-              <path d="M14 9c1.2 1.8 1.2 4.2 0 6" opacity="0.55"/>
-              <path d="M17 6.5c2.4 3.3 2.4 7.7 0 11" opacity="0.85"/>
-            </svg>
-          </div>
-          <h3>La Recibes y la Lleva Puesta</h3>
-          <p>Pulsera de silicona médica IP68 o placa de acero 316L para la correa de tu reloj. Cero baterías y cero cargas: siempre lista.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number-badge">02</div>
-          <div class="step-icon-wrap">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="9" height="18" rx="1.8"/>
-              <path d="M14.5 10.5a3 3 0 0 1 2.9-3.5 3.6 3.6 0 0 1 3.5 2.7 2.4 2.4 0 0 1-.4 4.8h-6"/>
-              <rect x="15.5" y="15.5" width="6" height="5" rx="1.2"/>
-              <path d="M17 15.5v-1.3a1.5 1.5 0 0 1 3 0v1.3"/>
-            </svg>
-          </div>
-          <h3>Vinculación Cloud en 1 Minuto</h3>
-          <p>Escaneas el QR desde cualquier celular y registras los contactos de emergencia, tipo de sangre y alergias. Puedes actualizar los datos cuando quieras.</p>
-        </div>
-
-        <div class="step-card">
-          <div class="step-number-badge">03</div>
-          <div class="step-icon-wrap">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="3" width="9" height="18" rx="1.8"/>
-              <path d="M4.5 9.2c0-.7.5-1.2 1.2-1.2h.8c.5 0 1 .4 1.1.9l.3 1.1c.1.4 0 .9-.3 1.2l-.4.4c.5 1.1 1.4 2 2.5 2.5l.4-.4c.3-.3.8-.4 1.2-.3l1.1.3c.5.1.9.6.9 1.1v.8c0 .7-.5 1.2-1.2 1.2A7.8 7.8 0 0 1 4.5 9.2z"/>
-              <path d="M19 9.5a3.5 3.5 0 1 0-7 0c0 2.6 3.5 7 3.5 7s3.5-4.4 3.5-7z"/>
-              <circle cx="15.5" cy="9.5" r="1.2"/>
-            </svg>
-          </div>
-          <h3>Resguardo y Localización Inmediata</h3>
-          <p>Si la persona se extravía o sufre un accidente, cualquier transeúnte o rescatista acerca su teléfono y se comunica de inmediato contigo en 2 segundos.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== VALOR Y MODELOS (INVERSIÓN EN TRANQUILIDAD) ===================== -->
-  <section class="pricing" id="modelos">
-    <div class="container">
-      <div class="section-heading">
-        <span class="eyebrow">Inversión en Amor y Seguridad</span>
-        <h2>El valor incalculable de <span class="highlight-text">quienes más amas.</span></h2>
-        <p class="section-lead">Una sola inversión para toda una vida de tranquilidad. Sin mensualidades, sin cobros sorpresa.</p>
-      </div>
-
-      <!-- Banner Emocional de Valor -->
-      <div class="value-emotional-banner">
-        <div class="value-banner-content">
-          <div class="value-heart-icon">
-            <img src="salva-emblem.jpg" alt="Salva" style="width:44px;height:44px;border-radius:50%;object-fit:cover;">
-          </div>
-          <div class="value-banner-text">
-            <h3>Protegerlos no es un gasto, es el mayor acto de amor</h3>
-            <p>
-              ¿Cuánto vale la tranquilidad de saber que si tu hijo se extravía o tu padre se desorienta, cualquier persona podrá contactarte en 30 segundos? <strong>Una sola inversión para toda la vida</strong>.
-            </p>
-          </div>
-        </div>
-      </div>
-
-
-
-      <!-- Catálogo físico: hardware 100% pasivo -->
-      <div class="pricing-grid">
-        <article class="plan-card plan-card--band">
-          <div class="plan-header">
-            <span class="plan-category-pill">ESENCIAL &amp; UNIVERSAL</span>
-            <h3>Salva Band</h3>
-            <p class="plan-tagline"><strong>Para:</strong> niños escolares, adultos mayores, personas con alergias crónicas o condiciones de salud.</p>
-          </div>
-          <div class="plan-price">
-            <span class="price-amount">$59.000 <small>COP</small></span>
-            <span class="price-period">Pago único · Sin mensualidades</span>
-            <span class="plan-subtexto">Doble tecnología QR + Chip NFC • 100% Sin Baterías • Sumergible IP68</span>
-          </div>
-          <ul class="plan-features">
-            <li><span class="check-icon">✓</span> <span>Correa deportiva de silicona anatómica hipoalergénica con <strong>hebilla ajustable tipo reloj</strong> (talla única de 14 a 22 cm).</span></li>
-            <li><span class="check-icon">✓</span> <span><strong>Doble lectura:</strong> Grabado láser QR de alta densidad + Chip NFC pasivo NTAG encapsulado (la silicona no interfiere con la señal).</span></li>
-            <li><span class="check-icon">✓</span> <span>Ficha médica de emergencia digital de por vida (editable sin costo).</span></li>
-            <li><span class="check-icon">✓</span> <span><strong>Contacto en 1 toque:</strong> quien te escanea avisa a tu familia por WhatsApp con la ubicación GPS del rescate.</span></li>
-            <li><span class="check-icon">✓</span> <span>Cero baterías, cero cargas, resistente a cloro, agua salada y uso rudo.</span></li>
-          </ul>
-          <button type="button" class="btn btn-plan-select btn-abrir-asesoria" data-modelo="band">
-            Elegir Color y Comprar
-          </button>
-        </article>
-
-        <article class="plan-card plan-card--watch">
-          <div class="plan-header">
-            <span class="plan-category-pill">EL FAVORITO DE DEPORTISTAS · SOLO QR</span>
-            <h3>Salva Watch</h3>
-            <p class="plan-tagline"><strong>Para:</strong> ciclistas, moteros, runners, triatletas y quienes ya usan smartwatch y no quieren una segunda pulsera de goma.</p>
-          </div>
-          <div class="plan-price">
-            <span class="price-amount">$45.000 <small>COP</small></span>
-            <span class="price-period">Pago único · Sin mensualidades</span>
-            <span class="plan-subtexto">Placa de Acero Inoxidable 316L para la correa de tu reloj existente</span>
-          </div>
-          <ul class="plan-features">
-            <li><span class="check-icon">✓</span> <span><strong>Exclusivo Grabado Láser de Alta Precisión:</strong> Código QR permanente + logo y marca Salva (sin chips ni capas gruesas, perfil ultra-delgado).</span></li>
-            <li><span class="check-icon">✓</span> <span><strong>Cero interferencias:</strong> Al no llevar chip NFC pegado al metal, no sufre bloqueo magnético y cualquier celular lo lee a la primera con la cámara.</span></li>
-            <li><span class="check-icon">✓</span> <span>Compatible con correas estándar de 20 mm y 22 mm (Apple Watch, Garmin, Samsung Galaxy Watch, Amazfit, relojes tradicionales).</span></li>
-            <li><span class="check-icon">✓</span> <span>Acero quirúrgico 316L resistente a la corrosión, sudor y agua salada.</span></li>
-            <li><span class="check-icon">✓</span> <span>Contacto de 1 toque con tu familia por WhatsApp con la ubicación GPS del rescate.</span></li>
-          </ul>
-          <button type="button" class="btn btn-plan-select btn-abrir-asesoria" data-modelo="watch">
-            Elegir Talla y Comprar
-          </button>
-        </article>
-
-        <article class="plan-card plan-card--pack featured">
-          <div class="plan-header">
-            <span class="plan-category-pill plan-category-pill--featured">COMBO MÁS ELEGIDO · AHORRA $15.000 COP</span>
-            <h3>Pack Dúo Familiar</h3>
-            <p class="plan-tagline"><strong>Para:</strong> familias activas (ej: papá ciclista con su Apple Watch + hijo o abuelo con la pulsera médica).</p>
-          </div>
-          <div class="plan-price">
-            <span class="price-amount">$89.000 <small>COP</small></span>
-            <span class="price-period">Antes <s>$104.000 COP</s> · Pago único</span>
-            <span class="plan-subtexto">1 Pasador Salva Watch (para ti) + 1 Pulsera Salva Band (para tu familiar)</span>
-          </div>
-          <ul class="plan-features">
-            <li><span class="check-icon">✓</span> <span>Incluye 1 Pasador Salva Watch en acero inoxidable con QR grabado.</span></li>
-            <li><span class="check-icon">✓</span> <span>Incluye 1 Pulsera Salva Band de silicona médica con QR + NFC.</span></li>
-            <li><span class="check-icon">✓</span> <span>2 Fichas médicas independientes con perfiles y contactos separados.</span></li>
-            <li><span class="check-icon">✓</span> <span>Despacho conjunto asegurado a domicilio.</span></li>
-          </ul>
-          <button type="button" class="btn btn-primary btn-plan-select btn-abrir-asesoria" data-modelo="pack">
-            Comprar Pack Familiar
-          </button>
-        </article>
-      </div>
-
-      <!-- Membresía opcional: Salva Cloud Familiar -->
-      <div class="salva-cloud" id="salva-cloud">
-        <div class="salva-cloud-intro">
-          <span class="eyebrow">Membresía Anual · Salva Cloud &amp; Respuesta Familiar</span>
-          <h3>Tu pulsera funciona de por vida sin cuotas obligatorias. Pero si buscas protección y respuesta activa para toda tu familia, activa Salva Cloud.</h3>
-        </div>
-
-        <div class="salva-cloud-body">
-          <ol class="cloud-beneficios">
-            <li>
-              <span class="cloud-num">1</span>
-              <div><strong>Salva Respuesta &amp; Red Multi-Tutor</strong><p>Cuando alguien escanea la pulsera, el sistema avisa de inmediato con un toque por WhatsApp a hasta 5 familiares con la ubicación GPS del rescate.</p></div>
-            </li>
-            <li>
-              <span class="cloud-num">2</span>
-              <div><strong>Historial Completo de Escaneos</strong><p>Bitácora en tiempo real de todos los escaneos y rescates con fecha, hora y mapa de geolocalización.</p></div>
-            </li>
-            <li>
-              <span class="cloud-num">3</span>
-              <div><strong>Bóveda Médica Cloud</strong><p>Exámenes clínicos en PDF, recetas de EPS y calendario de medicamentos, guardados de forma privada y segura en tu panel para tenerlos a mano en cualquier urgencia.</p></div>
-            </li>
-            <li>
-              <span class="cloud-num">4</span>
-              <div><strong>Garantía Total</strong><p>50% de descuento en reposición de tu Salva Band o Salva Watch por daño o extravío mientras la membresía esté activa.</p></div>
-            </li>
+        <div class="l-historia-texto">
+          <p class="l-historia-lugar">Sofía, 7 años <span aria-hidden="true">·</span> Centro comercial, Bogotá</p>
+          <h3 class="l-historia-titulo">El domingo en que Sofía soltó la mano de su mamá</h3>
+          <ol class="l-cronologia">
+            <li><time>4:12 p. m.</time><p>Un segundo de distracción entre la multitud y Sofía ya no está. Andrea la busca entre los pasillos.</p></li>
+            <li><time>4:13 p. m.</time><p>Una vendedora la encuentra, apunta la cámara al QR de su pulsera y toca «WhatsApp». El reloj de Andrea vibra con la ubicación exacta de la tienda.</p></li>
           </ol>
+          <p class="l-desenlace">Cuarenta segundos después, Andrea la estaba abrazando.</p>
+          <button type="button" class="l-enlace btn-ver-ficha" data-persona="nino">Ver la ficha que vio la vendedora</button>
+        </div>
+      </article>
 
-          <div class="cloud-precios">
-            <div class="cloud-precio cloud-precio--anual">
-              <span class="cloud-ahorro">Un solo pago al año</span>
-              <span class="cloud-precio-nombre">Anual</span>
-              <span class="cloud-precio-valor">$79.000 <small>COP / año</small></span>
-              <span class="cloud-precio-nota">Equivalente a $6.583 COP/mes.</span>
-              <a class="btn btn-primary btn-block btn-cloud" data-cloud-plan="anual" href="#" target="_blank" rel="noopener">Activar plan anual</a>
+      <article class="l-historia l-historia--invertida" id="historiaMayores">
+        <figure class="l-historia-media">
+          <img src="senior-safety-hero.jpg" alt="Un hombre mayor camina con bastón del brazo de su hija por un sendero arbolado." width="1200" height="896" loading="lazy">
+        </figure>
+        <div class="l-historia-texto">
+          <p class="l-historia-lugar">Don Alberto, 74 años <span aria-hidden="true">·</span> Caminata matutina, Medellín</p>
+          <h3 class="l-historia-titulo">La mañana en que Don Alberto no recordaba el camino</h3>
+          <ol class="l-cronologia">
+            <li><time>7:05 a. m.</time><p>Una baja de presión lo obliga a sentarse en una calle poco transitada. Está desorientado y su celular tiene clave.</p></li>
+            <li><time>7:06 a. m.</time><p>Un transeúnte ve la pulsera y la escanea. En su pantalla: hipertensión, medicación diaria, grupo A+ y un botón para llamar a su hijo.</p></li>
+          </ol>
+          <p class="l-desenlace">Los paramédicos llegaron sabiendo exactamente qué darle. Esa noche cenó en casa.</p>
+          <button type="button" class="l-enlace btn-ver-ficha" data-persona="mayor">Ver la ficha que vio el transeúnte</button>
+        </div>
+      </article>
+
+      <article class="l-historia" id="historiaMoteros">
+        <figure class="l-historia-media">
+          <img src="rider-cyclist-hero.jpg" alt="Un ciclista y una motociclista recorren una carretera de montaña junto al mar al atardecer." width="1200" height="896" loading="lazy">
+        </figure>
+        <div class="l-historia-texto">
+          <p class="l-historia-lugar">Carlos, ciclista <span aria-hidden="true">·</span> Ruta Alto de Patios</p>
+          <h3 class="l-historia-titulo">La curva con aceite a 40 km/h</h3>
+          <ol class="l-cronologia">
+            <li><time>6:40 a. m.</time><p>Una caída fuerte lo deja inconsciente en la berma. Su celular se apagó con el golpe.</p></li>
+            <li><time>6:52 a. m.</time><p>El paramédico de la vía escanea el Salva Watch en la correa de su reloj: alérgico a la penicilina, EPS Sura, contacto de su esposa.</p></li>
+          </ol>
+          <p class="l-desenlace">Recibió un analgésico seguro. Su esposa llegó a la clínica sabiendo todo desde el primer minuto.</p>
+          <button type="button" class="l-enlace btn-ver-ficha" data-persona="motero">Ver la ficha que vio el paramédico</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== NIVEL 3 · LA FICHA, EN VIVO ===================== -->
+  <section class="l-seccion l-ficha" id="simulador" aria-labelledby="fichaTitulo">
+    <div class="l-contenedor l-ficha-grid">
+      <div class="l-ficha-texto">
+        <p class="l-kicker">La ficha médica, en vivo</p>
+        <h2 class="l-titulo" id="fichaTitulo">Cualquier teléfono la lee. <em>Nadie tiene que instalar nada.</em></h2>
+        <p class="l-cuerpo">Quien encuentre a tu familiar apunta la cámara al código QR o acerca su celular a la Salva Band. La ficha se abre en su navegador con lo que un rescatista necesita saber, en el orden en que lo necesita: quién es, su grupo sanguíneo, las alergias que no pueden ignorarse y cómo llamarte.</p>
+        <p class="l-cuerpo">Sin registros, sin claves y sin descargas. Al tocar WhatsApp, te llega un mensaje con la ubicación del lugar.</p>
+
+        <div class="l-perfiles" role="radiogroup" aria-label="Ver la ficha de">
+          <span class="l-perfiles-titulo" aria-hidden="true">Ver la ficha de</span>
+          <button type="button" class="demo-perfil active" data-persona="nino" role="radio" aria-checked="true">Sofía</button>
+          <button type="button" class="demo-perfil" data-persona="mayor" role="radio" aria-checked="false">Don Alberto</button>
+          <button type="button" class="demo-perfil" data-persona="motero" role="radio" aria-checked="false">Carlos</button>
+        </div>
+
+        <button type="button" class="l-enlace" id="btnProbarFichaDemo" data-persona="nino">Abrir la ficha completa</button>
+      </div>
+
+      <figure class="l-telefono demo-credencial" aria-live="polite">
+        <div class="l-telefono-pantalla">
+          <div class="l-ficha-barra"><span class="l-ficha-punto" aria-hidden="true"></span>Expediente médico de emergencia</div>
+          <div class="l-ficha-id">
+            <span class="l-ficha-avatar" id="demoAvatar" aria-hidden="true">SR</span>
+            <div class="l-ficha-id-texto">
+              <span class="l-micro">Portadora</span>
+              <strong id="demoNombre">Sofía Ramírez Vargas</strong>
+              <span class="l-ficha-sub" id="demoSub">7 años · Salva Band</span>
             </div>
-            <p class="cloud-tip">💡 Si compras tu pulsera ahora, puedes añadir 1 año de Salva Cloud por solo <strong>$49.000 COP</strong> en el checkout.</p>
+          </div>
+          <dl class="l-ficha-vitales">
+            <div><dt class="l-micro">Grupo sanguíneo</dt><dd id="demoSangre" class="l-ficha-sangre">O+</dd></div>
+            <div><dt class="l-micro">EPS</dt><dd id="demoEps">Sura EPS</dd></div>
+          </dl>
+          <div class="l-ficha-alergia">
+            <span class="l-micro">Alergias críticas</span>
+            <p id="demoAlergias">Penicilina y frutos secos (riesgo de anafilaxia).</p>
+          </div>
+          <div class="l-ficha-botones" aria-hidden="true">
+            <span class="l-ficha-btn">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <span id="demoContacto1">Llamar a Mamá (Andrea V.)</span>
+            </span>
+            <span class="l-ficha-btn l-ficha-btn--wa">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+              <span>WhatsApp con ubicación</span>
+            </span>
           </div>
         </div>
+        <figcaption>Lo que ve quien escanea la pulsera. Los datos son de ejemplo.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ===================== NIVEL 4 · LAS PIEZAS ===================== -->
+  <section class="l-piezas" id="modelos" aria-labelledby="piezasTitulo">
+    <div class="l-contenedor">
+      <header class="l-encabezado l-encabezado--claro">
+        <p class="l-kicker">Las piezas</p>
+        <h2 class="l-titulo" id="piezasTitulo">Hechas para no fallar <em>el único día que importa.</em></h2>
+        <p class="l-cuerpo">No tienen batería, no se cargan y no tienen electrónica que se agote. Se pagan una vez y la ficha médica queda activa para siempre.</p>
+      </header>
+
+      <article class="l-pieza" aria-labelledby="piezaBand">
+        <figure class="l-pieza-media">
+          <img src="salva-band.jpg" alt="Salva Band negra de silicona con el código QR y el logo de Salva grabados." width="480" height="400" loading="lazy">
+        </figure>
+        <div class="l-pieza-texto">
+          <h3 class="l-pieza-nombre" id="piezaBand">Salva Band</h3>
+          <p class="l-pieza-para">Para niños, adultos mayores y cualquier persona con una condición médica o una alergia.</p>
+          <dl class="l-especificaciones">
+            <div><dt>Material</dt><dd>Silicona médica hipoalergénica</dd></div>
+            <div><dt>Lectura</dt><dd>Código QR grabado con láser y chip NFC</dd></div>
+            <div><dt>Ajuste</dt><dd>Talla única de 14 a 22 cm, hebilla tipo reloj</dd></div>
+            <div><dt>Resistencia</dt><dd>Sumergible IP68: piscina, mar y sudor</dd></div>
+          </dl>
+          <div class="l-pieza-compra">
+            <p class="l-precio">$59.000 <span>COP · pago único</span></p>
+            <button type="button" class="l-btn l-btn--claro btn-abrir-asesoria" data-modelo="band">Elegir color</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="l-pieza l-pieza--invertida" aria-labelledby="piezaWatch">
+        <figure class="l-pieza-media">
+          <img src="salva-watch.jpg" alt="Salva Watch: placa de acero con el código QR grabado, deslizada en la correa de un reloj inteligente." width="460" height="480" loading="lazy">
+        </figure>
+        <div class="l-pieza-texto">
+          <h3 class="l-pieza-nombre" id="piezaWatch">Salva Watch</h3>
+          <p class="l-pieza-para">Para quienes salen a rodar, correr o pedalear y ya llevan un reloj. Se desliza en la correa: nada más que ponerse.</p>
+          <dl class="l-especificaciones">
+            <div><dt>Material</dt><dd>Acero quirúrgico 316L</dd></div>
+            <div><dt>Lectura</dt><dd>Código QR grabado con láser; sin chip, para que el metal no bloquee la lectura</dd></div>
+            <div><dt>Compatibilidad</dt><dd>Correas de 20 y 22 mm: Apple Watch, Garmin, Galaxy Watch, Amazfit</dd></div>
+            <div><dt>Resistencia</dt><dd>Corrosión, sudor y agua salada</dd></div>
+          </dl>
+          <div class="l-pieza-compra">
+            <p class="l-precio">$45.000 <span>COP · pago único</span></p>
+            <button type="button" class="l-btn l-btn--claro btn-abrir-asesoria" data-modelo="watch">Elegir ancho</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="l-duo" aria-labelledby="piezaDuo">
+        <figure class="l-duo-media">
+          <img src="salva-duo.jpg" alt="Salva Band y Salva Watch, Pack Dúo Familiar de Salva." width="1024" height="571" loading="lazy">
+        </figure>
+        <div class="l-duo-texto">
+          <h3 class="l-pieza-nombre" id="piezaDuo">Pack Dúo</h3>
+          <p class="l-pieza-para">Una Salva Watch para ti y una Salva Band para quien más cuidas. Dos fichas independientes, un solo envío.</p>
+          <div class="l-pieza-compra">
+            <p class="l-precio">$89.000 <span>COP · antes <s>$104.000</s></span></p>
+            <button type="button" class="l-btn l-btn--claro btn-abrir-asesoria" data-modelo="pack">Elegir el Pack Dúo</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===================== NIVEL 5 · SALVA CLOUD FAMILIAR ===================== -->
+  <section class="l-seccion l-cloud" id="salva-cloud" aria-labelledby="cloudTitulo">
+    <div class="l-contenedor l-cloud-grid">
+      <div class="l-cloud-texto">
+        <p class="l-kicker">Salva Cloud Familiar · opcional</p>
+        <h2 class="l-titulo" id="cloudTitulo">La pulsera habla por ellos. <em>Salva Cloud reúne a la familia.</em></h2>
+        <p class="l-cuerpo">Tu Salva funciona de por vida sin cuotas. Salva Cloud es el respaldo del hogar: más personas se enteran a tiempo, cada escaneo queda registrado y los documentos médicos están a mano cuando más se necesitan.</p>
+        <div class="l-cloud-precio">
+          <p class="l-precio">$79.000 <span>COP al año</span></p>
+          <p class="l-nota">O $49.000 el primer año si la agregas al comprar tu pulsera.</p>
+          <a class="l-btn btn-cloud" data-cloud-plan="anual" href="#" target="_blank" rel="noopener">Activar Salva Cloud</a>
+        </div>
       </div>
+
+      <dl class="l-beneficios">
+        <div>
+          <dt>Salva Respuesta</dt>
+          <dd>Cuando alguien escanea la pulsera, el sistema avisa por WhatsApp hasta a cinco familiares con la ubicación del lugar.</dd>
+        </div>
+        <div>
+          <dt>Historial de escaneos</dt>
+          <dd>Cada escaneo queda registrado con fecha, hora y mapa, para saber dónde y cuándo los encontraron.</dd>
+        </div>
+        <div>
+          <dt>Bóveda médica</dt>
+          <dd>Exámenes, fórmulas de la EPS y calendario de medicamentos, guardados en privado en tu panel.</dd>
+        </div>
+        <div>
+          <dt>Reposición al 50%</dt>
+          <dd>Si la pulsera se pierde o se daña mientras la membresía está activa, la reponemos a mitad de precio.</dd>
+        </div>
+      </dl>
     </div>
   </section>
 
   <!-- ===================== APP SALVA (PWA) ===================== -->
-  <section class="app-movil" id="app">
-    <div class="container app-movil-inner">
-      <div class="app-movil-texto">
-        <span class="eyebrow">App Salva para iPhone y Android</span>
-        <h2>Lleva Salva en tu <span class="highlight-text">celular</span></h2>
-        <p class="section-lead">Instala Mi Panel Salva como una app: se abre con un toque desde tu pantalla de inicio y a pantalla completa, para tener a tu familia siempre a mano.</p>
-        <ul class="app-movil-beneficios">
-          <li><span class="check-icon">✓</span> Edita fichas médicas y contactos de emergencia en segundos.</li>
-          <li><span class="check-icon">✓</span> Revisa el último escaneo de tu Salva con su ubicación en el mapa.</li>
-          <li><span class="check-icon">✓</span> Sin tiendas ni descargas pesadas: se instala desde el navegador y siempre está actualizada.</li>
-        </ul>
-        <div class="app-badges">
-          <button type="button" class="app-badge" data-plataforma="ios">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
-            <span><small>Para iPhone</small><strong>Agregar a inicio</strong></span>
-          </button>
-          <button type="button" class="app-badge" data-plataforma="android">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7"/><path d="m9 11 3 3 3-3"/></svg>
-            <span><small>Para Android</small><strong>Instalar app</strong></span>
-          </button>
+  <section class="l-seccion l-app" id="app" aria-labelledby="appTitulo">
+    <div class="l-contenedor l-app-grid">
+      <div class="l-app-texto">
+        <p class="l-kicker">Mi Panel Salva</p>
+        <h2 class="l-titulo" id="appTitulo">Tu familia, <em>en la pantalla de inicio.</em></h2>
+        <p class="l-cuerpo">Instala Mi Panel como una app desde el navegador. Al abrirla ves primero a las personas que cuidas y si alguien escaneó su Salva. Actualizas una ficha en segundos, sin tiendas ni descargas pesadas.</p>
+        <div class="l-app-instalar">
+          <button type="button" class="l-btn l-btn--borde app-badge" data-plataforma="ios">Agregar a inicio en iPhone</button>
+          <button type="button" class="l-btn l-btn--borde app-badge" data-plataforma="android">Instalar en Android</button>
         </div>
-        <p class="app-movil-estado" id="appMovilEstado" hidden></p>
+        <p class="l-nota" id="appMovilEstado" hidden></p>
       </div>
-      <div class="app-movil-visual" aria-hidden="true">
-        <div class="telefono-maqueta">
-          <div class="telefono-pantalla">
-            <div class="mini-app-barra">
-              <span class="mini-app-hora">9:41</span>
-              <span class="mini-app-isla"></span>
-              <span class="mini-app-senal">●●●</span>
-            </div>
-            <div class="mini-app-header">
-              <img src="icons/icon-192.png" alt="" class="mini-app-logo">
-              <div>
-                <strong>Hola, Andrea 👋</strong>
-                <span><i class="mini-punto"></i> Familia protegida · 2 Salva</span>
-              </div>
-            </div>
-            <div class="mini-tarjeta">
-              <div class="mini-portador">
-                <img src="salva-child-hero.jpg" alt="" class="mini-avatar">
-                <div class="mini-portador-info">
-                  <strong>Sofía Ramírez</strong>
-                  <span>SALVA-B-0042</span>
-                </div>
-              </div>
-              <div class="mini-badges">
-                <span class="mini-badge mini-badge--ok">VINCULADA</span>
-                <span class="mini-badge mini-badge--sangre">🩸 O+</span>
-              </div>
-              <div class="mini-acciones">
-                <span class="mini-btn mini-btn--claro">Ver Ficha</span>
-                <span class="mini-btn mini-btn--oscuro">Ubicación</span>
-              </div>
-            </div>
-            <div class="mini-tarjeta mini-escaneo">
-              <span class="mini-etiqueta">📍 Último escaneo · hace 5 min</span>
-              <div class="mini-mapa">
-                <span class="mini-calle mini-calle--h"></span>
-                <span class="mini-calle mini-calle--v"></span>
-                <span class="mini-calle mini-calle--d"></span>
-                <span class="mini-parque"></span>
-                <span class="mini-pin"></span>
-              </div>
-              <span class="mini-lugar">C.C. Andino · Bogotá</span>
-            </div>
-          </div>
+
+      <div class="l-app-visual" aria-hidden="true">
+        <div class="l-app-telefono">
+          <p class="l-app-saludo">Buenas tardes, Andrea</p>
+          <p class="l-app-estado"><span class="l-app-punto"></span>Todos a salvo</p>
+          <ul class="l-app-personas">
+            <li>
+              <span class="l-app-avatar">SR</span>
+              <span class="l-app-persona"><strong>Sofía</strong><span>Ficha al día</span></span>
+              <span class="l-app-ok">A salvo</span>
+            </li>
+            <li>
+              <span class="l-app-avatar">AG</span>
+              <span class="l-app-persona"><strong>Abuelo Alberto</strong><span>Ficha al día</span></span>
+              <span class="l-app-ok">A salvo</span>
+            </li>
+            <li>
+              <span class="l-app-avatar">CM</span>
+              <span class="l-app-persona"><strong>Carlos</strong><span>Escaneado ayer en ruta</span></span>
+              <span class="l-app-ok">A salvo</span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ===================== FAQ (DISMINUCIÓN TOTAL DE FRICCIONES) ===================== -->
-  <section class="faq" id="preguntas">
-    <div class="container">
-      <div class="section-heading">
-        <span class="eyebrow">Transparencia Total</span>
-        <h2>Preguntas Frecuentes</h2>
-        <p class="section-lead">Todo lo que necesitas saber antes de dar el paso de proteger a tu familia.</p>
-      </div>
+  <!-- ===================== PREGUNTAS FRECUENTES ===================== -->
+  <section class="l-seccion l-faq" id="preguntas" aria-labelledby="faqTitulo">
+    <div class="l-contenedor l-faq-grid">
+      <header class="l-faq-encabezado">
+        <p class="l-kicker">Preguntas frecuentes</p>
+        <h2 class="l-titulo" id="faqTitulo">Lo que las familias <em>nos preguntan primero.</em></h2>
+      </header>
 
       <div class="faq-list">
         <div class="faq-item">
@@ -732,55 +483,40 @@
     </div>
   </section>
 
-  <!-- ===================== CONTACTO / ASESORÍA PERSONALIZADA ===================== -->
-  <section class="contact" id="contacto">
-    <div class="container">
-      <div class="contact-card">
-        <div class="contact-text">
-          <span class="eyebrow">Asesoría de Seguridad Personalizada</span>
-          <h2>¿Tienes dudas sobre qué modelo es el ideal?</h2>
-          <p class="section-lead">No dejes la seguridad de tu familia al azar. Un especialista en seguridad familiar de Salva te orienta en minutos por WhatsApp.</p>
-          <div class="contact-actions">
-            <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="btn btn-wa-direct">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2z"/></svg>
-              <span>Hablar con un Asesor por WhatsApp</span>
-            </a>
-          </div>
-        </div>
-        <div class="contact-badges">
-          <div class="c-badge">Envíos seguros a toda Colombia</div>
-          <div class="c-badge">Garantía oficial directa de fábrica</div>
-          <div class="c-badge">Acompañamiento en la carga clínica</div>
-        </div>
+  <!-- ===================== CIERRE ===================== -->
+  <section class="l-cierre" id="contacto" aria-labelledby="cierreTitulo">
+    <div class="l-contenedor l-cierre-inner">
+      <h2 class="l-titulo" id="cierreTitulo">¿Para quién será <em>tu primera Salva?</em></h2>
+      <p class="l-cuerpo">Cuéntanos a quién quieres proteger y te ayudamos a elegir modelo, color y talla en un par de minutos.</p>
+      <div class="l-acciones">
+        <a href="https://wa.me/573505208592?text=Hola%20Asistente%20Salva%20%F0%9F%A4%96%20Deseo%20adquirir%20mi%20pulsera%20Salva.%20Por%20favor%20gu%C3%ADame%20con%20modelos%2C%20color%2C%20talla%20ajustable%2C%20env%C3%ADo%20y%20pago%20seguro%20v%C3%ADa%20Wompi/PSE." target="_blank" rel="noopener" class="l-btn">Hablar con Salva por WhatsApp</a>
+        <button type="button" class="l-enlace btn-abrir-asesoria" data-modelo="band">Prefiero comprar ahora</button>
       </div>
+      <p class="l-hechos">Envío asegurado a toda Colombia <span aria-hidden="true">·</span> Garantía directa de fábrica <span aria-hidden="true">·</span> Te acompañamos a llenar la ficha</p>
     </div>
   </section>
 </main>
 
-<!-- ===================== FOOTER ===================== -->
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-brand">
-      <span class="brand-logo-wrap brand-logo-wrap--footer">
-        <img src="salva-emblem.jpg" alt="Salva Logo" class="brand-logo-img">
-      </span>
-      <span><strong>Salva</strong></span>
+<!-- ===================== PIE ===================== -->
+<footer class="l-footer">
+  <div class="l-contenedor">
+    <div class="l-footer-fila">
+      <a href="#top" class="l-marca" aria-label="Salva, volver arriba">
+        <img src="salva-emblem.jpg" alt="" class="l-marca-logo" width="26" height="26">
+        <span>Salva</span>
+      </a>
+      <ul class="l-footer-enlaces">
+        <li><a href="#modalPrivacidad" data-abrir-modal="modalPrivacidad">Privacidad de datos clínicos</a></li>
+        <li><a href="#">Términos del servicio</a></li>
+        <li><a href="#">Garantía oficial</a></li>
+        <li><a href="https://wa.me/573505208592" target="_blank" rel="noopener">Soporte por WhatsApp</a></li>
+      </ul>
     </div>
-    <p class="footer-endorsement">Salva es una tecnología creada y respaldada por <strong>LC Tech</strong> · Bogotá, Colombia.</p>
-    <p class="footer-copy">&copy; <span id="year"></span> Salva. Respaldado por LC Tech. Todos los derechos reservados.</p>
-    <ul class="footer-links">
-      <li><a href="#modalPrivacidad" data-abrir-modal="modalPrivacidad">Privacidad de Datos Clínicos</a></li>
-      <li><a href="#">Términos del Servicio</a></li>
-      <li><a href="#">Garantía Oficial</a></li>
-      <li><a href="https://wa.me/573505208592" target="_blank" rel="noopener">Soporte WhatsApp</a></li>
-    </ul>
-
-    <div class="footer-legal-compliance">
-      <p class="data-law-badge">
-        🔒 <strong>Protección de Datos Personales:</strong> En cumplimiento de la <strong>Ley 1581 de 2012</strong> y el Decreto 1377 de 2013 de Colombia, los datos personales y de salud registrados en Salva son tratados de manera confidencial y segura, con la finalidad exclusiva de auxilio y localización en situaciones de emergencia o extravío (Art. 6, Literal C).
-      </p>
-      <a href="#modalPrivacidad" id="btnAbrirPrivacidad" class="legal-link" data-abrir-modal="modalPrivacidad">Ver Política de Tratamiento de Datos</a>
-    </div>
+    <p class="l-footer-legal">
+      <strong>Protección de datos personales.</strong> En cumplimiento de la Ley 1581 de 2012 y el Decreto 1377 de 2013, los datos personales y de salud registrados en Salva se tratan de forma confidencial y segura, con la finalidad exclusiva de auxilio y localización en situaciones de emergencia o extravío (Art. 6, literal C).
+      <a href="#modalPrivacidad" id="btnAbrirPrivacidad" data-abrir-modal="modalPrivacidad">Ver la política de tratamiento de datos</a>
+    </p>
+    <p class="l-footer-copy">&copy; <span id="year"></span> Salva. Tecnología creada y respaldada por LC Tech · Bogotá, Colombia.</p>
   </div>
 </footer>
 
@@ -813,57 +549,36 @@
   </div>
 </div>
 
-<!-- ===================== MODAL: HISTORIAL CLÍNICO / FICHA DEMO ===================== -->
+<!-- ===================== MODAL: FICHA MÉDICA DE DEMOSTRACIÓN ===================== -->
 <div class="modal-overlay" id="modalFichaDemo" hidden>
-  <div class="modal modal-md ficha-modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalFicha">
-    <button type="button" class="modal-close" data-close-modal="modalFichaDemo" aria-label="Cerrar Ficha Médica">✕</button>
-    
-    <div class="ficha-modal-header">
-      <div class="ficha-badge-alert">Ficha Médica de Emergencia (Lectura QR/NFC)</div>
-      <h2 id="tituloModalFicha" class="ficha-paciente-nombre">Sofía Ramírez Vargas</h2>
-      <p class="ficha-paciente-sub" id="subModalFicha">7 años · Identificación Médica Activa</p>
-    </div>
+  <div class="modal modal-md l-ficha-modal" role="dialog" aria-modal="true" aria-labelledby="tituloModalFicha">
+    <button type="button" class="modal-close" data-close-modal="modalFichaDemo" aria-label="Cerrar la ficha">✕</button>
 
-    <div class="ficha-modal-body">
-      <!-- Tarjetas de datos clínicos -->
-      <div class="ficha-vital-grid">
-        <div class="vital-chip">
-          <span class="vital-label">Grupo Sanguíneo</span>
-          <strong class="vital-val blood-val" id="modalFichaSangre">O Positivo (O+)</strong>
-        </div>
-        <div class="vital-chip">
-          <span class="vital-label">EPS / Seguro</span>
-          <strong class="vital-val" id="modalFichaEPS">Sura EPS</strong>
-        </div>
+    <p class="l-micro l-ficha-modal-kicker">Expediente médico de emergencia · ejemplo</p>
+    <h2 id="tituloModalFicha" class="l-ficha-modal-nombre">Sofía Ramírez Vargas</h2>
+    <p class="l-ficha-modal-sub" id="subModalFicha">7 años · Salva Band</p>
+
+    <dl class="l-ficha-modal-registro">
+      <div class="l-ficha-modal-vitales">
+        <div><dt class="l-micro">Grupo sanguíneo</dt><dd class="l-ficha-sangre" id="modalFichaSangre">O+</dd></div>
+        <div><dt class="l-micro">EPS / seguro</dt><dd id="modalFichaEPS">Sura EPS</dd></div>
       </div>
-
-      <div class="ficha-detail-box alert-box">
-        <strong>⚠️ Alergias Críticas:</strong>
-        <p id="modalFichaAlergias">Penicilina y Frutos Secos (Reacción Anafiláctica).</p>
+      <div class="l-ficha-modal-fila l-ficha-modal-fila--critica">
+        <dt class="l-micro">Alergias críticas</dt>
+        <dd id="modalFichaAlergias">Penicilina y frutos secos (riesgo de anafilaxia).</dd>
       </div>
-
-      <div class="ficha-detail-box">
-        <strong>🩺 Condiciones Médicas & Medicación:</strong>
-        <p id="modalFichaCondiciones">Asma bronquial leve. Inhalador Salbutamol en caso de crisis.</p>
+      <div class="l-ficha-modal-fila">
+        <dt class="l-micro">Condiciones y medicación</dt>
+        <dd id="modalFichaCondiciones">Asma bronquial leve controlada. Usa salbutamol ante una crisis respiratoria.</dd>
       </div>
-
-      <div class="ficha-contacts-box">
-        <span class="contacts-title">Contactos SOS para llamar en este momento:</span>
-        <div class="contact-sos-row" id="modalFichaContactos">
-          <a href="tel:3001234567" class="sos-btn sos-call">
-            <span>📞 Mamá (Andrea V.)</span>
-          </a>
-          <a href="https://wa.me/573505208592" target="_blank" rel="noopener" class="sos-btn sos-whatsapp">
-            <span>💬 WhatsApp Papá (Carlos R.)</span>
-          </a>
-        </div>
+      <div class="l-ficha-modal-fila">
+        <dt class="l-micro">Contactos de emergencia</dt>
+        <dd class="l-ficha-modal-contactos" id="modalFichaContactos"></dd>
       </div>
-    </div>
+    </dl>
 
-    <div class="ficha-modal-footer">
-      <p class="ficha-footer-hint">✨ Esta información es la que ve cualquier persona o paramédico al acercar su teléfono a la pulsera Salva.</p>
-      <button type="button" class="btn-ficha-cerrar" data-close-modal="modalFichaDemo">Entendido, cerrar vista</button>
-    </div>
+    <p class="l-nota l-ficha-modal-nota">En una ficha real, estos contactos son botones que llaman o escriben a la familia con la ubicación del lugar.</p>
+    <button type="button" class="l-btn l-btn--borde l-ficha-modal-cerrar" data-close-modal="modalFichaDemo">Cerrar</button>
   </div>
 </div>
 
@@ -1172,7 +887,7 @@
   </div>
 </div>
 
-<script src="pwa.js?v=2.2"></script>
-<script src="app.js?v=2.2"></script>
+<script src="pwa.js?v=2.3"></script>
+<script src="app.js?v=2.3"></script>
 </body>
 </html>

@@ -51,7 +51,9 @@
     });
 
     carouselDots.forEach(function (dot, idx) {
-      dot.classList.toggle('active', idx === currentSlide);
+      var activo = idx === currentSlide;
+      dot.classList.toggle('active', activo);
+      dot.setAttribute('aria-selected', activo ? 'true' : 'false');
     });
   }
 
@@ -65,7 +67,7 @@
 
   function iniciarAutoplay() {
     detenerAutoplay();
-    carouselTimer = setInterval(siguienteSlide, 4500);
+    carouselTimer = setInterval(siguienteSlide, 5500);
   }
 
   function detenerAutoplay() {
@@ -97,41 +99,42 @@
   /* =========================================================
      MODAL DE HISTORIAL CLÍNICO / FICHA MÉDICA DE EMERGENCIA
      ========================================================= */
+  // Datos de ejemplo de la landing: los contactos no son enlaces reales (nadie debe llamar a un número inventado)
   var DATOS_FICHAS = {
     nino: {
       nombre: 'Sofía Ramírez Vargas',
-      sub: '7 años · Portadora de Salva Band',
-      sangre: 'O Positivo (O+)',
-      eps: 'Sura EPS (Plan Complementario)',
-      alergias: 'Penicilina y Frutos Secos (Riesgo Anafilaxia).',
-      condiciones: 'Asma bronquial leve controlada. Usa Salbutamol ante crisis respiratoria.',
+      sub: '7 años · Salva Band',
+      sangre: 'O+',
+      eps: 'Sura EPS',
+      alergias: 'Penicilina y frutos secos (riesgo de anafilaxia).',
+      condiciones: 'Asma bronquial leve controlada. Usa salbutamol ante una crisis respiratoria.',
       contactos: [
-        { tipo: 'tel', texto: '📞 Mamá (Andrea V. - 300 123 4567)', href: 'tel:3001234567', clase: 'sos-call' },
-        { tipo: 'wa', texto: '💬 WhatsApp Papá (Carlos R.)', href: 'https://wa.me/573505208592?text=Hola,%20tengo%20a%20tu%20hija%20Sofía', clase: 'sos-whatsapp' }
+        { rol: 'Llamar', nombre: 'Mamá (Andrea V.)' },
+        { rol: 'WhatsApp', nombre: 'Papá (Carlos R.)' }
       ]
     },
     mayor: {
-      nombre: 'Don Alberto Gómez Restrepo',
-      sub: '74 años · Portador de Salva Band',
-      sangre: 'A Positivo (A+)',
-      eps: 'Sanitas EPS / Medicina Prepagada',
-      alergias: 'Sulfas, AINEs y Dipirona.',
-      condiciones: 'Hipertensión arterial y Diabetes Tipo 2. Medicación diaria: Losartán 50mg, Metformina 850mg.',
+      nombre: 'Alberto Gómez Restrepo',
+      sub: '74 años · Salva Band',
+      sangre: 'A+',
+      eps: 'Sanitas EPS',
+      alergias: 'Sulfas, AINEs y dipirona.',
+      condiciones: 'Hipertensión arterial y diabetes tipo 2. Losartán 50 mg y metformina 850 mg diarios.',
       contactos: [
-        { tipo: 'tel', texto: '📞 Hijo (Ing. Andrés Gómez - 310 987 6543)', href: 'tel:3109876543', clase: 'sos-call' },
-        { tipo: 'wa', texto: '💬 WhatsApp Hija (Dra. Marcela G.)', href: 'https://wa.me/573505208592?text=Hola,%20estoy%20con%20Don%20Alberto%20Gómez', clase: 'sos-whatsapp' }
+        { rol: 'Llamar', nombre: 'Hijo (Andrés G.)' },
+        { rol: 'WhatsApp', nombre: 'Hija (Marcela G.)' }
       ]
     },
     motero: {
-      nombre: 'Carlos Mendoza Ríos (Ciclista & Rider)',
-      sub: '29 años · Portador de Salva Watch (Ruta / Ciudad)',
-      sangre: 'O Negativo (O- Donante Universal)',
-      eps: 'Compensar EPS + Póliza Deportiva & Todo Riesgo',
-      alergias: 'Sin alergias conocidas a medicamentos.',
-      condiciones: 'Material de osteosíntesis en fémur derecho. Seguro contra accidentes en ruta vigente.',
+      nombre: 'Carlos Mendoza Ríos',
+      sub: '29 años · Salva Watch',
+      sangre: 'O−',
+      eps: 'Compensar EPS',
+      alergias: 'Penicilina.',
+      condiciones: 'Material de osteosíntesis en el fémur derecho.',
       contactos: [
-        { tipo: 'tel', texto: '📞 Contacto SOS Hermana (Valeria M.)', href: 'tel:3154567890', clase: 'sos-call' },
-        { tipo: 'wa', texto: '💬 WhatsApp Contacto SOS de Ruta', href: 'https://wa.me/573505208592?text=Alerta%20Accidente%20Ruta%20Carlos%20Mendoza', clase: 'sos-whatsapp' }
+        { rol: 'Llamar', nombre: 'Esposa (Valeria M.)' },
+        { rol: 'WhatsApp', nombre: 'Esposa (Valeria M.)' }
       ]
     }
   };
@@ -152,15 +155,16 @@
     containerContactos.innerHTML = '';
 
     info.contactos.forEach(function (c) {
-      var a = document.createElement('a');
-      a.href = c.href;
-      a.className = 'sos-btn ' + c.clase;
-      if (c.tipo === 'wa') {
-        a.target = '_blank';
-        a.rel = 'noopener';
-      }
-      a.innerHTML = '<span>' + c.texto + '</span>';
-      containerContactos.appendChild(a);
+      var fila = document.createElement('span');
+      fila.className = 'l-ficha-modal-contacto';
+      var rol = document.createElement('span');
+      rol.className = 'l-micro';
+      rol.textContent = c.rol;
+      var nombre = document.createElement('span');
+      nombre.textContent = c.nombre;
+      fila.appendChild(rol);
+      fila.appendChild(nombre);
+      containerContactos.appendChild(fila);
     });
 
     modalFichaDemo.hidden = false;
@@ -186,8 +190,7 @@
     document.getElementById('demoSangre').textContent = info.sangre;
     document.getElementById('demoEps').textContent = info.eps;
     document.getElementById('demoAlergias').textContent = info.alergias;
-    document.getElementById('demoContacto1').textContent = info.contactos[0].texto
-      .replace(/\s*-\s*[\d ]+\)/, ')').replace(/^📞\s*/, '📞 Llamar a ');
+    document.getElementById('demoContacto1').textContent = 'Llamar a ' + info.contactos[0].nombre;
     var tarjeta = document.querySelector('.demo-credencial');
     tarjeta.classList.remove('is-cambiando');
     void tarjeta.offsetWidth;
