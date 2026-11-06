@@ -886,18 +886,22 @@
     return promesaComercio;
   }
 
+  // Sin firma de integridad NUNCA se abre el pago: el monto viajaría sin protección y
+  // podría alterarse desde el navegador. En ese caso el cliente sigue por WhatsApp.
   function obtenerFirmaIntegridad(referencia, montoEnCentavos) {
-    if (!WOMPI.firmaIntegridadUrl) return Promise.resolve(null);
+    if (!WOMPI.firmaIntegridadUrl) return Promise.reject(new Error('sin-firma'));
     return fetch(WOMPI.firmaIntegridadUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + SUPABASE_ANON_KEY },
       body: JSON.stringify({ reference: referencia, amountInCents: montoEnCentavos, currency: 'COP' })
-    }).then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (json) {
-        return json && json.integrity ? json.integrity : null;
-      }).catch(function () {
-        return null;
-      });
+    }).then(function (res) {
+      return res.ok ? res.json() : Promise.reject(new Error('sin-firma'));
+    }, function () {
+      throw new Error('sin-firma');
+    }).then(function (json) {
+      if (!json || !/^[a-f0-9]{64}$/.test(json.integrity || '')) throw new Error('sin-firma');
+      return json.integrity;
+    });
   }
 
   var MENSAJES_FALLO_WOMPI = {
@@ -932,6 +936,7 @@
         currency: 'COP',
         amountInCents: montoEnCentavos,
         reference: referenciaPago,
+        signature: { integrity: firma },
         publicKey: WOMPI.publicKey,
         customerData: {
           fullName: envio.nombre,
@@ -948,9 +953,6 @@
           phoneNumber: envio.telefono
         }
       };
-      if (firma) {
-        config.signature = { integrity: firma };
-      }
       // Wompi solo acepta redirecciones a sitios públicos (no localhost)
       if (window.location.protocol === 'https:') config.redirectUrl = window.location.origin + window.location.pathname;
 
