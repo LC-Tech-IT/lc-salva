@@ -4,7 +4,7 @@
 // Flujo:
 // 1. Wompi notifica cuando una transacción es APROBADA (APPROVED).
 // 2. Actualiza la tabla public.pedidos a estado = 'pagado' con el ID de transacción y método.
-// 3. Si el pedido incluye Salva Cloud Familiar, activa la membresía en public.membresias_cloud.
+// 3. Salva Cloud NO se activa aquí: el comprador aún no tiene cuenta; se aplica al vincular la pulsera.
 // 4. Envía el CORREO DE COMPRA EXITOSA Y BIENVENIDA al email del comprador (Resend / SMTP).
 //    REGLA ESTRICTA: NO envía mensajes de compra por WhatsApp (WhatsApp reservado solo para SOS).
 //
@@ -46,33 +46,30 @@ Deno.serve(async (req) => {
     return Response.json({ recibido: true, ignorado: true }, { headers: CORS });
   }
 
-  // Validación de firma de eventos si está configurado el secreto
+  // Firma OBLIGATORIA: sin secreto o sin checksum válido el evento se rechaza.
+  // (Antes un evento "APPROVED" sin firma marcaba pedidos como pagados.)
   const eventsSecret = Deno.env.get("WOMPI_EVENTS_SECRET");
-  if (eventsSecret && cuerpo?.signature?.checksum && cuerpo?.signature?.properties) {
-    try {
-      const props = cuerpo.signature.properties;
-      let cadena = "";
-      for (const p of props) {
-        const partes = p.split(".");
-        let val: any = cuerpo.data;
-        for (const parte of partes) {
-          val = val?.[parte];
-        }
-        cadena += String(val ?? "");
-      }
-      cadena += String(cuerpo.timestamp ?? "");
-      cadena += eventsSecret;
-
-      const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(cadena));
-      const hashHex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
-
-      if (hashHex.toLowerCase() !== String(cuerpo.signature.checksum).toLowerCase()) {
-        console.warn("Firma de evento Wompi no coincide");
-        return Response.json({ error: "Firma inválida" }, { status: 401, headers: CORS });
-      }
-    } catch (e) {
-      console.error("Error validando firma de evento:", e);
-    }
+  const props = cuerpo?.signature?.properties;
+  const checksum = String(cuerpo?.signature?.checksum || "").toLowerCase();
+  if (!eventsSecret) {
+    console.error("WOMPI_EVENTS_SECRET no configurado: evento rechazado");
+    return Response.json({ error: "Webhook no configurado" }, { status: 500, headers: CORS });
+  }
+  if (!Array.isArray(props) || props.length === 0 || !/^[a-f0-9]{64}$/.test(checksum)) {
+    return Response.json({ error: "Firma ausente" }, { status: 401, headers: CORS });
+  }
+  let cadena = "";
+  for (const p of props) {
+    let val: any = cuerpo.data;
+    for (const parte of String(p).split(".")) val = val?.[parte];
+    cadena += String(val ?? "");
+  }
+  cadena += String(cuerpo.timestamp ?? "") + eventsSecret;
+  const hashBuffer = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(cadena));
+  const hashHex = Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  if (hashHex !== checksum) {
+    console.warn("Firma de evento Wompi no coincide");
+    return Response.json({ error: "Firma inválida" }, { status: 401, headers: CORS });
   }
 
   const db = createClient(
@@ -80,36 +77,51 @@ Deno.serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
-  const status = tx.status; // "APPROVED", "DECLINED", "VOIDED", "ERROR"
-  const ref = tx.reference || ""; // ej: SALVA-XXXXX-P1
-  const codigoBase = ref.split("-P")[0] || ref;
-  const emailCliente = tx.customer_email || tx.shipping_address?.email || "";
+  const status = String(tx.status || ""); // "APPROVED", "DECLINED", "VOIDED", "ERROR", "PENDING"
+  const ref = String(tx.reference || ""); // ej: SALVA-XXXXX-P1
+  const codigoBase = ref.replace(/-P\d+$/, "");
+  const emailCliente = String(tx.customer_email || "");
   const metodoPago = tx.payment_method_type || "Wompi";
   const idTransaccion = tx.id;
 
-  console.log(`Evento Wompi: Ref ${ref} | Estado ${status} | Email ${emailCliente}`);
+  console.log(`Evento Wompi: Ref ${ref} | Estado ${status}`);
 
-  // 1. Buscar y actualizar el pedido en public.pedidos
+  // 1. Buscar el pedido (filtro con lista, sin concatenar texto en la consulta)
   const { data: pedido } = await db
     .from("pedidos")
     .select("*")
-    .or(`codigo_pedido.eq.${codigoBase},codigo_pedido.eq.${ref}`)
+    .in("codigo_pedido", [codigoBase, ref])
     .maybeSingle();
 
-  if (pedido) {
-    const nuevoEstado = status === "APPROVED" ? "pagado" : status === "DECLINED" ? "rechazado" : "pendiente";
-    await db
-      .from("pedidos")
-      .update({
-        estado: nuevoEstado,
-        metodo_pago: `Wompi (${metodoPago})`,
-        notas: (pedido.notas ? pedido.notas + " · " : "") + `Tx: ${idTransaccion} (${status})`
-      })
-      .eq("id", pedido.id);
+  if (!pedido) {
+    console.warn(`Pago ${status} sin pedido registrado: ${ref}`);
+    return Response.json({ recibido: true, pedido: false }, { headers: CORS });
   }
 
-  // 2. Si el pago fue aprobado, ejecutar aprovisionamiento y envío de correo
-  if (status === "APPROVED") {
+  // Wompi reintenta eventos: si ya estaba pagado no se repite nada (ni correo)
+  if (pedido.estado === "pagado") {
+    return Response.json({ recibido: true, duplicado: true }, { headers: CORS });
+  }
+
+  // El monto cobrado debe coincidir con el total del pedido
+  const montoCorrecto = Number(tx.amount_in_cents) === Number(pedido.total_cop) * 100 && tx.currency === "COP";
+  const nuevoEstado = status === "APPROVED"
+    ? (montoCorrecto ? "pagado" : "revisar_monto")
+    : status === "DECLINED" || status === "VOIDED" || status === "ERROR" ? "rechazado" : "pendiente";
+
+  await db
+    .from("pedidos")
+    .update({
+      estado: nuevoEstado,
+      metodo_pago: `Wompi (${metodoPago})`,
+      notas: (pedido.notas ? pedido.notas + " · " : "") + `Tx: ${idTransaccion} (${status}${montoCorrecto ? "" : ", monto distinto"})`
+    })
+    .eq("id", pedido.id);
+
+  // 2. Solo un pago aprobado y por el monto correcto envía el correo de compra
+  if (nuevoEstado === "pagado") {
+    // Salva Cloud se activa al vincular la pulsera (el comprador aún no tiene cuenta):
+    // el pedido queda marcado y la membresía se aplica desde el panel.
     const incluyeCloud = (pedido?.notas || "").includes("Salva Cloud");
 
     // Enviar CORREO de bienvenida y confirmación de compra (SOLO CORREO, NUNCA WHATSAPP)
@@ -118,11 +130,13 @@ Deno.serve(async (req) => {
 
     if (destinatarioEmail && resendApiKey) {
       try {
-        const nombreCliente = pedido?.nombre_cliente || tx.customer_data?.full_name || "Apreciado/a cliente";
-        const modelo = pedido?.modelo || "Dispositivo Médico Salva";
-        const diseno = pedido?.diseno ? ` (${pedido.diseno})` : "";
-        const direccion = pedido?.direccion_entrega || "Dirección registrada en el checkout";
-        const ciudad = pedido?.ciudad || "Colombia";
+        // Los datos del pedido los escribe el cliente: se escapan antes de ir al HTML del correo
+        const esc = (v: unknown) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+        const nombreCliente = esc(pedido?.nombre_cliente || tx.customer_data?.full_name || "Apreciado/a cliente");
+        const modelo = esc(pedido?.modelo || "Dispositivo Médico Salva");
+        const diseno = pedido?.diseno ? ` (${esc(pedido.diseno)})` : "";
+        const direccion = esc(pedido?.direccion_entrega || "Dirección registrada en el checkout");
+        const ciudad = esc(pedido?.ciudad || "Colombia");
         const totalTexto = formatoMonedaCOP(tx.amount_in_cents || 0);
         const remitente = Deno.env.get("EMAIL_REMITENTE") || "Salva <hola@salva.lcsynctech.com>";
 
@@ -213,3 +227,4 @@ Deno.serve(async (req) => {
 
   return Response.json({ recibido: true, status: status, referencia: ref }, { headers: CORS });
 });
+
