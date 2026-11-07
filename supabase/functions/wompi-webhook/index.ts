@@ -46,6 +46,38 @@ Deno.serve(async (req) => {
     return Response.json({ recibido: true, ignorado: true }, { headers: CORS });
   }
 
+  // =========================================================================
+  // 🚦 DESVÍO A LC RIDER (Reenvío transparente de eventos de Wompi)
+  // Wompi solo permite 1 URL de eventos por comercio. Si la referencia
+  // corresponde a LC Rider (LCR-), se reenvía sin procesar nada en Salva.
+  // =========================================================================
+  const reference = String(tx.reference || "");
+  if (reference.startsWith("LCR-SUB-") || reference.startsWith("LCR-")) {
+    console.log("[Dispatcher] Reenviando webhook de Wompi a LC Rider:", reference);
+    const riderWebhookUrl = "https://bzltbdqwbizvhlrnghmq.supabase.co/functions/v1/wompi-webhook";
+    try {
+      const riderResponse = await fetch(riderWebhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(req.headers.get("x-event-checksum") ? { "x-event-checksum": req.headers.get("x-event-checksum")! } : {})
+        },
+        body: rawBody
+      });
+      const riderResultText = await riderResponse.text();
+      return new Response(riderResultText, {
+        status: riderResponse.status,
+        headers: { "Content-Type": "application/json", ...CORS }
+      });
+    } catch (err) {
+      console.error("[Dispatcher] Error reenviando a LC Rider:", err);
+      return Response.json({ error: "Error de reenvío a LC Rider" }, { status: 502, headers: CORS });
+    }
+  }
+  // =========================================================================
+  // De aquí hacia abajo: Salva continúa con su validación y procesamiento 100% aislado
+  // =========================================================================
+
   // Firma OBLIGATORIA: sin secreto o sin checksum válido el evento se rechaza.
   // (Antes un evento "APPROVED" sin firma marcaba pedidos como pagados.)
   const eventsSecret = Deno.env.get("WOMPI_EVENTS_SECRET");
