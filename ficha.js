@@ -21,14 +21,6 @@
   var desdePanel = params.get('desde') === 'panel' ||
     (document.referrer.indexOf(window.location.origin) === 0 && /\/admin(\.html)?(\?|#|$)/.test(document.referrer.slice(window.location.origin.length)));
 
-  if (enApp || desdePanel) {
-    var volver = document.getElementById('btnVolverPanel');
-    var logo = document.getElementById('fichaBrandLink');
-    if (volver) volver.hidden = false;
-    if (logo) logo.href = 'admin.html';
-    document.body.classList.add('ficha-en-app');
-  }
-
   function nombreProducto(codigoQr) {
     return /^SALVA-W-/i.test(codigoQr || '') ? 'Salva Watch' : 'Salva Band';
   }
@@ -358,9 +350,13 @@
         var estaVinculada = pulsera.estado && pulsera.estado !== 'disponible' && portador;
 
         if (!estaVinculada) {
-          var btnVincular = document.querySelector('#view-unlinked a.btn');
-          if (btnVincular && pulsera.codigo_qr) {
-            btnVincular.href = 'admin.html?qr=' + encodeURIComponent(pulsera.codigo_qr);
+          var btnActivar = document.getElementById('btnUnlinkedActivar');
+          var badge = document.getElementById('unlinkedBadge');
+          if (badge && pulsera.codigo_qr) {
+            badge.textContent = nombreProducto(pulsera.codigo_qr);
+          }
+          if (btnActivar && pulsera.codigo_qr) {
+            btnActivar.href = 'admin.html?qr=' + encodeURIComponent(pulsera.codigo_qr);
           }
           mostrarVista('unlinked');
           return;

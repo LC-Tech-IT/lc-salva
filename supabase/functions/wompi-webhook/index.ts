@@ -141,13 +141,21 @@ Deno.serve(async (req) => {
     ? (montoCorrecto ? "pagado" : "revisar_monto")
     : status === "DECLINED" || status === "VOIDED" || status === "ERROR" ? "rechazado" : "pendiente";
 
+  const modeloTexto = String(pedido?.modelo || "").toLowerCase();
+  const cupoCalculado = modeloTexto.includes("dúo") || modeloTexto.includes("duo") ? 2 : 1;
+  const updatePayload: Record<string, any> = {
+    estado: nuevoEstado,
+    metodo_pago: `Wompi (${metodoPago})`,
+    cupo_dispositivos: cupoCalculado,
+    notas: (pedido.notas ? pedido.notas + " · " : "") + `Tx: ${idTransaccion} (${status}${montoCorrecto ? "" : ", monto distinto"})`
+  };
+  if (emailCliente && !pedido.email_cliente) {
+    updatePayload.email_cliente = emailCliente.toLowerCase().trim();
+  }
+
   await db
     .from("pedidos")
-    .update({
-      estado: nuevoEstado,
-      metodo_pago: `Wompi (${metodoPago})`,
-      notas: (pedido.notas ? pedido.notas + " · " : "") + `Tx: ${idTransaccion} (${status}${montoCorrecto ? "" : ", monto distinto"})`
-    })
+    .update(updatePayload)
     .eq("id", pedido.id);
 
   // 2. Solo un pago aprobado y por el monto correcto envía el correo de compra
@@ -211,11 +219,12 @@ Deno.serve(async (req) => {
     </div>
 
     <div class="pasos">
-      <strong style="color: #0F3D30; font-size: 15px;">¿Qué sigue ahora?</strong>
-      <p style="margin-top: 6px; font-size: 14px;">
+      <strong style="color: #0F3D30; font-size: 15px;">¿Cómo activar tus dispositivos al recibirlos?</strong>
+      <p style="margin-top: 6px; font-size: 14px; line-height: 1.6;">
         1. <strong>Despacho:</strong> Recibirás tu paquete en 2 a 4 días hábiles mediante transportadora con guía de seguimiento.<br>
-        2. <strong>Unboxing y Activación:</strong> Al abrir tu paquete, escanea el código QR de la tarjeta con tu celular para vincular la pulsera a tu panel familiar en menos de 60 segundos.<br>
-        3. <strong>Tranquilidad 24/7:</strong> Tu ficha médica funcionará de por vida sin necesidad de baterías ni aplicaciones pesadas.
+        2. <strong>Código de Activación Seguro:</strong> Al abrir tu paquete y escanear el código QR de tu dispositivo con tu celular, usa tu código de compra exclusivo:<br>
+        <span style="display:inline-block;margin:8px 0;background:#DCFCE7;border:1px solid #86EFAC;color:#065F46;font-family:monospace;font-size:16px;font-weight:700;padding:6px 14px;border-radius:6px;letter-spacing:0.05em;">${codigoBase}</span><br>
+        3. <strong>Protección Anti-Robo:</strong> Solo tú puedes activar tus dispositivos comprados; nadie más podrá reclamarlos ni utilizarlos.
       </p>
     </div>
 

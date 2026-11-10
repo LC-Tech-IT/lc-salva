@@ -18,12 +18,17 @@
 <!-- Header Oscuro y Elegante -->
 <header class="ficha-header">
   <div class="ficha-header-inner">
-    <a href="admin.html" class="volver-panel" id="btnVolverPanel" hidden><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Volver a Mi Panel</a>
     <a href="index.html" class="brand-link" id="fichaBrandLink">
       <img src="salva-emblem.jpg" alt="Salva Logo" class="brand-logo-img">
       <span class="brand-name"><strong>Salva</strong></span>
     </a>
-    <span id="planBadgeHeader" class="plan-badge-header" hidden></span>
+    <div class="ficha-header-actions">
+      <span id="planBadgeHeader" class="plan-badge-header" hidden></span>
+      <a href="index.html#precios" class="btn-obtener-salva" id="btnHeaderComprar" title="Obtén tu propia pulsera o placa Salva">
+        <span>Obtén la tuya ahora</span>
+        <svg class="ico" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
   </div>
 </header>
 
@@ -58,14 +63,18 @@
     </div>
   </section>
 
-  <!-- ================= PULSERA SIN VINCULAR ================= -->
+  <!-- ================= PULSERA SIN VINCULAR / ACTIVAR ================= -->
   <section id="view-unlinked" class="view" hidden>
     <div class="container center-screen">
-      <div class="status-card">
-        <div class="status-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z"/></svg></div>
-        <h1>Esta pulsera Salva aún no está vinculada</h1>
-        <p>Registra esta pulsera para completar la ficha médica y la historia clínica del portador ante emergencias.</p>
-        <a href="admin.html" class="btn btn-primary btn-block">Vincular a mi Cuenta</a>
+      <div class="status-card status-card--unlinked">
+        <div class="status-icon" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.7-7 9-4-1.3-7-4.5-7-9V6l7-3z"/><path d="M12 8v5"/><path d="M12 16h.01"/></svg></div>
+        <span class="unlinked-badge" id="unlinkedBadge">Dispositivo Salva</span>
+        <h1>Dispositivo pendiente de activación</h1>
+        <p>Para activar esta ficha médica debes contar con una compra oficial y tu código de pedido. Si compraste este producto, actívalo ingresando a tu panel.</p>
+        <div class="unlinked-actions">
+          <a href="admin.html" id="btnUnlinkedActivar" class="btn btn-primary btn-block">Activar con mi compra</a>
+          <a href="index.html#precios" class="btn btn-outline btn-block">¿Aún no la tienes? Obtén la tuya aquí</a>
+        </div>
       </div>
     </div>
   </section>
@@ -168,6 +177,20 @@
           </div>
         </dl>
       </div>
+
+      <!-- Banner Promocional para Auxiliadores y Rescatistas -->
+      <section class="ficha-adquirir-card" aria-label="Protege a tu familia">
+        <div class="ficha-adquirir-top">
+          <div class="ficha-adquirir-icon" aria-hidden="true">
+            <svg class="ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="11" r="3"/></svg>
+          </div>
+          <div class="ficha-adquirir-body">
+            <strong>¿Quieres proteger a tu familia como está protegido este portador?</strong>
+            <p>Salva Band y Salva Watch: hardware de emergencia sin baterías con ficha médica digital e historia clínica de auxilio inmediata.</p>
+          </div>
+        </div>
+        <a href="index.html#precios" class="btn-adquirir-cta">Obtén la tuya ahora →</a>
+      </section>
 
       <!-- Pie de página -->
       <footer class="ficha-footer-card">

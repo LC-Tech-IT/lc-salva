@@ -640,6 +640,11 @@
       if (d.length !== 10 || d.charAt(0) !== '3') return 'Ingresa un celular colombiano de 10 dígitos (ej: 300 123 4567).';
       return '';
     },
+    envioEmail: function (v) {
+      if (!v) return 'El correo electrónico es obligatorio para la activación de tu dispositivo.';
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())) return 'Ingresa un correo electrónico válido (ej: nombre@gmail.com).';
+      return '';
+    },
     envioDireccion: function (v) {
       if (!v) return 'La dirección exacta es obligatoria.';
       if (v.length < 6 || !/\d/.test(v)) return 'Incluye calle/carrera y número (ej: Calle 127 # 15-45).';
@@ -697,6 +702,7 @@
     return {
       nombre: valorCampo('envioNombre'),
       telefono: celularNormalizado(),
+      email: valorCampo('envioEmail').trim().toLowerCase(),
       direccion: valorCampo('envioDireccion'),
       ciudad: valorCampo('envioCiudad'),
       departamento: valorCampo('envioDepartamento'),
@@ -716,6 +722,7 @@
     var destinatario = checkoutDestinatario ? checkoutDestinatario.options[checkoutDestinatario.selectedIndex].text : '';
     return {
       codigo_pedido: estadoCheckout.codigoPedido,
+      email_cliente: envio.email,
       modelo: NOMBRES_MODELO[modeloActual()],
       diseno: descripcionColor(),
       talla: descripcionTalla(),
@@ -951,6 +958,7 @@
         signature: { integrity: firma },
         publicKey: WOMPI.publicKey,
         customerData: {
+          email: envio.email,
           fullName: envio.nombre,
           phoneNumber: envio.telefono,
           phoneNumberPrefix: '+57'

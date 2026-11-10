@@ -483,25 +483,128 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* =========================================================
-   FICHA ABIERTA DESDE MI PANEL / APP SALVA
+   HEADER: BOTÓN OBTÉN LA TUYA AHORA & ACCIONES
    ========================================================= */
-.volver-panel {
-  display: inline-flex;
+.ficha-header-actions {
+  display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 10px 6px 6px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: #FFFFFF;
-  font-size: 0.8rem;
-  font-weight: 600;
-  white-space: nowrap;
+  gap: 10px;
 }
 
-.volver-panel:hover { background: rgba(255, 255, 255, 0.08); }
+.btn-obtener-salva {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #047857;
+  color: #FFFFFF;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(4, 120, 87, 0.35);
+  transition: background 0.15s ease, transform 0.15s ease;
+}
 
-.ficha-en-app .ficha-header-inner { gap: 10px; }
+.btn-obtener-salva:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   BANNER ADQUIRIR SALVA (PARA AUXILIADORES Y RESCATISTAS)
+   ========================================================= */
+.ficha-adquirir-card {
+  margin-top: 24px;
+  padding: 20px 18px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid rgba(4, 120, 87, 0.2);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ficha-adquirir-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ficha-adquirir-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #ECFDF5;
+  color: #047857;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ficha-adquirir-body strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.ficha-adquirir-body p {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #475569;
+}
+
+.btn-adquirir-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #047857;
+  color: #FFFFFF;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.btn-adquirir-cta:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   VISTA UNLINKED MEJORADA
+   ========================================================= */
+.unlinked-badge {
+  display: inline-block;
+  background: #FEF3C7;
+  color: #92400E;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+
+.unlinked-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  margin-top: 18px;
+}
 
 @media (max-width: 480px) {
-  .ficha-en-app .brand-name { display: none; }
+  .btn-obtener-salva span { font-size: 0.74rem; }
+  .btn-obtener-salva { padding: 5px 10px; }
 }

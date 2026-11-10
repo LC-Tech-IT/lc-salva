@@ -368,6 +368,7 @@
     var correo = el('registroEmail').value.trim();
     var esCuentaCreadora = correo.toLowerCase() === 'lee.fesna@gmail.com';
     var codigo = normalizarCodigoPulsera(el('registroCodigo').value);
+    var codigoPedido = el('registroCodigoPedido') ? el('registroCodigoPedido').value.trim().toUpperCase() : '';
     if (!codigo && !esCuentaCreadora) {
       mostrarErrorCampo('registroCodigo', 'Ingresa el código de tu pulsera o pasador.');
       el('registroSinPulsera').hidden = false;
@@ -383,7 +384,7 @@
 
     var boton = el('formRegistro').querySelector('button[type="submit"]');
     boton.disabled = true;
-    var cerrarCarga = mostrarToast('Verificando tu pulsera…', 'carga');
+    var cerrarCarga = mostrarToast('Verificando tu pulsera y compra…', 'carga');
 
     (esCuentaCreadora && !codigo ? Promise.resolve(true) : verificarCodigoRegistro(codigo))
       .then(function (valido) {
@@ -397,13 +398,15 @@
         return supabase.auth.signUp({
           email: correo,
           password: p1,
-          options: { data: codigo ? { codigo_pulsera: codigo } : {} }
+          options: {
+            data: codigo ? { codigo_pulsera: codigo, codigo_pedido: codigoPedido } : {}
+          }
         }).then(function (res) {
           cerrarCarga();
           boton.disabled = false;
           if (res.error) {
-            var bloqueado = /pulsera|database error/i.test(res.error.message || '');
-            mostrarToast(bloqueado ? MENSAJE_SIN_PULSERA : res.error.message, 'error', 7000);
+            var bloqueado = /pulsera|compra|pedido|database error/i.test(res.error.message || '');
+            mostrarToast(bloqueado ? (res.error.message.indexOf('compra') !== -1 ? res.error.message : MENSAJE_SIN_PULSERA) : res.error.message, 'error', 7000);
             if (bloqueado) el('registroSinPulsera').hidden = false;
             return;
           }
@@ -486,12 +489,16 @@
   function vincularPulseraDelRegistro() {
     var meta = estado.usuario.user_metadata || {};
     var codigo = meta.codigo_pulsera;
+    var codigoPedido = meta.codigo_pedido;
     var clave = 'salva_autovinculo_' + estado.usuario.id;
     var yaIntentado = false;
     try { yaIntentado = localStorage.getItem(clave) === '1'; } catch (e) { yaIntentado = false; }
     if (!codigo || yaIntentado || estado.autoVinculoEnCurso) return Promise.resolve();
     estado.autoVinculoEnCurso = true;
-    return supabase.rpc('vincular_pulsera', { p_codigo_qr: codigo }).then(function (res) {
+    return supabase.rpc('vincular_pulsera', {
+      p_codigo_qr: codigo,
+      p_codigo_pedido: codigoPedido || null
+    }).then(function (res) {
       estado.autoVinculoEnCurso = false;
       try { localStorage.setItem(clave, '1'); } catch (e) { /* sin almacenamiento */ }
       if (!res.error && res.data) finalizarVinculacion(res.data.portador, res.data.pulsera);
@@ -732,17 +739,22 @@
   el('formVincular').addEventListener('submit', function (e) {
     e.preventDefault();
     var codigo = normalizarCodigoPulsera(el('codigoQrInput').value);
+    var codigoPedido = el('codigoPedidoVincularInput') ? el('codigoPedidoVincularInput').value.trim().toUpperCase() : '';
     if (!codigo) { mostrarErrorCampo('codigoQrInput', 'Ingresa el código de la pulsera.'); return; }
     mostrarErrorCampo('codigoQrInput', '');
-    vincularPulsera(codigo);
+    if (el('codigoPedidoVincularInput')) mostrarErrorCampo('codigoPedidoVincularInput', '');
+    vincularPulsera(codigo, codigoPedido);
   });
 
-  function vincularPulsera(codigo) {
+  function vincularPulsera(codigo, codigoPedido) {
     var boton = el('btnSubmitVincular');
     boton.disabled = true;
-    var cerrarCarga = mostrarToast('Verificando código…', 'carga');
+    var cerrarCarga = mostrarToast('Verificando código y compra…', 'carga');
 
-    supabase.rpc('vincular_pulsera', { p_codigo_qr: codigo }).then(function (res) {
+    supabase.rpc('vincular_pulsera', {
+      p_codigo_qr: codigo,
+      p_codigo_pedido: codigoPedido || null
+    }).then(function (res) {
       if (rpcNoDisponible(res.error)) {
         vincularPulseraLegado(codigo, boton, cerrarCarga);
         return;
@@ -750,7 +762,13 @@
       cerrarCarga();
       boton.disabled = false;
       if (res.error) {
-        mostrarErrorCampo('codigoQrInput', res.error.message);
+        var msg = res.error.message || '';
+        if (/pedido|compra|pago|cupo|dispositivo/i.test(msg)) {
+          mostrarErrorCampo('codigoPedidoVincularInput', msg);
+        } else {
+          mostrarErrorCampo('codigoQrInput', msg);
+        }
+        mostrarToast(msg, 'error', 6000);
         return;
       }
       finalizarVinculacion(res.data.portador, res.data.pulsera);
