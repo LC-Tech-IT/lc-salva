@@ -4,7 +4,7 @@
 # siempre frescos tras cada despliegue), por eso solo se ajustan imágenes y páginas sensibles.
 
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://checkout.wompi.co; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://bfxolduuqkrhyfjrvwsx.supabase.co; connect-src 'self' https://bfxolduuqkrhyfjrvwsx.supabase.co wss://bfxolduuqkrhyfjrvwsx.supabase.co https://*.wompi.co; frame-src https://checkout.wompi.co https://*.wompi.co https://maps.google.com https://www.google.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://checkout.wompi.co https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://bfxolduuqkrhyfjrvwsx.supabase.co; connect-src 'self' https://bfxolduuqkrhyfjrvwsx.supabase.co wss://bfxolduuqkrhyfjrvwsx.supabase.co https://*.wompi.co https://cloudflareinsights.com; frame-src https://checkout.wompi.co https://*.wompi.co https://maps.google.com https://www.google.com; media-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: DENY

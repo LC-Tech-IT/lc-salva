@@ -1031,8 +1031,8 @@
       : '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
     document.getElementById('checkoutResultadoTitulo').textContent = aprobado ? '¡Pago aprobado!' : 'Pago en verificación';
     document.getElementById('checkoutResultadoTexto').textContent = aprobado
-      ? 'Gracias por proteger a los tuyos con Salva. Preparamos tu despacho de inmediato.'
-      : 'Tu banco está confirmando la transacción. Te escribiremos por WhatsApp apenas se apruebe.';
+      ? 'Gracias por proteger a los tuyos con Salva. Preparamos tu despacho de inmediato. Revisa tu correo con las instrucciones y tu código de activación.'
+      : 'Tu banco está confirmando la transacción. Te notificaremos a tu correo electrónico apenas se apruebe.';
     document.getElementById('checkoutResultadoRef').textContent = 'Referencia: ' + referencia;
 
     var detalle = document.getElementById('checkoutResultadoDetalle');
