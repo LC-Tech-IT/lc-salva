@@ -28,7 +28,8 @@ alter table public.pedidos add column if not exists codigo_activacion text;     
 create unique index if not exists pedidos_codigo_activacion_uidx on public.pedidos (codigo_activacion) where codigo_activacion is not null;
 create index if not exists pedidos_estado_idx on public.pedidos (estado);
 
-alter table public.pulseras add column if not exists pedido_id bigint references public.pedidos(id) on delete set null;
+alter table public.pulseras drop column if exists pedido_id cascade;
+alter table public.pulseras add column if not exists pedido_id uuid references public.pedidos(id) on delete set null;
 alter table public.pulseras add column if not exists fecha_vinculacion timestamptz;
 alter table public.pulseras add column if not exists activado_por_email text;
 create index if not exists pulseras_pedido_id_idx on public.pulseras (pedido_id);
