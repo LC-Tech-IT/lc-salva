@@ -95,8 +95,13 @@ Deno.serve(async (req) => {
         },
       }),
     });
-    if (res.ok) enviados++;
-    else errores.push(`${destino.slice(-4)}: ${res.status}`);
+    if (res.ok) {
+      enviados++;
+    } else {
+      const errText = await res.text().catch(() => "");
+      console.error(`[WhatsApp API Error] Destino ...${destino.slice(-4)} Status ${res.status}:`, errText);
+      errores.push(`${destino.slice(-4)}: ${res.status} (${errText.slice(0, 100)})`);
+    }
   }
 
   return Response.json({ enviados, destinos: destinos.size, errores });
