@@ -46,40 +46,8 @@ Deno.serve(async (req) => {
     return Response.json({ recibido: true, ignorado: true }, { headers: CORS });
   }
 
-  // =========================================================================
-  // 🚦 DESVÍO A LC RIDER (Reenvío transparente de eventos de Wompi)
-  // Wompi solo permite 1 URL de eventos por comercio. Si la referencia
-  // corresponde a LC Rider (LCR-), se reenvía sin procesar nada en Salva.
-  // =========================================================================
-  const reference = String(tx.reference || "");
-  if (reference.startsWith("LCR-SUB-") || reference.startsWith("LCR-")) {
-    console.log("[Dispatcher] Reenviando webhook de Wompi a LC Rider:", reference);
-    const riderWebhookUrl = "https://bzltbdqwbizvhlrnghmq.supabase.co/functions/v1/wompi-webhook";
-    try {
-      const riderResponse = await fetch(riderWebhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(req.headers.get("x-event-checksum") ? { "x-event-checksum": req.headers.get("x-event-checksum")! } : {})
-        },
-        body: rawBody
-      });
-      const riderResultText = await riderResponse.text();
-      return new Response(riderResultText, {
-        status: riderResponse.status,
-        headers: { "Content-Type": "application/json", ...CORS }
-      });
-    } catch (err) {
-      console.error("[Dispatcher] Error reenviando a LC Rider:", err);
-      return Response.json({ error: "Error de reenvío a LC Rider" }, { status: 502, headers: CORS });
-    }
-  }
-  // =========================================================================
-  // De aquí hacia abajo: Salva continúa con su validación y procesamiento 100% aislado
-  // =========================================================================
-
   // Firma OBLIGATORIA: sin secreto o sin checksum válido el evento se rechaza.
-  // (Antes un evento "APPROVED" sin firma marcaba pedidos como pagados.)
+  // Se valida ANTES de cualquier reenvío para no retransmitir eventos falsificados.
   const eventsSecret = Deno.env.get("WOMPI_EVENTS_SECRET");
   const props = cuerpo?.signature?.properties;
   const checksum = String(cuerpo?.signature?.checksum || "").toLowerCase();
@@ -104,6 +72,30 @@ Deno.serve(async (req) => {
     return Response.json({ error: "Firma inválida" }, { status: 401, headers: CORS });
   }
 
+  // Wompi solo permite 1 URL de eventos por comercio: las referencias LCR- se reenvían (ya verificadas)
+  const reference = String(tx.reference || "");
+  if (reference.startsWith("LCR-SUB-") || reference.startsWith("LCR-")) {
+    console.log("[Dispatcher] Reenviando webhook de Wompi a LC Rider:", reference);
+    const riderWebhookUrl = "https://bzltbdqwbizvhlrnghmq.supabase.co/functions/v1/wompi-webhook";
+    try {
+      const riderResponse = await fetch(riderWebhookUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(req.headers.get("x-event-checksum") ? { "x-event-checksum": req.headers.get("x-event-checksum")! } : {})
+        },
+        body: rawBody
+      });
+      const riderResultText = await riderResponse.text();
+      return new Response(riderResultText, {
+        status: riderResponse.status,
+        headers: { "Content-Type": "application/json", ...CORS }
+      });
+    } catch (err) {
+      console.error("[Dispatcher] Error reenviando a LC Rider:", err);
+      return Response.json({ error: "Error de reenvío a LC Rider" }, { status: 502, headers: CORS });
+    }
+  }
   const db = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -141,22 +133,34 @@ Deno.serve(async (req) => {
     ? (montoCorrecto ? "pagado" : "revisar_monto")
     : status === "DECLINED" || status === "VOIDED" || status === "ERROR" ? "rechazado" : "pendiente";
 
-  const modeloTexto = String(pedido?.modelo || "").toLowerCase();
-  const cupoCalculado = modeloTexto.includes("dúo") || modeloTexto.includes("duo") ? 2 : 1;
+  // Lo comprado se decide por el MONTO cobrado (el navegador podría declarar otro modelo).
+  // La base de datos fija el cupo y genera el código de activación secreto al pasar a "pagado".
+  const PRODUCTO_POR_MONTO: Record<number, string> = {
+    4500000: "watch", 9400000: "watch", 5900000: "band", 10800000: "band", 8900000: "pack", 13800000: "pack",
+  };
   const updatePayload: Record<string, any> = {
     estado: nuevoEstado,
     metodo_pago: `Wompi (${metodoPago})`,
-    cupo_dispositivos: cupoCalculado,
     notas: (pedido.notas ? pedido.notas + " · " : "") + `Tx: ${idTransaccion} (${status}${montoCorrecto ? "" : ", monto distinto"})`
   };
+  if (nuevoEstado === "pagado") {
+    updatePayload.producto_pagado = PRODUCTO_POR_MONTO[Number(tx.amount_in_cents)] || null;
+  }
   if (emailCliente && !pedido.email_cliente) {
     updatePayload.email_cliente = emailCliente.toLowerCase().trim();
   }
 
-  await db
+  const { data: actualizado, error: errorUpdate } = await db
     .from("pedidos")
     .update(updatePayload)
-    .eq("id", pedido.id);
+    .eq("id", pedido.id)
+    .select("codigo_activacion, email_cliente")
+    .maybeSingle();
+  if (errorUpdate) {
+    console.error("No se pudo actualizar el pedido:", errorUpdate.message);
+    return Response.json({ error: "No se pudo actualizar el pedido" }, { status: 500, headers: CORS }); // Wompi reintentará
+  }
+  const codigoActivacion = actualizado?.codigo_activacion || "";
 
   // 2. Solo un pago aprobado y por el monto correcto envía el correo de compra
   if (nuevoEstado === "pagado") {
@@ -165,7 +169,8 @@ Deno.serve(async (req) => {
     const incluyeCloud = (pedido?.notas || "").includes("Salva Cloud");
 
     // Enviar CORREO de bienvenida y confirmación de compra (SOLO CORREO, NUNCA WHATSAPP)
-    const destinatarioEmail = emailCliente || pedido?.email_cliente;
+    // Prioriza el correo escrito en el checkout (el que se le pidió para activar)
+    const destinatarioEmail = actualizado?.email_cliente || emailCliente;
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
 
     if (destinatarioEmail && resendApiKey) {
@@ -222,9 +227,9 @@ Deno.serve(async (req) => {
       <strong style="color: #0F3D30; font-size: 15px;">¿Cómo activar tus dispositivos al recibirlos?</strong>
       <p style="margin-top: 6px; font-size: 14px; line-height: 1.6;">
         1. <strong>Despacho:</strong> Recibirás tu paquete en 2 a 4 días hábiles mediante transportadora con guía de seguimiento.<br>
-        2. <strong>Código de Activación Seguro:</strong> Al abrir tu paquete y escanear el código QR de tu dispositivo con tu celular, usa tu código de compra exclusivo:<br>
-        <span style="display:inline-block;margin:8px 0;background:#DCFCE7;border:1px solid #86EFAC;color:#065F46;font-family:monospace;font-size:16px;font-weight:700;padding:6px 14px;border-radius:6px;letter-spacing:0.05em;">${codigoBase}</span><br>
-        3. <strong>Protección Anti-Robo:</strong> Solo tú puedes activar tus dispositivos comprados; nadie más podrá reclamarlos ni utilizarlos.
+        2. <strong>Tu código de activación:</strong> al recibir tu paquete, escanea el código QR de tu Salva y escribe este código cuando te lo pida. Guárdalo y no lo compartas:<br>
+        <span style="display:inline-block;margin:8px 0;background:#DCFCE7;border:1px solid #86EFAC;color:#065F46;font-family:monospace;font-size:18px;font-weight:700;padding:8px 16px;border-radius:6px;letter-spacing:0.12em;">${esc(codigoActivacion)}</span><br>
+        3. <strong>Solo tú la activas:</strong> tus piezas quedan asociadas a esta compra; sin este código nadie más puede activarlas.
       </p>
     </div>
 

@@ -1,232 +1,248 @@
 -- =========================================================
--- LC SALVA — BLINDAJE DE ACTIVACIÓN DE HARDWARE POR COMPRA
--- Migración: 20261110_activacion_hardware_por_compra.sql
--- Ejecutar en: Supabase Dashboard > SQL Editor > New Query > RUN
+-- LC SALVA — ACTIVACIÓN DE HARDWARE SOLO POR COMPRA (v2, revisada)
+-- Ejecutar en: Supabase > SQL Editor > New Query > RUN. Es idempotente.
 --
--- OBJETIVO:
--- 1. Elimina la vulnerabilidad de vinculación gratuita de hardware (QR / NFC).
--- 2. Exige obligatoriamente una compra aprobada (Wompi) en la tabla 'pedidos'
---    para poder activar cualquier Salva Band o Salva Watch.
--- 3. Valida compatibilidad de producto (Watch vs Band vs Pack Dúo) y cupo de unidades.
--- 4. Permite activación automática por correo o mediante el Código de Pedido.
--- 5. Mantiene bypass para la cuenta creadora (lee.fesna@gmail.com).
+-- Regla de negocio:
+--   Un dispositivo (SALVA-B-xxxx / SALVA-W-xxxx) solo se activa si
+--   1. fue ASIGNADO a un pedido al despacharlo (el QR queda atado a esa compra),
+--   2. ese pedido está PAGADO (lo marca el webhook firmado de Wompi o tú a mano), y
+--   3. quien activa escribe el CÓDIGO DE ACTIVACIÓN secreto que recibió el comprador.
+--
+-- Corrige la versión anterior de esta migración (nunca se ejecutó en producción):
+--   * quedaba viva vincular_pulsera(text) de un argumento -> activación sin pago;
+--   * cualquiera podía crear un pedido ya "pagado" desde la API pública;
+--   * el correo sin verificar (autoconfirmación activa) bastaba para reclamar la compra de otro;
+--   * el "código" era la referencia de pago, visible en el recibo de Wompi y en WhatsApp;
+--   * cualquier compra podía activar cualquier pulsera (el QR no quedaba atado a la compra);
+--   * desvincular devolvía el cupo y permitía activar pulseras ajenas en cadena;
+--   * un pedido de Watch ($45.000) podía declararse "Pack Dúo" y activar 2 piezas.
 -- =========================================================
 
--- 1. ESTRUCTURA EN TABLA PEDIDOS
+-- 1. COLUMNAS ---------------------------------------------------------------
 alter table public.pedidos add column if not exists email_cliente text;
 alter table public.pedidos add column if not exists estado text not null default 'pendiente';
-alter table public.pedidos add column if not exists cupo_dispositivos int not null default 1;
-alter table public.pedidos add column if not exists codigo_activacion text;
+alter table public.pedidos add column if not exists producto_pagado text;          -- band | watch | pack (lo fija el monto cobrado)
+alter table public.pedidos add column if not exists cupo_dispositivos int not null default 0;
+alter table public.pedidos add column if not exists codigo_activacion text;        -- secreto, se genera al pagar
 
-create index if not exists pedidos_email_idx on public.pedidos (lower(email_cliente));
-create index if not exists pedidos_codigo_idx on public.pedidos (codigo_pedido);
+create unique index if not exists pedidos_codigo_activacion_uidx on public.pedidos (codigo_activacion) where codigo_activacion is not null;
 create index if not exists pedidos_estado_idx on public.pedidos (estado);
 
--- Actualizar cupo según modelo en pedidos existentes
-update public.pedidos
-set cupo_dispositivos = 2
-where (modelo ilike '%duo%' or modelo ilike '%dúo%') and cupo_dispositivos < 2;
-
--- 2. ESTRUCTURA EN TABLA PULSERAS
 alter table public.pulseras add column if not exists pedido_id bigint references public.pedidos(id) on delete set null;
 alter table public.pulseras add column if not exists fecha_vinculacion timestamptz;
 alter table public.pulseras add column if not exists activado_por_email text;
-
 create index if not exists pulseras_pedido_id_idx on public.pulseras (pedido_id);
 
--- 3. FUNCIÓN RPC: VINCULAR PULSERA BLINDADA (CON VALIDACIÓN DE PAGO)
-create or replace function public.vincular_pulsera(
-  p_codigo_qr text,
-  p_codigo_pedido text default null
-)
+-- Registro de intentos para frenar adivinanzas de códigos
+create table if not exists public.intentos_activacion (
+  id bigint generated always as identity primary key,
+  usuario_id uuid not null,
+  codigo_qr text,
+  exito boolean not null default false,
+  created_at timestamptz not null default now()
+);
+create index if not exists intentos_activacion_usuario_idx on public.intentos_activacion (usuario_id, created_at desc);
+alter table public.intentos_activacion enable row level security;
+revoke all on public.intentos_activacion from anon, authenticated;
+
+-- 2. PEDIDOS CREADOS DESDE LA WEB: nunca nacen pagados ---------------------
+create or replace function public.pedidos_blindar_insercion()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  -- Lo que el navegador envíe en estos campos se ignora: solo el servidor los decide
+  new.estado := 'pendiente';
+  new.producto_pagado := null;
+  new.cupo_dispositivos := 0;
+  new.codigo_activacion := null;
+  new.email_cliente := nullif(lower(trim(coalesce(new.email_cliente, ''))), '');
+  return new;
+end $$;
+
+drop trigger if exists pedidos_blindar_insercion on public.pedidos;
+create trigger pedidos_blindar_insercion
+  before insert on public.pedidos
+  for each row execute function public.pedidos_blindar_insercion();
+
+-- 3. AL PASAR A "pagado": producto y cupo según el MONTO, y código secreto ----
+create or replace function public.pedidos_al_pagar()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+declare
+  v_alfabeto constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; -- sin 0/O/1/I/L para dictarlo sin errores
+  v_bytes bytea;
+  v_codigo text;
+  i int;
+begin
+  if new.estado = 'pagado' and coalesce(old.estado, '') <> 'pagado' then
+    -- Si nadie fijó el producto (pago manual), se deduce del total
+    if new.producto_pagado is null then
+      new.producto_pagado := case
+        when new.total_cop in (45000, 94000) then 'watch'
+        when new.total_cop in (59000, 108000) then 'band'
+        when new.total_cop in (89000, 138000) then 'pack'
+        else null end;
+    end if;
+    new.cupo_dispositivos := case new.producto_pagado when 'pack' then 2 when 'band' then 1 when 'watch' then 1 else 0 end;
+
+    if new.codigo_activacion is null then
+      loop
+        v_bytes := decode(replace(gen_random_uuid()::text, '-', ''), 'hex');
+        v_codigo := '';
+        for i in 0..9 loop
+          v_codigo := v_codigo || substr(v_alfabeto, (get_byte(v_bytes, i) % length(v_alfabeto)) + 1, 1);
+        end loop;
+        v_codigo := substr(v_codigo, 1, 5) || '-' || substr(v_codigo, 6, 5); -- ej: K7Q2M-9XMPA
+        exit when not exists (select 1 from public.pedidos where codigo_activacion = v_codigo);
+      end loop;
+      new.codigo_activacion := v_codigo;
+    end if;
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists pedidos_al_pagar on public.pedidos;
+create trigger pedidos_al_pagar
+  before update on public.pedidos
+  for each row execute function public.pedidos_al_pagar();
+
+-- 4. ASIGNAR LOS QR FÍSICOS A UNA COMPRA (se usa al despachar, desde el SQL Editor)
+--    select public.asignar_dispositivos('SALVA-MW5IXE901D26', array['SALVA-W-T005']);
+create or replace function public.asignar_dispositivos(p_codigo_pedido text, p_codigos_qr text[])
+returns text
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_pedido public.pedidos%rowtype;
+  v_qr text;
+  v_pulsera public.pulseras%rowtype;
+  v_ya int;
+  v_band int := 0;
+  v_watch int := 0;
+begin
+  select * into v_pedido from public.pedidos
+  where codigo_pedido = upper(trim(regexp_replace(p_codigo_pedido, '-P\d+$', ''))) for update;
+  if not found then raise exception 'No existe el pedido %.', p_codigo_pedido; end if;
+  if v_pedido.estado <> 'pagado' then raise exception 'El pedido % no está pagado (estado: %).', v_pedido.codigo_pedido, v_pedido.estado; end if;
+
+  select count(*) into v_ya from public.pulseras where pedido_id = v_pedido.id;
+  if v_ya + coalesce(array_length(p_codigos_qr, 1), 0) > v_pedido.cupo_dispositivos then
+    raise exception 'El pedido % permite % dispositivo(s) y ya tiene %.', v_pedido.codigo_pedido, v_pedido.cupo_dispositivos, v_ya;
+  end if;
+
+  foreach v_qr in array p_codigos_qr loop
+    select * into v_pulsera from public.pulseras where codigo_qr = upper(trim(v_qr)) for update;
+    if not found then raise exception 'El código % no existe.', v_qr; end if;
+    if v_pulsera.estado <> 'disponible' or v_pulsera.pedido_id is not null then
+      raise exception 'El código % ya está asignado o activado.', v_pulsera.codigo_qr;
+    end if;
+    if v_pulsera.codigo_qr like 'SALVA-W-%' then v_watch := v_watch + 1; else v_band := v_band + 1; end if;
+    update public.pulseras set pedido_id = v_pedido.id where id = v_pulsera.id;
+  end loop;
+
+  -- El tipo físico debe coincidir con lo pagado
+  if (v_pedido.producto_pagado = 'watch' and v_band > 0)
+     or (v_pedido.producto_pagado = 'band' and v_watch > 0)
+     or (v_pedido.producto_pagado = 'pack' and (v_band > 1 or v_watch > 1)) then
+    raise exception 'Los códigos no coinciden con lo comprado (%).', v_pedido.producto_pagado;
+  end if;
+
+  return 'Asignados a ' || v_pedido.codigo_pedido || '. Código de activación del cliente: ' || v_pedido.codigo_activacion;
+end $$;
+revoke all on function public.asignar_dispositivos(text, text[]) from public, anon, authenticated;
+
+-- 5. ACTIVAR (vincular) -------------------------------------------------------
+-- Se elimina la versión de un argumento: era la puerta de activación sin pago.
+drop function if exists public.vincular_pulsera(text);
+drop function if exists public.vincular_pulsera(text, text);
+
+create or replace function public.es_cuenta_creadora()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public, auth
+as $$
+  select exists (
+    select 1 from auth.users
+    where id = auth.uid() and lower(email) = 'lee.fesna@gmail.com' and email_confirmed_at is not null
+  );
+$$;
+revoke all on function public.es_cuenta_creadora() from public, anon;
+grant execute on function public.es_cuenta_creadora() to authenticated;
+
+-- Devuelve {error: "..."} en vez de lanzar excepción para que el intento fallido quede registrado
+create or replace function public.vincular_pulsera(p_codigo_qr text, p_codigo_activacion text default null)
 returns json
 language plpgsql
 security definer
 set search_path = public
 as $$
 declare
-  v_caller_id uuid := auth.uid();
-  v_caller_email text := lower(coalesce(auth.jwt() ->> 'email', ''));
+  v_uid uuid := auth.uid();
+  v_creador boolean := public.es_cuenta_creadora();
+  v_qr text := upper(trim(coalesce(p_codigo_qr, '')));
+  v_clave text := upper(regexp_replace(coalesce(p_codigo_activacion, ''), '[^A-Za-z0-9]', '', 'g'));
   v_pulsera public.pulseras%rowtype;
-  v_portador public.portadores%rowtype;
   v_pedido public.pedidos%rowtype;
-  v_activadas int := 0;
-  v_es_creador boolean := false;
-  v_ref_pedido text := upper(trim(coalesce(p_codigo_pedido, '')));
-  v_codigo_limpio text := upper(trim(p_codigo_qr));
+  v_portador public.portadores%rowtype;
+  v_fallos int;
 begin
-  if v_caller_id is null then
-    raise exception 'Debes iniciar sesión para activar o vincular un dispositivo.';
+  if v_uid is null then return json_build_object('error', 'Debes iniciar sesión para activar tu dispositivo.'); end if;
+
+  select count(*) into v_fallos from public.intentos_activacion
+  where usuario_id = v_uid and not exito and created_at > now() - interval '1 hour';
+  if v_fallos >= 8 and not v_creador then
+    return json_build_object('error', 'Demasiados intentos fallidos. Espera una hora o escríbenos para ayudarte.');
   end if;
 
-  -- Privilegio Creador / Master Admin
-  if v_caller_email = 'lee.fesna@gmail.com' then
-    v_es_creador := true;
-  end if;
-
-  -- A. Buscar y bloquear la pulsera
-  select * into v_pulsera
-  from public.pulseras
-  where codigo_qr = v_codigo_limpio
-  for update;
-
+  select * into v_pulsera from public.pulseras where codigo_qr = v_qr for update;
   if not found then
-    raise exception 'El código % no corresponde a un dispositivo Salva oficial registrado.', v_codigo_limpio;
+    insert into public.intentos_activacion (usuario_id, codigo_qr) values (v_uid, left(v_qr, 40));
+    return json_build_object('error', 'Ese código no corresponde a un dispositivo Salva oficial.');
   end if;
-
   if v_pulsera.estado is distinct from 'disponible' then
-    raise exception 'Este dispositivo ya se encuentra vinculado a una cuenta activa.';
+    return json_build_object('error', 'Este dispositivo ya está activado en una cuenta.');
   end if;
 
-  -- B. Validación estricta de pago previo (para todos los usuarios regulares)
-  if not v_es_creador then
-    if v_ref_pedido <> '' then
-      select * into v_pedido
-      from public.pedidos
-      where (
-        codigo_pedido = v_ref_pedido
-        or codigo_pedido = replace(v_ref_pedido, '-P1', '')
-        or coalesce(codigo_activacion, '') = v_ref_pedido
-      )
-      and estado = 'pagado'
-      order by created_at desc
-      limit 1;
-    else
-      -- Búsqueda automática por correo del usuario autenticado
-      select * into v_pedido
-      from public.pedidos
-      where lower(coalesce(email_cliente, '')) = v_caller_email
-        and estado = 'pagado'
-      order by created_at desc
-      limit 1;
+  if not v_creador then
+    select * into v_pedido from public.pedidos where id = v_pulsera.pedido_id;
+    if v_pulsera.pedido_id is null or not found or v_pedido.estado <> 'pagado' then
+      insert into public.intentos_activacion (usuario_id, codigo_qr) values (v_uid, v_qr);
+      return json_build_object('error', 'Este dispositivo no está asociado a una compra pagada. Si lo compraste, escríbenos con tu número de pedido.');
     end if;
-
-    if not found or v_pedido.id is null then
-      raise exception 'No encontramos un pago aprobado para este dispositivo. Ingresa el código de pedido de tu compra o comunícate con soporte si compraste con otro correo.';
-    end if;
-
-    -- C. Validación de compatibilidad hardware vs producto comprado
-    if v_pulsera.codigo_qr ~ '^SALVA-W-' and not (v_pedido.modelo ilike '%watch%' or v_pedido.modelo ilike '%duo%' or v_pedido.modelo ilike '%dúo%') then
-      raise exception 'Este código corresponde a una lámina Salva Watch, pero tu compra (%s) es para Salva Band.', v_pedido.modelo;
-    end if;
-
-    if v_pulsera.codigo_qr ~ '^SALVA-B-' and not (v_pedido.modelo ilike '%band%' or v_pedido.modelo ilike '%duo%' or v_pedido.modelo ilike '%dúo%') then
-      raise exception 'Este código corresponde a una pulsera Salva Band, pero tu compra (%s) es para Salva Watch.', v_pedido.modelo;
-    end if;
-
-    -- D. Validación de cupo disponible del pedido
-    select count(*) into v_activadas
-    from public.pulseras
-    where pedido_id = v_pedido.id;
-
-    if v_activadas >= v_pedido.cupo_dispositivos then
-      raise exception 'Este pedido (%) ya activó todos los dispositivos incluidos (% de %). Cada dispositivo físico requiere su propia compra oficial.', v_pedido.codigo_pedido, v_activadas, v_pedido.cupo_dispositivos;
+    if v_clave = '' or v_clave <> replace(v_pedido.codigo_activacion, '-', '') then
+      insert into public.intentos_activacion (usuario_id, codigo_qr) values (v_uid, v_qr);
+      return json_build_object('error', 'El código de activación no es correcto. Lo encuentras en el correo de confirmación de tu compra.');
     end if;
   end if;
 
-  -- E. Crear el portador y vincular el hardware
-  insert into public.portadores (
-    pulsera_id, usuario_id, nombre_completo, contacto_emergencia_1_nombre, contacto_emergencia_1_telefono
-  )
-  values (
-    v_pulsera.id, v_caller_id, 'Nuevo Portador', 'Contacto Principal', '0000000000'
-  )
+  insert into public.portadores (pulsera_id, usuario_id, nombre_completo, contacto_emergencia_1_nombre, contacto_emergencia_1_telefono)
+  values (v_pulsera.id, v_uid, 'Nuevo Portador', 'Contacto Principal', '0000000000')
   returning * into v_portador;
 
   update public.pulseras
-  set estado = 'vinculada',
-      usuario_id = v_caller_id,
-      pedido_id = case when v_es_creador and v_pedido.id is null then null else v_pedido.id end,
-      activado_por_email = v_caller_email,
-      fecha_vinculacion = now()
+  set estado = 'vinculada', usuario_id = v_uid, fecha_vinculacion = now(),
+      activado_por_email = (select lower(email) from auth.users where id = v_uid)
   where id = v_pulsera.id;
+
+  insert into public.intentos_activacion (usuario_id, codigo_qr, exito) values (v_uid, v_qr, true);
 
   return json_build_object(
     'portador', row_to_json(v_portador),
-    'pulsera', json_build_object(
-      'id', v_pulsera.id,
-      'codigo_qr', v_pulsera.codigo_qr,
-      'estado', 'vinculada',
-      'tipo_plan', v_pulsera.tipo_plan
-    )
+    'pulsera', json_build_object('id', v_pulsera.id, 'codigo_qr', v_pulsera.codigo_qr, 'estado', 'vinculada', 'tipo_plan', v_pulsera.tipo_plan)
   );
 end $$;
-
 revoke all on function public.vincular_pulsera(text, text) from public, anon;
 grant execute on function public.vincular_pulsera(text, text) to authenticated;
 
--- 4. TRIGGER EN AUTH.USERS: REGISTRO BLINDADO
-create or replace function public.exigir_pulsera_al_registrarse()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_codigo_pulsera text := upper(trim(coalesce(new.raw_user_meta_data ->> 'codigo_pulsera', '')));
-  v_codigo_pedido text := upper(trim(coalesce(new.raw_user_meta_data ->> 'codigo_pedido', '')));
-  v_user_email text := lower(coalesce(new.email, ''));
-  v_pedido_id bigint;
-  v_activadas int := 0;
-  v_cupo int := 1;
-begin
-  if v_user_email = 'lee.fesna@gmail.com' then
-    return new; -- Cuenta creadora exenta
-  end if;
-
-  -- A. Verificar existencia del código de hardware
-  if v_codigo_pulsera = '' or not exists (
-    select 1 from public.pulseras where codigo_qr = v_codigo_pulsera and estado = 'disponible'
-  ) then
-    raise exception 'Para registrarte necesitas el código de un dispositivo Salva oficial disponible.'
-      using errcode = 'P0001';
-  end if;
-
-  -- B. Verificar compra aprobada
-  if v_codigo_pedido <> '' then
-    select id, cupo_dispositivos into v_pedido_id, v_cupo
-    from public.pedidos
-    where (
-      codigo_pedido = v_codigo_pedido
-      or codigo_pedido = replace(v_codigo_pedido, '-P1', '')
-      or coalesce(codigo_activacion, '') = v_codigo_pedido
-    )
-    and estado = 'pagado'
-    order by created_at desc
-    limit 1;
-  else
-    select id, cupo_dispositivos into v_pedido_id, v_cupo
-    from public.pedidos
-    where lower(coalesce(email_cliente, '')) = v_user_email
-      and estado = 'pagado'
-    order by created_at desc
-    limit 1;
-  end if;
-
-  if v_pedido_id is null then
-    raise exception 'No encontramos una compra pagada asociada a este correo o código de pedido. Adquiere tu Salva en salva.lcsynctech.com antes de registrarte.'
-      using errcode = 'P0002';
-  end if;
-
-  -- C. Verificar cupo disponible
-  select count(*) into v_activadas
-  from public.pulseras
-  where pedido_id = v_pedido_id;
-
-  if v_activadas >= v_cupo then
-    raise exception 'Este pedido ya activó todos sus dispositivos comprados.'
-      using errcode = 'P0003';
-  end if;
-
-  return new;
-end $$;
-
-drop trigger if exists exigir_pulsera_al_registrarse on auth.users;
-create trigger exigir_pulsera_al_registrarse
-  before insert on auth.users
-  for each row execute function public.exigir_pulsera_al_registrarse();
-
--- 5. DESVINCULAR (libera el hardware y restaura su disponibilidad)
+-- 6. DESVINCULAR: la pieza sigue atada a SU compra (no libera cupo ni queda libre para otros)
 create or replace function public.desvincular_pulsera(p_pulsera_id uuid)
 returns boolean
 language plpgsql
@@ -235,13 +251,66 @@ set search_path = public
 as $$
 begin
   if auth.uid() is null then raise exception 'Debes iniciar sesión.'; end if;
-  delete from public.portadores where pulsera_id = p_pulsera_id and usuario_id = auth.uid();
-  if not found and lower(coalesce(auth.jwt() ->> 'email', '')) <> 'lee.fesna@gmail.com' then
-    raise exception 'Este dispositivo no está vinculado a tu cuenta.';
-  end if;
-  update public.pulseras set estado = 'disponible', usuario_id = null, pedido_id = null where id = p_pulsera_id;
+  delete from public.portadores where pulsera_id = p_pulsera_id and (usuario_id = auth.uid() or public.es_cuenta_creadora());
+  if not found then raise exception 'Este dispositivo no está vinculado a tu cuenta.'; end if;
+  -- pedido_id se conserva: para reactivarla se necesita de nuevo el código de activación de esa compra
+  update public.pulseras set estado = 'disponible', usuario_id = null, fecha_vinculacion = null where id = p_pulsera_id;
   return true;
 end $$;
-
 revoke all on function public.desvincular_pulsera(uuid) from public, anon;
 grant execute on function public.desvincular_pulsera(uuid) to authenticated;
+
+-- 7. PORTADORES: nadie crea ni mueve una ficha hacia una pulsera que no activó.
+--    (Antes, con una cuenta cualquiera, se podía insertar un portador para cualquier pulsera
+--     directamente por la API, sin pasar por la activación: la ficha pública lo mostraba
+--     y los escaneos disparaban alertas a los contactos del atacante.)
+drop policy if exists "dueño gestiona sus portadores" on public.portadores;
+create policy "dueño gestiona sus portadores" on public.portadores
+  for all to authenticated
+  using (usuario_id = auth.uid())
+  with check (
+    usuario_id = auth.uid()
+    and exists (select 1 from public.pulseras p where p.id = pulsera_id and p.usuario_id = auth.uid() and p.estado = 'vinculada')
+  );
+
+-- Revisión (no borra nada): fichas cuya pulsera no está activada a nombre de su dueño.
+-- Ejecuta este SELECT aparte; si aparece algo, revísalo antes de decidir.
+--   select po.id, po.nombre_completo, p.codigo_qr, p.estado, p.usuario_id = po.usuario_id as mismo_duenio
+--   from public.portadores po left join public.pulseras p on p.id = po.pulsera_id
+--   where p.id is null or p.estado <> 'vinculada' or p.usuario_id is distinct from po.usuario_id;
+
+-- 8. REGISTRO: solo con una pieza vendida (asignada a una compra pagada) y sin activar
+create or replace function public.verificar_codigo_pulsera(p_codigo_qr text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.pulseras pu join public.pedidos pe on pe.id = pu.pedido_id
+    where pu.codigo_qr = upper(trim(p_codigo_qr)) and pu.estado = 'disponible' and pe.estado = 'pagado'
+  );
+$$;
+revoke all on function public.verificar_codigo_pulsera(text) from public;
+grant execute on function public.verificar_codigo_pulsera(text) to anon, authenticated;
+
+create or replace function public.exigir_pulsera_al_registrarse()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if lower(coalesce(new.email, '')) = 'lee.fesna@gmail.com' then return new; end if;
+  if not public.verificar_codigo_pulsera(coalesce(new.raw_user_meta_data ->> 'codigo_pulsera', '')) then
+    raise exception 'Para registrarte necesitas una pulsera o pasador Salva comprado y aún sin activar.'
+      using errcode = 'P0001';
+  end if;
+  return new;
+end $$;
+
+drop trigger if exists exigir_pulsera_al_registrarse on auth.users;
+create trigger exigir_pulsera_al_registrarse
+  before insert on auth.users
+  for each row execute function public.exigir_pulsera_al_registrarse();

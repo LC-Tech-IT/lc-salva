@@ -399,7 +399,7 @@
           email: correo,
           password: p1,
           options: {
-            data: codigo ? { codigo_pulsera: codigo, codigo_pedido: codigoPedido } : {}
+            data: codigo ? { codigo_pulsera: codigo, codigo_activacion: codigoPedido } : {}
           }
         }).then(function (res) {
           cerrarCarga();
@@ -489,7 +489,7 @@
   function vincularPulseraDelRegistro() {
     var meta = estado.usuario.user_metadata || {};
     var codigo = meta.codigo_pulsera;
-    var codigoPedido = meta.codigo_pedido;
+    var codigoActivacion = meta.codigo_activacion;
     var clave = 'salva_autovinculo_' + estado.usuario.id;
     var yaIntentado = false;
     try { yaIntentado = localStorage.getItem(clave) === '1'; } catch (e) { yaIntentado = false; }
@@ -497,11 +497,16 @@
     estado.autoVinculoEnCurso = true;
     return supabase.rpc('vincular_pulsera', {
       p_codigo_qr: codigo,
-      p_codigo_pedido: codigoPedido || null
+      p_codigo_activacion: codigoActivacion || null
     }).then(function (res) {
       estado.autoVinculoEnCurso = false;
       try { localStorage.setItem(clave, '1'); } catch (e) { /* sin almacenamiento */ }
-      if (!res.error && res.data) finalizarVinculacion(res.data.portador, res.data.pulsera);
+      var error = errorVinculacion(res);
+      if (!error) { finalizarVinculacion(res.data.portador, res.data.pulsera); return; }
+      // Si no se pudo (p. ej. código mal escrito), abre la activación con el QR ya cargado
+      mostrarToast(error, 'error', 7000);
+      if (el('codigoQrInput')) el('codigoQrInput').value = codigo;
+      if (typeof abrirModal === 'function' && el('modalVincular')) abrirModal('modalVincular');
     });
   }
 
@@ -739,35 +744,38 @@
   el('formVincular').addEventListener('submit', function (e) {
     e.preventDefault();
     var codigo = normalizarCodigoPulsera(el('codigoQrInput').value);
-    var codigoPedido = el('codigoPedidoVincularInput') ? el('codigoPedidoVincularInput').value.trim().toUpperCase() : '';
+    var codigoActivacion = el('codigoPedidoVincularInput') ? el('codigoPedidoVincularInput').value.trim().toUpperCase() : '';
     if (!codigo) { mostrarErrorCampo('codigoQrInput', 'Ingresa el código de la pulsera.'); return; }
     mostrarErrorCampo('codigoQrInput', '');
     if (el('codigoPedidoVincularInput')) mostrarErrorCampo('codigoPedidoVincularInput', '');
-    vincularPulsera(codigo, codigoPedido);
+    vincularPulsera(codigo, codigoActivacion);
   });
 
-  function vincularPulsera(codigo, codigoPedido) {
+  // La activación responde {error: "..."} cuando no procede (así el servidor registra el intento)
+  function errorVinculacion(res) {
+    if (res.error) {
+      return rpcNoDisponible(res.error)
+        ? 'La activación está en mantenimiento. Escríbenos y te ayudamos a activarla.'
+        : (res.error.message || 'No pudimos activar el dispositivo.');
+    }
+    if (!res.data) return 'No pudimos activar el dispositivo.';
+    return res.data.error || '';
+  }
+
+  function vincularPulsera(codigo, codigoActivacion) {
     var boton = el('btnSubmitVincular');
     boton.disabled = true;
-    var cerrarCarga = mostrarToast('Verificando código y compra…', 'carga');
+    var cerrarCarga = mostrarToast('Verificando tu compra…', 'carga');
 
     supabase.rpc('vincular_pulsera', {
       p_codigo_qr: codigo,
-      p_codigo_pedido: codigoPedido || null
+      p_codigo_activacion: codigoActivacion || null
     }).then(function (res) {
-      if (rpcNoDisponible(res.error)) {
-        vincularPulseraLegado(codigo, boton, cerrarCarga);
-        return;
-      }
       cerrarCarga();
       boton.disabled = false;
-      if (res.error) {
-        var msg = res.error.message || '';
-        if (/pedido|compra|pago|cupo|dispositivo/i.test(msg)) {
-          mostrarErrorCampo('codigoPedidoVincularInput', msg);
-        } else {
-          mostrarErrorCampo('codigoQrInput', msg);
-        }
+      var msg = errorVinculacion(res);
+      if (msg) {
+        mostrarErrorCampo(/activaci|compra|asociado/i.test(msg) ? 'codigoPedidoVincularInput' : 'codigoQrInput', msg);
         mostrarToast(msg, 'error', 6000);
         return;
       }
@@ -781,67 +789,6 @@
     cargarDashboard();
     portadorNuevo.pulseras = { id: pulsera.id, codigo_qr: pulsera.codigo_qr, estado: 'vinculada', tipo_plan: pulsera.tipo_plan };
     abrirModalPortador(portadorNuevo);
-  }
-
-  // Solo si la migración de privacidad aún no se ha ejecutado en Supabase
-  function vincularPulseraLegado(codigo, boton, cerrarCarga) {
-    supabase
-      .from('pulseras')
-      .select('id, estado, tipo_plan, codigo_qr')
-      .eq('codigo_qr', codigo)
-      .maybeSingle()
-      .then(function (res) {
-        if (res.error) {
-          cerrarCarga();
-          boton.disabled = false;
-          mostrarToast('Error al verificar: ' + res.error.message, 'error');
-          return;
-        }
-
-        var pulsera = res.data;
-        if (!pulsera) {
-          cerrarCarga();
-          boton.disabled = false;
-          mostrarErrorCampo('codigoQrInput', 'No encontramos una pulsera con ese código.');
-          return;
-        }
-        if (pulsera.estado && pulsera.estado !== 'disponible') {
-          cerrarCarga();
-          boton.disabled = false;
-          mostrarErrorCampo('codigoQrInput', 'Esta pulsera ya está vinculada a una cuenta.');
-          return;
-        }
-
-        supabase
-          .from('portadores')
-          .insert({
-            pulsera_id: pulsera.id,
-            usuario_id: estado.usuario.id,
-            nombre_completo: 'Nuevo Portador',
-            contacto_emergencia_1_nombre: 'Contacto Principal',
-            contacto_emergencia_1_telefono: '0000000000'
-          })
-          .select()
-          .single()
-          .then(function (resPortador) {
-            if (resPortador.error) {
-              cerrarCarga();
-              boton.disabled = false;
-              mostrarToast('No se pudo vincular: ' + resPortador.error.message, 'error');
-              return;
-            }
-
-            supabase
-              .from('pulseras')
-              .update({ estado: 'vinculada' })
-              .eq('id', pulsera.id)
-              .then(function (resUpdate) {
-                cerrarCarga();
-                boton.disabled = false;
-                finalizarVinculacion(resPortador.data, pulsera);
-              });
-          });
-      });
   }
 
   /* ---------- Escaneo de QR con cámara (jsQR) ---------- */
