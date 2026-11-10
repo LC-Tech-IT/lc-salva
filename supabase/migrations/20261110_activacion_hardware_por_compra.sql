@@ -212,6 +212,9 @@ begin
     return json_build_object('error', 'Este dispositivo ya está activado en una cuenta.');
   end if;
 
+  -- La cuenta creadora solo omite el pago en piezas de prueba: nunca en una pieza ya asignada a la compra de un cliente
+  if v_pulsera.pedido_id is not null then v_creador := false; end if;
+
   if not v_creador then
     select * into v_pedido from public.pedidos where id = v_pulsera.pedido_id;
     if v_pulsera.pedido_id is null or not found or v_pedido.estado <> 'pagado' then
