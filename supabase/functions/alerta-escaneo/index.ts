@@ -23,7 +23,9 @@ const EMAIL_CREADOR = "lee.fesna@gmail.com";
 function telefonoWhatsapp(telefono: string | null): string | null {
   const digitos = String(telefono || "").replace(/\D/g, "");
   if (digitos.length < 10 || /^0+$/.test(digitos)) return null; // descarta el placeholder 0000000000
-  return digitos.length === 10 ? "57" + digitos : digitos; // números locales colombianos
+  if (digitos.length === 10) return "57" + digitos; // números locales colombianos
+  if (digitos.length === 12 && digitos.startsWith("57")) return digitos;
+  return digitos;
 }
 
 Deno.serve(async (req) => {
@@ -71,37 +73,48 @@ Deno.serve(async (req) => {
   const hora = new Date(escaneo.created_at || Date.now())
     .toLocaleString("es-CO", { timeZone: "America/Bogota", dateStyle: "short", timeStyle: "short" });
 
+  const templateName = Deno.env.get("WHATSAPP_TEMPLATE") || "alerta_escaneo_salva";
+  const templateLang = Deno.env.get("WHATSAPP_LANG") || "es_CO";
+
+  const envios = await Promise.allSettled(
+    Array.from(destinos).map(async (destino) => {
+      const res = await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: destino,
+          type: "template",
+          template: {
+            name: templateName,
+            language: { code: templateLang },
+            components: [{
+              type: "body",
+              parameters: [
+                { type: "text", text: portador.nombre_completo || "tu familiar" },
+                { type: "text", text: ubicacion },
+                { type: "text", text: hora },
+              ],
+            }],
+          },
+        }),
+      });
+
+      if (res.ok) {
+        return { ok: true, destino };
+      } else {
+        const errText = await res.text().catch(() => "");
+        console.error(`[WhatsApp API Error] Destino ...${destino.slice(-4)} Status ${res.status}:`, errText);
+        throw new Error(`${destino.slice(-4)}: ${res.status} (${errText.slice(0, 100)})`);
+      }
+    })
+  );
+
   let enviados = 0;
   const errores: string[] = [];
-  for (const destino of destinos) {
-    const res = await fetch(`https://graph.facebook.com/v21.0/${phoneId}/messages`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: destino,
-        type: "template",
-        template: {
-          name: Deno.env.get("WHATSAPP_TEMPLATE") || "alerta_escaneo_salva",
-          language: { code: Deno.env.get("WHATSAPP_LANG") || "es" },
-          components: [{
-            type: "body",
-            parameters: [
-              { type: "text", text: portador.nombre_completo || "tu familiar" },
-              { type: "text", text: ubicacion },
-              { type: "text", text: hora },
-            ],
-          }],
-        },
-      }),
-    });
-    if (res.ok) {
-      enviados++;
-    } else {
-      const errText = await res.text().catch(() => "");
-      console.error(`[WhatsApp API Error] Destino ...${destino.slice(-4)} Status ${res.status}:`, errText);
-      errores.push(`${destino.slice(-4)}: ${res.status} (${errText.slice(0, 100)})`);
-    }
+  for (const r of envios) {
+    if (r.status === "fulfilled") enviados++;
+    else errores.push(r.reason?.message || "error desconocido");
   }
 
   return Response.json({ enviados, destinos: destinos.size, errores });
