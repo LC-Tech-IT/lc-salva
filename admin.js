@@ -1548,7 +1548,7 @@
 
   function enlaceActivarCloud() {
     var correo = estado.usuario ? estado.usuario.email : '';
-    return 'https://wa.me/573505208592?text=' + encodeURIComponent(
+    return 'https://wa.me/573204502958?text=' + encodeURIComponent(
       '☁️ *SALVA CLOUD FAMILIAR*\nHola, deseo activar la membresía Anual ($79.000 COP / año) para mi cuenta ' + correo + '.');
   }
 

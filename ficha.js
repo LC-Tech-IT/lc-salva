@@ -300,7 +300,7 @@
           contacto_emergencia_1_nombre: 'Mamá (Andrea V.)',
           contacto_emergencia_1_telefono: '3001234567',
           contacto_emergencia_2_nombre: 'Papá (Carlos R.)',
-          contacto_emergencia_2_telefono: '3505208592',
+          contacto_emergencia_2_telefono: '3204502958',
           notas_adicionales: 'En caso de crisis asmática, aplicar inhalador y comunicar de inmediato a mamá.'
         }
       );

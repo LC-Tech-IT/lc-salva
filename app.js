@@ -288,7 +288,7 @@
   /* =========================================================
      CHECKOUT EN 2 PASOS — Personalización + Domicilio y entrega
      ========================================================= */
-  var NUMERO_WHATSAPP_VENTAS = '573505208592';
+  var NUMERO_WHATSAPP_VENTAS = '573204502958';
 
   var SUPABASE_URL = 'https://bfxolduuqkrhyfjrvwsx.supabase.co';
   var SUPABASE_ANON_KEY = 'sb_publishable_xcSIX2__GnOZ6vL7__BuOQ_pEQ5L-FJ';
@@ -1212,7 +1212,7 @@
       chatToggle.setAttribute('aria-expanded', String(isOpen));
       if (isOpen && chatMessages && chatMessages.children.length === 0) {
         agregarMensajeChat('¡Hola! Te damos la bienvenida a Salva. Con gusto te asesoramos sobre modelos, envíos o la ficha médica.' +
-          '<a class="chat-burbuja-wa" href="https://wa.me/573505208592?text=Hola%20equipo%20Salva,%20deseo%20asesor%C3%ADa%20personalizada" target="_blank" rel="noopener">💬 Hablar por WhatsApp con un Asesor</a>', 'bot');
+          '<a class="chat-burbuja-wa" href="https://wa.me/573204502958?text=Hola%20equipo%20Salva,%20deseo%20asesor%C3%ADa%20personalizada" target="_blank" rel="noopener">💬 Hablar por WhatsApp con un Asesor</a>', 'bot');
       }
     });
   }
@@ -1290,7 +1290,7 @@
   function procesarConsultaChat(pregunta) {
     agregarMensajeChat(pregunta, 'user');
     var normal = normalizarTexto(pregunta);
-    var respuesta = 'Con gusto te asesoramos personalmente en minutos. Puedes escribirnos directamente a nuestro WhatsApp oficial: <a href="https://wa.me/573505208592?text=' + encodeURIComponent('Hola Salva, tengo una consulta: ' + pregunta) + '" target="_blank" style="color:#065F46;font-weight:700;text-decoration:underline;">+57 350 520 8592</a>.';
+    var respuesta = 'Con gusto te asesoramos personalmente en minutos. Puedes escribirnos directamente a nuestro WhatsApp oficial: <a href="https://wa.me/573204502958?text=' + encodeURIComponent('Hola Salva, tengo una consulta: ' + pregunta) + '" target="_blank" style="color:#065F46;font-weight:700;text-decoration:underline;">+57 320 450 2958</a>.';
 
     var elegida = elegirRespuesta(normal);
     if (elegida) respuesta = elegida.resp;
