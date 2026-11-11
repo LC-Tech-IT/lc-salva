@@ -316,6 +316,22 @@
   el('linkOlvideContrasena').addEventListener('click', function () { mostrarFormularioAuth('formOlvide'); });
   el('btnVolverLogin').addEventListener('click', function () { mostrarFormularioAuth('formLogin'); });
 
+  /* Mensajes de Supabase Auth en español (llegan en inglés) */
+  function mensajeAuth(error) {
+    var m = String((error && error.message) || '');
+    var tabla = [
+      [/invalid login credentials/i, 'Correo o contraseña incorrectos.'],
+      [/email not confirmed/i, 'Debes confirmar tu correo antes de entrar. Revisa tu bandeja de entrada.'],
+      [/already registered|already been registered|already exists/i, 'Ese correo ya tiene una cuenta. Inicia sesión o recupera tu contraseña.'],
+      [/rate limit|too many requests|security purposes/i, 'Demasiados intentos. Espera un momento y vuelve a intentarlo.'],
+      [/password should be|weak password/i, 'La contraseña es muy débil. Usa al menos 6 caracteres combinando letras y números.'],
+      [/unable to validate email|invalid email/i, 'Ese correo no es válido.'],
+      [/failed to fetch|network/i, 'Sin conexión con el servidor. Revisa tu internet e inténtalo de nuevo.']
+    ];
+    for (var i = 0; i < tabla.length; i++) if (tabla[i][0].test(m)) return tabla[i][1];
+    return m || 'Ocurrió un error inesperado. Inténtalo de nuevo.';
+  }
+
   /* ---------- Login ---------- */
   activarValidacionEnVivo('loginEmail', function () { validarCampoEmail('loginEmail'); });
   activarValidacionEnVivo('loginPassword', function () { validarCampoPassword('loginPassword'); });
@@ -335,7 +351,7 @@
       cerrarCarga();
       boton.disabled = false;
       if (res.error) {
-        mostrarToast(res.error.message, 'error');
+        mostrarToast(mensajeAuth(res.error), 'error');
       }
     });
   });
@@ -391,7 +407,7 @@
         if (!valido) {
           cerrarCarga();
           boton.disabled = false;
-          mostrarErrorCampo('registroCodigo', 'Ese código no existe o ya está vinculado a otra cuenta.');
+          mostrarErrorCampo('registroCodigo', 'Ese código no está habilitado: no existe, ya está vinculado o aún no está asociado a una compra. Si ya compraste, escríbenos por WhatsApp.');
           el('registroSinPulsera').hidden = false;
           return;
         }
@@ -406,7 +422,7 @@
           boton.disabled = false;
           if (res.error) {
             var bloqueado = /pulsera|compra|pedido|database error/i.test(res.error.message || '');
-            mostrarToast(bloqueado ? (res.error.message.indexOf('compra') !== -1 ? res.error.message : MENSAJE_SIN_PULSERA) : res.error.message, 'error', 7000);
+            mostrarToast(bloqueado ? (res.error.message.indexOf('compra') !== -1 ? res.error.message : MENSAJE_SIN_PULSERA) : mensajeAuth(res.error), 'error', 7000);
             if (bloqueado) el('registroSinPulsera').hidden = false;
             return;
           }
