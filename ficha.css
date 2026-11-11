@@ -608,3 +608,81 @@ button { font-family: inherit; cursor: pointer; }
   .btn-obtener-salva span { font-size: 0.74rem; }
   .btn-obtener-salva { padding: 5px 10px; }
 }
+
+/* =========================================================
+   ESTADO DE UBICACIÓN GPS Y REINTENTO MANUAL
+   ========================================================= */
+.gps-box {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gps-box--ok {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: var(--brand-900);
+}
+
+.gps-box--aviso {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #78350F;
+}
+
+.gps-status-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.gps-ico {
+  margin-top: 2px;
+  opacity: 0.85;
+}
+
+.gps-text {
+  min-inline-size: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+
+.gps-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-block-size: 44px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: var(--text-dark);
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.gps-retry-btn:hover {
+  background: #F1F5F9;
+  border-color: var(--text-muted);
+}
+
+.gps-retry-btn[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.gps-retry-btn:focus-visible,
+.action-btn:focus-visible {
+  outline: 3px solid var(--brand-700);
+  outline-offset: 2px;
+}

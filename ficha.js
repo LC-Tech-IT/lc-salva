@@ -202,53 +202,191 @@
      Se registra aunque no comparta ubicación: la familia igual recibe el aviso. */
   var escaneoRegistrado = false;
 
+  function actualizarEstadoGps(tipo, texto, mostrarBoton) {
+    var box = document.getElementById('gpsBox');
+    var textoEl = document.getElementById('gpsEstadoTexto');
+    var btn = document.getElementById('btnCompartirUbicacion');
+    if (!box || !textoEl || !btn) return;
+    box.className = 'gps-box' + (tipo ? ' gps-box--' + tipo : '');
+    textoEl.textContent = texto;
+    btn.hidden = !mostrarBoton;
+    box.hidden = false;
+  }
+
+  function textoPrecisionGps(precision) {
+    return typeof precision === 'number' && isFinite(precision) && precision > 0
+      ? ' (±' + Math.round(precision) + ' m)'
+      : '';
+  }
+
+  function solicitarPosicionConRespaldo(alExito, alFallo) {
+    if (!('geolocation' in navigator)) {
+      alFallo({ code: 0, message: 'Geolocalización no disponible' });
+      return;
+    }
+
+    function pedir(altaPrecision, timeoutMs, maxAgeMs, onError) {
+      navigator.geolocation.getCurrentPosition(alExito, onError, {
+        enableHighAccuracy: altaPrecision,
+        timeout: timeoutMs,
+        maximumAge: maxAgeMs
+      });
+    }
+
+    // Etapa 1: GPS de alta precisión o caché reciente (5 min)
+    pedir(true, 7000, 300000, function (err) {
+      if (err && err.code === 1) {
+        alFallo(err); // permiso denegado: no insistir en segundo plano
+        return;
+      }
+      // Etapa 2: respaldo rápido por red/Wi-Fi si el satélite tarda bajo techo
+      pedir(false, 5000, 600000, alFallo);
+    });
+  }
+
   function registrarEscaneo(pulsera) {
     if (escaneoRegistrado || !supabase || !pulsera.codigo_qr || pulsera.id === 'demo-1') return;
     escaneoRegistrado = true;
 
     var enviado = false;
-    function enviar(lat, lng, precision) {
-      if (enviado) return;
-      enviado = true;
+    var enviadoConGps = false;
+    var respaldo = null;
+    var intentoManualEnCurso = false;
+
+    function enviarAlServidor(lat, lng, precision, esReintentoConGps) {
+      if (!esReintentoConGps && enviado) return;
+      if (!esReintentoConGps) enviado = true;
+
+      var precTxt = textoPrecisionGps(precision);
       supabase.rpc('registrar_escaneo', {
         p_codigo_qr: pulsera.codigo_qr,
         p_latitud: lat,
         p_longitud: lng,
         p_precision: precision
       }).then(function (res) {
-        if (!res.error) return;
-        if (rpcNoDisponible(res.error) && lat !== null) {
-          // Compatibilidad mientras se ejecuta la migración de privacidad
-          supabase.from('escaneos_ubicacion')
-            .insert({ pulsera_id: pulsera.id, latitud: lat, longitud: lng, precision_metros: precision })
-            .then(function (r) { if (r.error) console.warn('Escaneo:', r.error.message); });
-        } else {
-          console.warn('Escaneo:', res.error.message);
+        if (res.error) {
+          if (rpcNoDisponible(res.error) && lat !== null) {
+            // Compatibilidad mientras se ejecuta la migración de privacidad
+            supabase.from('escaneos_ubicacion')
+              .insert({ pulsera_id: pulsera.id, latitud: lat, longitud: lng, precision_metros: precision })
+              .then(function (r) {
+                if (r.error) console.warn('Escaneo:', r.error.message);
+                else {
+                  enviadoConGps = true;
+                  actualizarEstadoGps('ok', 'Ubicación GPS enviada a la familia' + precTxt + '.', false);
+                }
+              });
+          } else {
+            console.warn('Escaneo:', res.error.message);
+          }
+          return;
+        }
+
+        if (lat !== null) {
+          if (res.data === true) {
+            enviadoConGps = true;
+            actualizarEstadoGps('ok', 'Ubicación GPS enviada a la familia' + precTxt + '.', false);
+          } else {
+            // Dentro de la ventana de 60 s anti-duplicados: queda lista en el botón directo de WhatsApp
+            actualizarEstadoGps('ok', 'Ubicación GPS lista' + precTxt + ' en el botón de WhatsApp arriba.', false);
+          }
         }
       });
     }
 
-    if (!('geolocation' in navigator)) { enviar(null, null, null); return; }
+    function aplicarCoordenadas(posicion) {
+      clearTimeout(respaldo);
+      var lat = posicion.coords.latitude;
+      var lng = posicion.coords.longitude;
+      var precision = posicion.coords.accuracy;
+      actualizarWhatsappConUbicacion(lat, lng);
 
-    // El timeout de getCurrentPosition no corre mientras el permiso está sin responder:
-    // si quien escanea ignora la pregunta de ubicación, la alerta sale igual sin GPS
-    var respaldo = setTimeout(function () { enviar(null, null, null); }, 10000);
+      if (!enviado) {
+        enviarAlServidor(lat, lng, precision, false);
+      } else if (!enviadoConGps) {
+        enviarAlServidor(lat, lng, precision, true);
+      }
+    }
 
-    navigator.geolocation.getCurrentPosition(
-      function (posicion) {
-        clearTimeout(respaldo);
-        var lat = posicion.coords.latitude;
-        var lng = posicion.coords.longitude;
-        enviar(lat, lng, posicion.coords.accuracy);
-        actualizarWhatsappConUbicacion(lat, lng); // aun si llega tarde, el botón de WhatsApp lleva el GPS
-      },
-      function (error) {
-        clearTimeout(respaldo);
-        console.warn('Geolocalización omitida:', error.message);
-        enviar(null, null, null);
-      },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-    );
+    var btnCompartir = document.getElementById('btnCompartirUbicacion');
+    var labelCompartir = document.getElementById('labelCompartirUbicacion');
+    if (btnCompartir) {
+      btnCompartir.addEventListener('click', function () {
+        if (intentoManualEnCurso || btnCompartir.getAttribute('aria-disabled') === 'true') return;
+        intentoManualEnCurso = true;
+        btnCompartir.setAttribute('aria-disabled', 'true');
+        if (labelCompartir) labelCompartir.textContent = 'Buscando señal GPS…';
+
+        solicitarPosicionConRespaldo(
+          function (posicion) {
+            intentoManualEnCurso = false;
+            btnCompartir.removeAttribute('aria-disabled');
+            if (labelCompartir) labelCompartir.textContent = 'Compartir ubicación GPS ahora';
+            aplicarCoordenadas(posicion);
+          },
+          function (error) {
+            intentoManualEnCurso = false;
+            btnCompartir.removeAttribute('aria-disabled');
+            if (labelCompartir) labelCompartir.textContent = 'Reintentar ubicación GPS';
+            console.warn('Reintento GPS fallido:', error && error.message);
+            if (error && error.code === 1) {
+              actualizarEstadoGps('aviso', 'El navegador sigue bloqueando la ubicación. Habilítala en el ícono de la barra y vuelve a tocar.', true);
+            } else {
+              actualizarEstadoGps('aviso', 'Aún sin señal GPS. Acércate a un espacio abierto y vuelve a intentarlo.', true);
+            }
+          }
+        );
+      });
+    }
+
+    function iniciarCaptura(estadoPermiso) {
+      if (!('geolocation' in navigator)) {
+        enviarAlServidor(null, null, null, false);
+        return;
+      }
+
+      if (estadoPermiso === 'denied') {
+        enviarAlServidor(null, null, null, false);
+        actualizarEstadoGps('aviso', 'Ubicación bloqueada en el navegador. Actívala y toca abajo si deseas adjuntar el mapa GPS.', true);
+        return;
+      }
+
+      actualizarEstadoGps('pendiente', 'Permite compartir tu ubicación para enviar el mapa exacto del rescate a la familia.', false);
+
+      // Si quien escanea ignora la solicitud de ubicación o el GPS se demora,
+      // el aviso automático igual sale a los 13.5 s sin bloquear a la familia.
+      respaldo = setTimeout(function () {
+        if (!enviado) {
+          enviarAlServidor(null, null, null, false);
+          actualizarEstadoGps('aviso', 'El aviso salió sin mapa GPS porque el teléfono no respondió a tiempo. Puedes reintentar abajo.', true);
+        }
+      }, 13500);
+
+      solicitarPosicionConRespaldo(
+        aplicarCoordenadas,
+        function (error) {
+          clearTimeout(respaldo);
+          console.warn('Geolocalización omitida:', error && error.message);
+          if (!enviado) enviarAlServidor(null, null, null, false);
+          if (error && error.code === 1) {
+            actualizarEstadoGps('aviso', 'Permiso de ubicación denegado. Actívalo en el navegador y toca abajo para adjuntar el mapa.', true);
+          } else {
+            actualizarEstadoGps('aviso', 'No se pudo obtener GPS automáticamente. Puedes reintentar abajo para adjuntar el mapa.', true);
+          }
+        }
+      );
+    }
+
+    if (navigator.permissions && typeof navigator.permissions.query === 'function') {
+      try {
+        navigator.permissions.query({ name: 'geolocation' }).then(
+          function (permiso) { iniciarCaptura(permiso.state); },
+          function () { iniciarCaptura('prompt'); }
+        );
+        return;
+      } catch (e) { /* Safari antiguo o contexto sin Permissions API para geolocalización */ }
+    }
+    iniciarCaptura('prompt');
   }
 
   function actualizarWhatsappConUbicacion(lat, lng) {
